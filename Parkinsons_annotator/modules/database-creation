@@ -1,0 +1,76 @@
+# import sqlite so that we can use it in the script
+import sqlite3
+import os
+from tkinter import INSERT
+
+#creating a function so that the code only runs when required and not every time
+def generatetable():
+
+    #creates the database
+    conn = sqlite3.connect("parkinsonsdata.db")
+
+    # creates  a curser object to be able to execute SQL commnds
+    cur = conn.cursor()
+
+    #creating variants table to input data into
+    cur.execute("""
+            CREATE TABLE IF NOT EXISTS variants (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                chromosome INTEGER NOT NULL,
+                pos INTEGER NOT NULL,
+                ref CHAR(1) NOT NULL,
+                alt CHAR(1) NOT NULL,
+                hgvs TEXT,
+                classification TEXT,
+                gene TEXT
+                )
+            """)
+
+    #save the changes made
+    conn.commit()
+
+
+    #close the connectionto the database
+    conn.close()
+
+generatetable()
+
+db_path = "parkinsonsdata.db"
+
+#checks to see if the database exists, to create it if it doesn't
+if os.path.exists(db_path):
+    pass
+else:
+    generatetable()
+
+#opens link to the database
+conn = sqlite3.connect("parkinsonsdata.db")
+
+# creates  a curser object to be able to execute SQL commnds
+cur = conn.cursor()
+
+#adding testing data
+patients = (
+    ("patientA", 4, 89822305, "C", "G", "pretendhgvs1", "pathogenic", "fakegene1"),
+    ("patientA", 17, 45983420, "G", "T", "pretenthgvs2", "benign", "fakegene2"),
+    ("patient", 17, 2748693, "C", "A", "pretendhgvs3", "VUS", "fakegene3")
+)
+
+# to prevent the testing data to be input everytime this code is run. Change "stop" to "go" to fill in data
+testing = "stop"
+if testing =="go":
+    cur.executemany(
+     "INSERT INTO variants (name, chromosome, pos, ref, alt, hgvs, classification, gene) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", patients)
+
+#save the changes made
+conn.commit()
+
+#testing table
+cur.execute("SELECT * FROM variants")
+rows = cur.fetchall()
+for row in rows:
+    print(row)
+
+#close the connectionto the database
+conn.close()
