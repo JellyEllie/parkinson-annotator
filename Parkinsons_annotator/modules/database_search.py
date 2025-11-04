@@ -81,7 +81,7 @@ def search_variants(session, patient_name=None, variant_id=None, gene=None):
 if __name__ == "__main__":
 
     # create database engine
-    engine = create_engine('') # add database URL here
+    engine = create_engine('sqlite:///parkinsonsdata.db') # add database URL here
 
     # create session for querying the database
     Session = sessionmaker(bind=engine)
