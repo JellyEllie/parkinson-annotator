@@ -62,8 +62,8 @@ print(record.get("IdList"))
 
 #Below stores the value 'record["IdList"]' into a variable called 'cinvar_id'
 id_list = record.get("IdList")         
-clinvar_id = id_list[0]
-print(clinvar_id)              #prints the clinvar_id as a string output, because its the first and only item in the 'record["IdList"]' e.g. 578075
+clinvar_id = id_list[0]             #'clinvar_id' stores the string output, because its the first and only item in the 'record["IdList"]' e.g. 578075
+
 
 
 
@@ -86,10 +86,10 @@ print(json.dumps(summary, indent=4))
 
 #Acessing specific fields in the summary response
 try: 
-    gene_symbol = summary['DocumentSummarySet']['DocumentSummary'][0]['genes'][0]['symbol']                                       #prints Gene symbol
-    cdna_change = summary['DocumentSummarySet']['DocumentSummary'][0]['variation_set'][0]['cdna_change']                           #prints HGVS cDNA change
-    accession = summary['DocumentSummarySet']['DocumentSummary'][0]['accession']                                                   #prints ClinVar Accession
-    classification = summary['DocumentSummarySet']['DocumentSummary'][0]['germline_classification']['description']                 #prints the aggregate ClinVar consensus classification (e.g. "Conflicting classifications of pathogenicity"), which reflects all submitter interpretations
+    gene_symbol = summary['DocumentSummarySet']['DocumentSummary'][0]['genes'][0]['symbol']                                       #Gene symbol
+    cdna_change = summary['DocumentSummarySet']['DocumentSummary'][0]['variation_set'][0]['cdna_change']                           #HGVS cDNA change
+    accession = summary['DocumentSummarySet']['DocumentSummary'][0]['accession']                                                   #ClinVar Accession
+    classification = summary['DocumentSummarySet']['DocumentSummary'][0]['germline_classification']['description']                 #the aggregate ClinVar consensus classification (e.g. "Conflicting classifications of pathogenicity"), which reflects all submitter interpretations
     review_status = summary['DocumentSummarySet']['DocumentSummary'][0]['germline_classification']['review_status']                #prints Review status
     condition_name = summary['DocumentSummarySet']['DocumentSummary'][0]['germline_classification']['trait_set'][0]['trait_name']  #prints Associated condition 
 
@@ -97,13 +97,21 @@ except Exception as e:
     raise ClinVarESummaryError (f"Missing expected field in ClinVar ESummary response: {e}")
 
 
-
-print("Gene symbol:", gene_symbol)
-print("cDNA chnage:", cdna_change)
-print("ClinVar Accession:", accession)
-print("ClinVar consensus classification:", classification)
-print("Review status:", review_status)
-print("Associated condition:", condition_name)
+#Checking number of submitted ClinVar records
+scv_list = summary ['DocumentSummarySet']['DocumentSummary'][0]['supporting_submissions']['scv']                    #List of SCV (submitted records in ClinVar)
+num_submissions = len(scv_list)
 
 
+#Creating ClinVar URL
+clinvar_url = f"https://www.ncbi.nlm.nih.gov/clinvar/variation/{clinvar_id}"
+
+print(f"Gene symbol: {gene_symbol}")
+print(f"cDNA chnage: {cdna_change}")
+print(f"ClinVar variant ID: {clinvar_id}")
+print(f"ClinVar Accession: {accession}")
+print(f"ClinVar consensus classification: {classification}")
+print(f"Number of submitted records: {num_submissions}")
+print(f"Review status: {review_status}")
+print(f"Associated condition: {condition_name}")
+print(f"ClinVar record: {clinvar_url}")
 
