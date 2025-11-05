@@ -1,8 +1,11 @@
 """
-This script uses the Biopython Entrez module to query the ClinVar NCBI database.
-For a given variant, it retrieves annotation information (e.g. classification, review status, associated condition).
+This script uses the Biopython Entrez module to query the ClinVar NCBI database. 
+For a given a variant in HGVS notation, it retrieves annotation information such as:
+consensus classification, number of submissions, review status, associated condition. 
+The script outputs this information and the ClinVar record URL.
+Custom exceptions are raised for HGVS format errors, connection errors, missing ClinVar
+IDs, and unexpected response formats.
 """
-
 
 from Bio import Entrez    #Import Entrez module from Biopython for NCBI queries
 
