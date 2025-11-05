@@ -13,7 +13,7 @@ Run this script directly and follow the prompts to search the database:
 """
 
 from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
 # create base class for declarative mapping
 Base = declarative_base()
@@ -50,7 +50,8 @@ class Variant(Base):
         Returns:
         str: Formatted string with key variant information.
             """
-        return f"<Variant(name={self.name}, chr={self.chromosome}, pos={self.pos}, ref={self.ref}, alt={self.alt})>"
+        return (f"<Variant(name={self.name}, chr={self.chromosome}, "
+                f"pos={self.pos}, ref={self.ref}, alt={self.alt})>")
 
 # function to perform searches
 def search_variants(session, patient_name=None, variant_id=None, gene=None):
@@ -81,11 +82,11 @@ def search_variants(session, patient_name=None, variant_id=None, gene=None):
 if __name__ == "__main__":
 
     # create database engine
-    engine = create_engine('sqlite:///parkinsonsdata.db') # add database URL here
+    engine = create_engine('sqlite:///parkinsons_data.db') # add database URL here
 
     # create session for querying the database
     Session = sessionmaker(bind=engine)
-    session = Session()
+    db_session = Session()
 
     # welcome message to user that introduces input options
     print("Welcome to the Variant Database Search!")
@@ -94,12 +95,12 @@ if __name__ == "__main__":
     # get user input for search criteria
     name_input = input("Enter patient name to search (or press Enter to skip): ").strip() or None
     id_input = input("Enter variant ID (or leave blank): ").strip()
-    variant_id = int(id_input) if id_input else None
+    variant_id_input = int(id_input) if id_input else None
     gene_input = input("Enter gene symbol to search (or press Enter to skip): ").strip() or None
 
-    results = search_variants(session, 
+    results = search_variants(db_session,
                               patient_name=name_input, 
-                              variant_id=variant_id, 
+                              variant_id=variant_id_input,
                               gene=gene_input)
     if results:
         print(f"Found {len(results)} matching variants:")
@@ -109,4 +110,4 @@ if __name__ == "__main__":
         print("No matching variants found.")
 
     # close session
-    session.close()
+    db_session.close()
