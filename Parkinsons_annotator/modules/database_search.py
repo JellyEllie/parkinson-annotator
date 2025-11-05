@@ -1,7 +1,7 @@
 """
 This module performs a database search in the 'variants' table using SQLAlchemy ORM.
 
-It defines a Variant model class, connects to the database, and and allows
+It defines a Variant model class, connects to the database, and allows
 the user to search for variants based on patient name, variant ID, or other
 fields such as gene or classification.
 
@@ -13,7 +13,7 @@ Run this script directly and follow the prompts to search the database:
 """
 
 from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
+from sqlalchemy.orm import sessionmaker, declarative_base
 
 # create base class for declarative mapping
 Base = declarative_base()
@@ -59,7 +59,7 @@ def search_variants(session, patient_name=None, variant_id=None, gene=None):
     Search for variants in the database based on provided criteria.
 
     Args:
-        session (Session): SQLAlchemy session for database interaction.
+        session: SQLAlchemy session for database interaction.
         patient_name (str, optional): Patient name to filter by.
         variant_id (int, optional): Variant ID to filter by.
         gene (str, optional): Gene symbol to filter by.
