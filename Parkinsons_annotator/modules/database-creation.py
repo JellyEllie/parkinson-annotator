@@ -1,9 +1,15 @@
-""" this script is to create the database and the headings for the tables to be populated with the patient data """
+""" 
+this script is to create the database and the headings for the tables to be populated with the patient data 
+Data types:
+    TEXT: Allows for characters of any length.
+    INTEGER: A whole number of any length.
+    CHAR(1): Single-character field.
+Other database parameters:    
+    NOT NULL: Field must contain a value.
+    AUTOINCREMENT: Automatically generates unique IDs for each record.
+    PRIMARY KEY: Used to uniquely identify each record and potentially link tables.
+"""
 
-# Datatypes for the database explaination: PRIMARY KEY is identified in case wit is necessary to link this table to another later.
-# Data type TEXT allows for characters of any length. Data tpye INTEGER is a whole number of any length. NOT NULL means that it has to be filled when that row is filled
-# Data type CHAR(1) means that all data must be 1 character inlength. The bottom 3 lines will be generated from ClinVar, so need to be able to stare empty
-# AUTOINCREMENT is an easy way to make a column where every number is unique, which is going to feed into how part of the search functions will work.
 
 # import sqlite and os to usue those modules to create the database
 import sqlite3
@@ -11,14 +17,16 @@ import os
 
 # creating a function so that the code only runs when required and not every time
 def generatetable():
+    """ creates the database and the variants table within it, if the database does not already exist """
 
-    # creates the database. this function aso opens the database if it already exists, but in the particular place, it creates it
+    # creates the database. this function is also used to open the database if it already exists
     conn = sqlite3.connect("parkinsons_data.db")
 
     # creates a cursor object to be able to execute SQL commands
     cur = conn.cursor()
 
-    # creating variants table to input data into. The first word is the name of the column, the second is the data type. datatype explaid above.
+    # creating variants table to input data into.
+    # The first word is the name of the column, the second is the data type. Datatype explained above.
     cur.execute("""
             CREATE TABLE IF NOT EXISTS variants (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,   
