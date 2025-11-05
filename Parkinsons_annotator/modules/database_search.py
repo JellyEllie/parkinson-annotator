@@ -84,9 +84,6 @@ if __name__ == "__main__":
     # create database engine
     engine = create_engine('sqlite:///parkinsons_data.db') # add database URL here
 
-    # ensure tables exist in the database before running queries
-    Base.metadata.create_all(engine)
-
     # create session for querying the database
     Session = sessionmaker(bind=engine)
     db_session = Session()
