@@ -97,15 +97,12 @@ except Exception as e:
 
 
 
-print(gene_symbol)
-print(cdna_change)
-print(accession)
-print(classification)
-print(review_status)
-print(condition_name)
+print("Gene symbol:", gene_symbol)
+print("cDNA chnage:", cdna_change)
+print("ClinVar Accession:", accession)
+print("ClinVar consensus classification:", classification)
+print("Review status:", review_status)
+print("Associated condition:", condition_name)
 
-#To dos:
-#Ouput star rating
-#Output into JSON file format 
-#Create code as python object
+
 
