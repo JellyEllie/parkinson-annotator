@@ -10,23 +10,24 @@ Functions:
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, declarative_base
 from Parkinsons_annotator.modules.models import Variant, Patient, Connector
+from Parkinsons_annotator.utils.parse_genomic_notation import parse_genomic_notation
 
 
 def database_list(search_type=None, search_value=None):
     """
-    Search the 'variants' table based on the 'search_type' the user selects from the Flask dropdown menu
-    and the 'search_value' which is the text entered by the user.
+    Search the database based on user-specified type and value.
 
     Args:
-        search_type (str): Type of search specified by the user. Determines result returned:
-            search_type 'variant' returns list of patients with matching variant.
-            search_type 'gene_symbol' returns list of variants for that gene.
-            search_type 'classification' returns list of variants with matching classification.
-            search_type 'patient' returns list of variants for that patient.
-        search_value (str): Value to search for.
+        search_type (str): Type of search specified by the user.
+            Determines what is returned:
+                - 'variant': List of patients with matching variant.
+                - 'gene_symbol': List of variants for that gene.
+                - 'classification': List of variants with that classification.
+                - 'patient': List of variants for that patient.
+        search_value (str): Input value for the search, e.g. "NM_001377265.1:c.841G>T".
 
     Returns:
-        list[Variant]: List of Variant objects matching the query.
+        list: List of query results (e.g., patient names).
     """
     # Create database engine
     engine = create_engine('sqlite:///parkinsons_data.db')  # database URL here
@@ -36,24 +37,44 @@ def database_list(search_type=None, search_value=None):
     db_session = Session()
 
 
-    # Based on search type, perform SQL query to find needed info
+    # Based on search type, perform SQL query to return list from database
     try:
         if search_type == 'variant':
-            # If input is in HGVS format:
+            # If input value is in HGVS format:
             if search_value.startswith(("nm", "nc")):
                 # Return list of patients with matching hgvs id
-                search_results = (db_session.query(Patient.name)
+                search_results = (
+                    db_session.query(Patient.name)
                     .join(Connector, Patient.name == Connector.patient_name)
                     .join(Variant, Variant.id == Connector.variant_id)
                     .filter(Variant.hgvs == search_value)
                     .all()
                 )
+                return [r[0] for r in search_results]
             else:
-                # Placeholder for other variant-related searches
-                # all non-HGVS names will be in genomic notation as input has already been validated in the search form
-                # If input is in genomic notation: convert to hgvs, return all patients with that variant, and variant info table and clinvar annotation
-                print("Variant search value does not appear to be an HGVS ID.")
-                return []
+                # All non-HGVS names will be in genomic notation as input has already been validated in the search form
+                # Parse genomic notation into chromosome, position, reference, and alternate alleles
+                try:
+                    chr_value, pos_value, ref_value, alt_value = parse_genomic_notation(search_value)
+                except ValueError as e:
+                    print(f"Invalid genomic notation: {e}")
+                    return []
+
+                # Query the database using all four fields
+                results = (
+                    db_session.query(Patient.name)
+                    .join(Connector, Patient.name == Connector.patient_name)
+                    .join(Variant, Variant.id == Connector.variant_id)
+                    .filter(
+                        Variant.chromosome == chr_value,
+                        Variant.pos == pos_value,
+                        Variant.ref == ref_value,
+                        Variant.alt == alt_value
+                    )
+                    .all()
+                )
+
+                return [r[0] for r in results]
 
         else:
             print(f"Search type '{search_type}' not implemented yet.")
