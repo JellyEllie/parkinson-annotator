@@ -47,21 +47,44 @@ def open_browser():
     '''The specified URL (whiich is the default created by the command to create the interface)'''
     webbrowser.open_new("http://127.0.0.1:5000/")
 
+
 # Creates the route to be able to pull the info from the search bar in the interface
 @app.route('/search', methods=['POST'])
 
 # Function to work with the search query to get the input from the search bar
 def search():
     '''This function pulls the query from the database, converts it to lowercase, peints the search to the command line, and returns it to the interface'''
+    # Parses the json bodt from Flask
+    data = request.get_json()
+
+    # Query is defined in the html file, tring converted to lowercase, makes for a cae insensetive search
+    search_value = data.get('query', '').lower()  # Empty string returned if nothing entered
+    search_type = data.get('category',''). lower()
+
+    # Print used to check the input works as it currently doesn't have any results to return
+    print(f"User searched for: {search_value}, category: {search_type}")
+   
+    # Check that search_value matches expected input for search_type
+    if search_type == "variant":
+            # Validate HGVS format of variant
+        if (":" in search_value and "c." in search_value):
+            pass
+        elif (":" in search_type):
+            pass
+        else:
+            return jsonify("Invalid data type entered")
     
-    # Pull the json data from the search. Query is defined in the html file, tring converted to lowercase, makes for a cae insensetive search
-    query = request.json.get('query', '').lower()  # Empty string returned if nothing entered
-    
-   # Print used to check the input works as it currently doesn't have any results to return
-    print("User searched for:", query)
+    if search_type == "classification":
+        if ("pathogenic" or "benign" or "likely benign" or "likely pathogenic" or "uncertain significance" or "other"):
+            pass
+        else:
+            return jsonify("Invalid classification")
+  
+    results = [f"Result for '{search_value}' in '{search_type}' category"]
 
     # Return a response to the interface. This is also currently unecessary. To remove later
-    return jsonify(query)
+    return jsonify(results)
+
 
 # Function to store the uploaded file
 @app.route('/upload', methods=['POST'])
@@ -76,11 +99,18 @@ def upload_file():
         return "No file selected", 400
 
     # Save the file
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    # filepath = os.path.join(app.config['upload_folder'], file.filename)
+
+    UPLOAD_FOLDER = 'uploads'  # folder name
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # create it if it doesn’t exist
+    app.config['upload_folder'] = UPLOAD_FOLDER
+
+    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(filepath)
 
-    return f"File '{file.filename}' uploaded and stored successfully!"
     print( file.filename )
+    return f"File '{file.filename}' uploaded and stored successfully!"
+    
 
 # Runs the functions that are needed to start everything
 if __name__ == "__main__":
