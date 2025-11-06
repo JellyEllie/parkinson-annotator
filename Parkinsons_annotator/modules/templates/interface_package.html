@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<title>Parkinsons Annotator</title>    <!--Adds text to the tab seen in the browser--> 
+<head>Testing location 1<head>         <!--Adds text to the very top of the interface-->
+<body>                                 <!--Adds text to the main body of the interface h umbers indicate lines within the body-->
+    <h1>Testing location 2</h1>
+    <h2>Welcome To the Dataset</h2>
+    <h3>Testing location 3</h3>
+    <h4>Please search the database here<h4>
+
+<!--Edits the text. Allowing for ajustments to be made to font colour, allignment in the interface, font size, and font. Done per line-->
+<style>
+  h2 {
+      color: darkred;
+      text-align: center;
+      font-size: 40px;
+      font-family: 'Georgia', serif;
+    }
+
+ h4 {
+      color: black;
+      text-align: center;
+      font-size: 30px;
+      font-family: 'Georgia', serif;
+    }
+</style>
+
+<!--Form is setting up the search input and its parameters-->
+<form id="search-form">  <!--creates a form element, which is what allows user input-->
+   <!--creating dropdown box-->
+     <select id="category" required>
+    <option value="" disabled selected>Select category</option>
+    <option value="variant">Variant</option>
+    <option value="gene_symbol">Gene Symbol</option>
+    <option value="patient_name">Patient Name</option>
+    <option value="classification">Classification</option>
+  </select>
+    <!--Parameters for search function. id creates a unique identifier to allow its vaue to be read. Placeholder shows grey hint text in search box. Required means something must be input to funtion-->
+    <input type="text" id="search-box" placeholder="Search..." required>
+    <button type="submit">Search</button>   <!--Cretes the actual search button-->
+  </form>
+
+  <!--Creates a list that will display results as a list-->
+  <ul id="results"></ul>
+  
+  <!--Creates the upload section-->
+   <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" id="fileInput" required>
+    <button type="submit">Upload</button>
+  </form>
+
+  <!--Edits the look for the search box and button
+  Form: Flex - input and button are side by side.justify-content - centers horizontally margin-top - adds space above
+  Input: Width - length of search box. Padding - dds space inside the box around the text. Border - size and colour of the boarder. Boarder-radius - rounds only the left side of the search box.
+  Button: Padding - adds spacing inside the button. Border - removes default boarder. colour - text colour. boarder-radius - rounds the right side only. curser - changes the curder when over the button
+  Button hover - changes the background colour of the button when the cursor is on it-->
+  <style>
+  form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+  }
+
+  input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 25px 0 0 25px;
+    outline: none;
+  }
+
+  button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 0 25px 25px 0;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+
+
+<!--Creates a function which sends feedback to the python script to axctivate the kill switch-->
+    <script>
+      window.addEventListener("beforeunload", function () {
+        // send a background POST request to /shutdown
+        navigator.sendBeacon("/shutdown");
+      });
+    </script>
+
+<!--Script to prevent the page loading when upload it made and sends the file to Flask-->
+<script>
+  // Finds the input id. EventListener looks for the upload button being pressed. async, waits for response bedfore actioning.
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+  e.preventDefault(); // Prevent page from reloading when search button is pressed
+
+  const formData = new FormData();  // Creates an object called formData
+  formData.append('file', document.getElementById('fileInput').files[0]);
+
+  // Send file via fetch
+  const res = await fetch('/upload', {
+    method: 'POST',
+    body: formData
+  });
+
+  if (res.ok) {
+    alert('File uploaded successfully!');
+  } else {
+    alert('Upload failed.');
+  }
+});
+</script>
+
+<!--Script which prevents a new page from being loaded with the search, send query to flask and recieves reponse -->
+    <script>
+        // const references elements from the HTML code by their ID
+    const form = document.getElementById("search-form")         // Refers to form submissions
+    const searchBox = document.getElementById("search-box");    // Refers to the search box
+    const category = document.getElementById("category");       // Refers to the selection of the dropdown box
+    const resultsList = document.getElementById("results");     // Refers to where the results are displayed
+
+    // When the form is submitted, submit async, whcih allows the code to wait to hear a response from flask
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();     // prevents the ppage from reloading when a search (submission) is made
+    
+      const query = searchBox.value.trim();     // Removes any spaces before and after the search
+      const selectedCategory = category.value;  // Calls the catagory selected
+
+      // Send query to Flask if not empty
+      const response = await fetch("/search", { ///search opens to url to flask.
+        method: "POST",                         // matches method in python code (POST)
+        headers: {
+          "Content-Type": "application/json",   // Tells the server we are sending JSON file type
+        },
+        body: JSON.stringify({ query, category: selectedCategory }),        // Converts query and category into JSON file type
+      });
+
+      const resukts = await response.json(); // Once info is sent, it waits for a response
+
+      // Clear previous results
+      resultsList.innerHTML = `<li>${results}</li>`;
+
+      // Display new results. If statement loops through results to display them on seperate lines
+      if (results.length > 0) {
+        results.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          resultsList.appendChild(li);
+        });
+      } else if (query.length > 0) {
+        resultsList.innerHTML = "<li>No matches found</li>"; // Returns text if no matches found
+      }
+    });
+  </script>
