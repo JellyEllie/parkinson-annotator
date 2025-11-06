@@ -28,19 +28,30 @@ def generatetable():
     # creating variants table to input data into.
     # The first word is the name of the column, the second is the data type. Datatype explained above.
     cur.execute("""
-            CREATE TABLE IF NOT EXISTS variants (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,   
-                name TEXT NOT NULL,                     
+            CREATE TABLE IF NOT EXISTS patients (  
+                name TEXT NOT NULL PRIMARY KEY,                     
+                )
+            """)
+    cur.execute("""
+            CREATE TABLE IF NOT EXISTS variants (                    
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 chromosome INTEGER NOT NULL,            
                 pos INTEGER NOT NULL,                   
                 ref CHAR(1) NOT NULL,                   
                 alt CHAR(1) NOT NULL,
                 hgvs TEXT,                              
                 classification TEXT,
-                gene TEXT
+                gene_symbol TEXT,
+                clinvar_id TEXT
                 )
             """)
-
+    cur.execute("""
+            CREATE TABLE IF NOT EXISTS patient_variant (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                patient_id INTEGER FOREIGN KEY, 
+                variant_id INTEGER FOREIGN KEY,
+                )
+            """)
     # save the changes made aka you commit to those changes
     conn.commit()
 
