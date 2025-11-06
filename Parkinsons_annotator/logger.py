@@ -1,8 +1,16 @@
+"""
+Logger configuration for the Parkinsons Annotator application.
+
+This module sets up a console logger (DEBUG level) and a rotating file
+logger (WARNING level) in the project 'logs' directory.
+"""
+
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-#instantiate logger class
+
+# instantiate Logger instance
 logger = logging.getLogger("parkinsons_annotator_logger")
 logger.setLevel(logging.DEBUG)
 
@@ -22,12 +30,12 @@ log_dir.mkdir(parents=True, exist_ok=True)
 
 # create handlers
 console_handler = logging.StreamHandler() #outputs logs to console
-console_handler.setLevel(logging.DEBUG)
+console_handler.setLevel(logging.INFO)
 console_handler.setFormatter(formatter)
 
 
 file_handler = RotatingFileHandler(
-    log_dir/"parksinsons_annotator.log",
+    log_dir/"parkinsons_annotator.log",
     mode="a", #locates log file via parent directory
     maxBytes=500000,  # 500 KB
     backupCount=2
@@ -36,6 +44,7 @@ file_handler = RotatingFileHandler(
 file_handler.setLevel(logging.WARNING)
 file_handler.setFormatter(formatter)
 
-# add handlers to logger
-logger.addHandler(console_handler)
-logger.addHandler(file_handler)
+# add handlers safely
+if not logger.handlers:
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
