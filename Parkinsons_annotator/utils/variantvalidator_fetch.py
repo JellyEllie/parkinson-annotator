@@ -18,7 +18,7 @@ class VariantDescriptionError(Exception):
     pass
 
 
-def fetch_hgvs_from_variant(variant_description):
+def fetch_variant_validator(variant_description):
     """
     This function queries the VariantValidator API to obtain HGVS nomenclature for a genomic 
     variant, using genome build GRCh38 and the MANE Select transcript.
@@ -68,7 +68,7 @@ def fetch_hgvs_from_variant(variant_description):
     
 
 
-    # Find the main variant record (skip metadata)
+    # Find the main variant record (i.e. the first key in dictionary 'summary)
     for key in summary.keys():
         if key not in ("flag", "metadata"):
             main_key = key
@@ -77,20 +77,34 @@ def fetch_hgvs_from_variant(variant_description):
     record = summary[main_key]
 
     # Extract 3 key fields
-    hgvs_name = main_key
-    hgnc_id = record["gene_ids"].get("hgnc_id", "N/A")
-    omim_id = record["gene_ids"].get("omim_id", ["N/A"])
+    try:
+        hgvs_mane_select = main_key
+    except(KeyError, IndexError, TypeError):
+        print("HGVS Mane Select nomenclature not found")
+        hgvs_mane_select = "N/A"
 
-    # Return as dictionary
+    try:
+        hgnc_id = record["gene_ids"].get("hgnc_id")
+    except(KeyError, IndexError, TypeError):
+        print("HGNC ID not found")
+        hgnc_id = "N/A"
+    
+    try:
+        omim_id = record["gene_ids"].get("omim_id")
+    except(KeyError, IndexError, TypeError):
+        print("OMIM ID not found")
+        omim_id = "N/A"
+
+
     return {
-        "HGVS nomenclature": hgvs_name,
+        "HGVS nomenclature": hgvs_mane_select,
         "HGNC ID": hgnc_id,
         "OMIM ID": omim_id[0]
     }
 
 
 if __name__ == "__main__":
-    variant = "17:45983420:G:T"
-    result = fetch_hgvs_from_variant(variant)
-    print(json.dumps(result, indent=4))
-
+    
+    variant_description = "17:45983420:G:T"
+    variant_validator_output = fetch_variant_validator(variant_description)
+    print(json.dumps(variant_validator_output, indent=4))
