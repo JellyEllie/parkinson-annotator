@@ -18,8 +18,11 @@ def database_list(search_type=None, search_value=None):
     and the 'search_value' which is the text entered by the user.
 
     Args:
-        search_type (str): Type of search — should match a Variant attribute
-                           e.g., 'name', 'id', 'gene', 'classification'.
+        search_type (str): Type of search specified by the user. Determines result returned:
+            search_type 'variant' returns list of patients with matching variant.
+            search_type 'gene_symbol' returns list of variants for that gene.
+            search_type 'classification' returns list of variants with matching classification.
+            search_type 'patient' returns list of variants for that patient.
         search_value (str): Value to search for.
 
     Returns:
