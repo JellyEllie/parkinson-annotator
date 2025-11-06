@@ -14,6 +14,22 @@
 
 
 ## Installation and Usage 
+1. Set up conda environment
+   ```
+   conda env create -f environment.yml
+   conda activate parkinsons-env
+   conda env update --name parkinsons-env --file environment.yml --prune
+   ```
+2. Install pip packages
+   `pip install -r requirements.txt`
+3. Setup env file
+   `cp .env.example .env`
+   Fill out .env from supplied credentials
+4. Run application
+   ```
+   cd Parkinsons_annotator
+   python main.py
+   ```
 
 ## Pipeline Architecture
 
@@ -24,3 +40,4 @@
 ## Pipeline Build
 
 ## License
+Probably MIT
