@@ -1,109 +1,166 @@
 """
-This script uses the Biopython Entrez module to query the ClinVar NCBI database.
-For a given variant, it retrieves annotation information (e.g. classification, review status, associated condition).
+This script uses the Biopython Entrez module to query the ClinVar NCBI database. 
+For a given a variant in HGVS notation, it retrieves annotation information such as:
+consensus classification, number of submissions, review status, associated condition. 
+The script outputs this information and the ClinVar record URL.
+
+Custom exceptions are raised for HGVS format errors, connection errors, missing ClinVar
+IDs, and unexpected response formats.
+
+References:
+Biopython Tutorial and Cookbook, "Accessing NCBI’s Entrez databases"
+(https://biopython.org/docs/dev/Tutorial/chapter_entrez.html)
 """
 
-
-from Bio import Entrez    #Import Entrez module from Biopython for NCBI queries
-
 import json
+from Bio import Entrez  # Import Entrez module from Biopython for NCBI queries
+
+# NCBI Entrez requires a valid email to identify the user
+Entrez.email = "naima.abdi@postgrad.manchester.ac.uk"  # Set email (required by NCBI Entrez API)
 
 
 class HGVSFormatError(Exception):
-    """Raised when the HGVS variant string is not in the correct format."""
+    """Custom exception raised when the HGVS string is not in the appropriate format."""
     pass
 
 
 class ClinVarConnectionError(Exception):
-    """Raised when unable to connect to the NCBI ClinVar API e.g. during ESearch or ESummary."""
+    """Custom exception raised when unable to connect to the NCBI ClinVar API e.g. during ESearch or ESummary."""
     pass
 
 
 class ClinVarIDNotFoundError(Exception):
-    """Raised when there is no ClinVar ID for the given variant."""
+    """Custom exception raised when there is no ClinVar ID for the given variant."""
     pass
 
 
 class ClinVarESummaryError(Exception):
-    """Raised when the ClinVar ESummary response is missing expected fields."""
+    """Custom exception raised when the ClinVar ESummary response is missing expected fields."""
     pass
 
 
-Entrez.email = "naima.abdi@postgrad.manchester.ac.uk"   #Set email (required by NCBI Entrez API)
-
-hgvs_variant = 'NM_001377265.1:c.841G>T'    #Defining the HGVS variant string to search for
-
-
-#Validate HGVS format of variant
-if not (":" in hgvs_variant and "c." in hgvs_variant):
-    raise HGVSFormatError(f"Invalid HGVS format: {hgvs_variant}. Expected e.g. 'NM_001377265.1:c.841G>T'.")
+class ClinVarFieldMissingError(Exception):
+    """Custom exception raised when an expected field is missing or malformed in the ClinVar ESummary response."""
+    pass
 
 
+def fetch_clinvar_record(hgvs_variant):
+    """
+    This function fetches a ClinVar record from the NCBI ClinVar database using the
+    Entrez API. For a variant in HGVS notation, the ClinVar record and its ESummary are
+    both returned as Python dictionaries.
 
-#Open a connection to ClinVar, search the ClinVar database for entries matching the HGVS variant
-try: 
-    handle = Entrez.esearch(db="clinvar", term=hgvs_variant)    #Opens a connection to ClinVar, using the HGVS-formatted variant 
-    record = Entrez.read(handle)                                #Entrez.read(handle) reads the search result, and pases the XML response from NCBI and converts it into Python dictionary stored in 'record'
-    handle.close()                                              #Closes the handle/connection (handle = the connection that's opened when making request to NCBI API)
+    Parameters:
+    hgvs_variant (str): A variant in HGVS notation. Must contain ":" and "c."
+    (e.g. "NM_001377265.1:c.841G>T")
 
-except Exception as e:
-    raise ClinVarConnectionError(f"Unable to connect to ClinVar during ESearch: {e}")
+    Returns:
+    dict: A Python dictionary representation of the ClinVar record and ESummary.
 
+    Raises:
+    HGVSFormatError: If the HGVS variant does not have the expected ":" and "c." format.
+    ClinVarConnectionError: If there is a NCBI ClinVar API error
+    ClinVarIDNotFoundError: If there is no ClinVar ID for the variant
+    ClinVarESummaryError: If the ClinVar ESummary response is missing expected fields
+    """
 
-#'record' is a Python dictionary with many keys
-#One of the keys for the dictionary is 'IdList'
-# Validate that ClinVar returned at least one ID for the given variant, if IdList is empty raise error indicating that variant was not found in ClinVar
-if not record.get("IdList"):
-    raise ClinVarIDNotFoundError(f"Variant {hgvs_variant} not found in ClinVar.")
+    # Validate HGVS format of variant
+    if not (":" in hgvs_variant and "c." in hgvs_variant):
+        raise HGVSFormatError(
+            f"Invalid HGVS format: {hgvs_variant}."
+            "Expected e.g. 'NM_001377265.1:c.841G>T'."
+        )
+    
 
-#If above validation passes, print the ClinVar ID
-print(record.get("IdList"))
+    # Search ClinVar for variant ClinVar ID
+    try:
+        handle = Entrez.esearch(db="clinvar", term=hgvs_variant)  # Open connection to ClinVar and query database via Entrez ESearch using the HGVS-formatted variant
+        record = Entrez.read(handle)  # Parse XML response from ESearch into a Python dictionary
+        handle.close()  # Close connection
+    except Exception as e:
+        raise ClinVarConnectionError(f"Unable to connect to ClinVar during ESearch: {e}") from e
 
+    if not record.get("IdList"):
+        raise ClinVarIDNotFoundError(f"Variant {hgvs_variant} not found in ClinVar.")
 
-#Below stores the value 'record["IdList"]' into a variable called 'cinvar_id'
-id_list = record.get("IdList")         
-clinvar_id = id_list[0]
-print(clinvar_id)              #prints the clinvar_id as a string output, because its the first and only item in the 'record["IdList"]' e.g. 578075
-
-
-
-#Open a connection to ClinVar, use esummary and ClinVar ID to get summary
-try:
-    handle = Entrez.esummary(db="clinvar", id=clinvar_id)        #Opens a connection to ClinVar, use esummary and ClinVar ID to return a summary in XML format from NCBI API
-    summary = Entrez.read(handle, validate=False)                #Entrez.read(handle) reads the summary response, parses the XML reponse into a Python object, then store this in 'summary'
-    handle.close()                                               #Closes the handle/connection
-
-except Exception as e:
-    raise ClinVarConnectionError(f"Unable to connect to ClinVar during ESummary: {e}")
-
-
-#Prints the entire 'summary'
-print(summary)                         #This prints a nested dictionary of 'summary'
-
-#Prints the entire 'summary' in a readable JSON format
-print(json.dumps(summary, indent=4))
+    clinvar_id = record["IdList"][0]
 
 
-#Acessing specific fields in the summary response
-try: 
-    gene_symbol = summary['DocumentSummarySet']['DocumentSummary'][0]['genes'][0]['symbol']                                       #prints Gene symbol
-    cdna_change = summary['DocumentSummarySet']['DocumentSummary'][0]['variation_set'][0]['cdna_change']                           #prints HGVS cDNA change
-    accession = summary['DocumentSummarySet']['DocumentSummary'][0]['accession']                                                   #prints ClinVar Accession
-    classification = summary['DocumentSummarySet']['DocumentSummary'][0]['germline_classification']['description']                 #prints the aggregate ClinVar consensus classification (e.g. "Conflicting classifications of pathogenicity"), which reflects all submitter interpretations
-    review_status = summary['DocumentSummarySet']['DocumentSummary'][0]['germline_classification']['review_status']                #prints Review status
-    condition_name = summary['DocumentSummarySet']['DocumentSummary'][0]['germline_classification']['trait_set'][0]['trait_name']  #prints Associated condition 
+    # Fetch ClinVar summary using ClinVar ID
+    try:
+        handle = Entrez.esummary(db="clinvar", id=clinvar_id)  # Open connection to ClinVar and query database via Entrez ESummary using the ClinVar ID
+        summary = Entrez.read(handle, validate=False)  # Parse XML response from ESummary into a Python dictionary
+        handle.close()  # Close connection
+    except Exception as e:
+        raise ClinVarConnectionError(f"Unable to connect to ClinVar during ESummary: {e}") from e
 
-except Exception as e:
-    raise ClinVarESummaryError (f"Missing expected field in ClinVar ESummary response: {e}")
+    
+    # Extract key fields from ClinVar ESummary
+    doc = summary["DocumentSummarySet"]["DocumentSummary"][0]
+
+    try:
+        gene_symbol = doc["genes"][0]["symbol"]
+    except (KeyError, IndexError, TypeError):
+        print("Gene symbol not found")
+        gene_symbol = "N/A"
+    
+    try:
+        cdna_change = doc["variation_set"][0]["cdna_change"]
+    except (KeyError, IndexError, TypeError):
+        print("cDNA change not found")
+        cdna_change = "N/A"
+
+    try:
+        accession = doc["accession"]
+    except (KeyError, IndexError, TypeError):
+        print("ClinVar accession not found")
+        accession = "N/A"
+
+    try:
+        classification = doc["germline_classification"]["description"]
+    except (KeyError, IndexError, TypeError):
+        print("ClinVar consensus classification not found")
+        classification = "N/A"
+    
+    try:
+        scv_list = doc["supporting_submissions"]["scv"]
+        num_submissions = len(scv_list)
+    except (KeyError, IndexError, TypeError):
+        print("Number of submitted records not found")
+        num_submissions = "N/A"
+
+    try:
+        review_status = doc["germline_classification"]["review_status"]
+    except (KeyError, IndexError, TypeError):
+        print("Review status not found")
+        review_status = "N/A"
+
+    try:
+        condition_name = doc["germline_classification"]["trait_set"][0]["trait_name"]
+    except (KeyError, IndexError, TypeError):
+        print("Associated condition not found")
+        condition_name = "N/A"
+    
+
+    # Fetch ClinVar URL
+    clinvar_url = f"https://www.ncbi.nlm.nih.gov/clinvar/variation/{clinvar_id}"
 
 
+    return {
+        "Gene symbol": gene_symbol,  
+        "cDNA change": cdna_change,
+        "ClinVar variant ID": clinvar_id,
+        "ClinVar accession": accession,
+        "ClinVar consensus classification": classification,
+        "Number of submitted records": num_submissions,
+        "Review status": review_status,
+        "Associated condition": condition_name,
+        "ClinVar record URL": clinvar_url,
+    }
 
-print("Gene symbol:", gene_symbol)
-print("cDNA chnage:", cdna_change)
-print("ClinVar Accession:", accession)
-print("ClinVar consensus classification:", classification)
-print("Review status:", review_status)
-print("Associated condition:", condition_name)
+if __name__ == "__main__":
 
-
+    hgvs_variant = "NM_001377265.1:c.841G>T"
+    clinvar_output= fetch_clinvar_record(hgvs_variant)
+    print(json.dumps(clinvar_output, indent=4))
 
