@@ -1,113 +1,68 @@
 """
-This module performs a database search in the 'variants' table using SQLAlchemy ORM.
+This module performs a database search using SQLAlchemy ORM.
 
-It defines a Variant model class, connects to the database, and allows
-the user to search for variants based on patient name, variant ID, or other
-fields such as gene or classification.
-
-Example:
-Run this script directly and follow the prompts to search the database:
-
-    $ python variant_query.py
+Functions:
+    database_list: Return list of database objects matching the search criteria.
+        Example: if search_type is 'variant', return list of patients with that variant.
 
 """
 
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, declarative_base
+from Parkinsons_annotator.modules.models import Variant, Patient, Connector
 
-# create base class for declarative mapping
-Base = declarative_base()
 
-# define mapping class for the variant table in database
-class Variant(Base):
+def database_list(search_type=None, search_value=None):
     """
-    ORM mapping for the 'variants' table in the database.
-
-    Attributes:
-        id (int): Primary key for the variant record.
-        name (str): Patient name associated with the variant.
-        chromosome (int): Chromosome on which the variant is located.
-        pos (int): Position of the variant on the chromosome.
-        ref (str): Reference allele.
-        alt (str): Alternate allele.
-        classification (str): Clinvar consensus classification of the variant.
-        gene (str): Gene symbol associated with the variant.
-    """
-       
-    __tablename__ = 'variants'
-    id = Column(Integer, primary_key=True) # primary key column
-    name = Column(String)  # patient name
-    chromosome = Column(Integer)  # chromosome number
-    pos = Column(Integer)  # position on chromosome
-    ref = Column(String)  # reference allele
-    alt = Column(String)  # alternate allele
-    classification = Column(String)  # clinvar consensus classification
-    gene = Column(String)  # gene symbol
-
-    def __repr__(self):
-        """
-        Return a concise, human-readable string representation of a Variant.
-        Returns:
-        str: Formatted string with key variant information.
-            """
-        return (f"<Variant(name={self.name}, chr={self.chromosome}, "
-                f"pos={self.pos}, ref={self.ref}, alt={self.alt})>")
-
-# function to perform searches
-def search_variants(session, patient_name=None, variant_id=None, gene=None):
-    """
-    Search for variants in the database based on provided criteria.
+    Search the 'variants' table based on the 'search_type' the user selects from the Flask dropdown menu
+    and the 'search_value' which is the text entered by the user.
 
     Args:
-        session: SQLAlchemy session for database interaction.
-        patient_name (str, optional): Patient name to filter by.
-        variant_id (int, optional): Variant ID to filter by.
-        gene (str, optional): Gene symbol to filter by.
+        search_type (str): Type of search — should match a Variant attribute
+                           e.g., 'name', 'id', 'gene', 'classification'.
+        search_value (str): Value to search for.
 
     Returns:
-        list: List of Variant objects matching the search criteria.
+        list[Variant]: List of Variant objects matching the query.
     """
-    query = session.query(Variant)
+    # Create database engine
+    engine = create_engine('sqlite:///parkinsons_data.db')  # database URL here
 
-    # create SQL queries using SQLAlchemy ORM filters based on provided parameters
-    if patient_name:
-        query = query.filter(Variant.name.ilike(f"%{patient_name}%"))
-    if variant_id:
-        query = query.filter(Variant.id == variant_id)
-    if gene:
-        query = query.filter(Variant.gene.ilike(f"%{gene}%"))
-
-    return query.all()
-
-if __name__ == "__main__":
-
-    # create database engine
-    engine = create_engine('sqlite:///parkinsons_data.db') # add database URL here
-
-    # create session for querying the database
+    # Create session for querying the database
     Session = sessionmaker(bind=engine)
     db_session = Session()
 
-    # welcome message to user that introduces input options
-    print("Welcome to the Variant Database Search!")
-    print("You can currently search for variants by patient name, variant ID, or gene symbol.")
 
-    # get user input for search criteria
-    name_input = input("Enter patient name to search (or press Enter to skip): ").strip() or None
-    id_input = input("Enter variant ID (or leave blank): ").strip()
-    variant_id_input = int(id_input) if id_input else None
-    gene_input = input("Enter gene symbol to search (or press Enter to skip): ").strip() or None
+    # Based on search type, perform SQL query to find needed info
+    try:
+        if search_type == 'variant':
+            # If input is in HGVS format:
+            if search_value.startswith(("nm", "nc")):
+                # Return list of patients with matching hgvs id
+                search_results = (db_session.query(Patient.name)
+                    .join(Connector, Patient.name == Connector.patient_name)
+                    .join(Variant, Variant.id == Connector.variant_id)
+                    .filter(Variant.hgvs == search_value)
+                    .all()
+                )
+            else:
+                # Placeholder for other variant-related searches
+                # all non-HGVS names will be in genomic notation as input has already been validated in the search form
+                # If input is in genomic notation: convert to hgvs, return all patients with that variant, and variant info table and clinvar annotation
+                print("Variant search value does not appear to be an HGVS ID.")
+                return []
 
-    results = search_variants(db_session,
-                              patient_name=name_input, 
-                              variant_id=variant_id_input,
-                              gene=gene_input)
-    if results:
-        print(f"Found {len(results)} matching variants:")
-        for variant in results:
-            print(variant)
-    else:
-        print("No matching variants found.")
+        else:
+            print(f"Search type '{search_type}' not implemented yet.")
+            # if search_type == 'gene_symbol': return all variants for that gene, with the patient name and pathogencity
+            # if search_type == 'patient': return all variants for that patient, with the pathogencity
+            # if search_type == 'classification': return all variants with that classification, with the patient name and pathogencity
 
-    # close session
-    db_session.close()
+            return []
+
+    finally:
+        db_session.close()
+
+
+ ### take variant info and return clinvar accession ID for that variant
+ ### take clinvar accession ID and pass to clinvar API to get clinvar summary, and return patients
