@@ -28,19 +28,30 @@ def generatetable():
     # creating variants table to input data into.
     # The first word is the name of the column, the second is the data type. Datatype explained above.
     cur.execute("""
-            CREATE TABLE IF NOT EXISTS variants (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,   
-                name TEXT NOT NULL,                     
+            CREATE TABLE IF NOT EXISTS patients (  
+                name TEXT NOT NULL PRIMARY KEY                    
+                )
+            """)
+    cur.execute("""
+            CREATE TABLE IF NOT EXISTS variants (                    
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 chromosome INTEGER NOT NULL,            
                 pos INTEGER NOT NULL,                   
                 ref CHAR(1) NOT NULL,                   
                 alt CHAR(1) NOT NULL,
                 hgvs TEXT,                              
                 classification TEXT,
-                gene TEXT
+                gene_symbol TEXT,
+                clinvar_id TEXT
                 )
             """)
-
+    cur.execute("""
+            CREATE TABLE IF NOT EXISTS patient_variant (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                patient_name TEXT NOT NULL,
+                variant_id INTEGER NOT NULL
+                )
+            """)
     # save the changes made aka you commit to those changes
     conn.commit()
 
@@ -64,25 +75,46 @@ conn = sqlite3.connect("parkinsons_data.db")
 
 # creates  a cursor object to be able to execute SQL commnds
 cur = conn.cursor()
+
 # adding testing data
-patients = (
-    ("patientA", 4, 89822305, "C", "G", "pretendhgvs1", "pathogenic", "fakegene1"),
-    ("patientA", 17, 45983420, "G", "T", "pretenthgvs2", "benign", "fakegene2"),
-    ("patient", 17, 2748693, "C", "A", "pretendhgvs3", "VUS", "fakegene3")
-)
+patient_data = [
+    ("patient1",),
+    ("patient2",),
+    ("patient3",)
+    ]
+variant_data = [
+    (15, 38920, "A", "T", "NM_022089.4:c.1544C>T"),
+    (7, 12345, "G", "C", "NM_123456.7:c.876G>C")
+]
+
+combined = [
+    ("patient1", 1),
+    ("patient2", 1),
+    ("patient3", 2)
+]
+
 
 # to prevent the testing data to be input everytime this code is run. Change "stop" to "go" to fill in data
 testing = "go"
 if testing == "go":
     cur.executemany(
-     "INSERT INTO variants (name, chromosome, pos, ref, alt, hgvs, classification, gene) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
-     patients)
-
+     "INSERT INTO variants (chromosome, pos, ref, alt, hgvs) VALUES (?, ?, ?, ?, ?)", 
+     variant_data)
+    cur.executemany(
+        "INSERT INTO patients (name) VALUES (?)", 
+        patient_data)
+    cur.executemany(
+        "INSERT INTO patient_variant (patient_name, variant_id) VALUES (?, ?)", 
+        combined)
 # save the changes made
 conn.commit()
 
 # testing table
-cur.execute("SELECT * FROM variants")
+cur.execute(
+    "SELECT * " \
+    "FROM patients " \
+    "JOIN patient_variant ON patients.name = patient_variant.patient_name " \
+    "JOIN variants ON patient_variant.variant_id = variants.id")
 rows = cur.fetchall()
 for row in rows:
     print(row)
