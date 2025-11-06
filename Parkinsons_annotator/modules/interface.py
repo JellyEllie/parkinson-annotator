@@ -63,6 +63,24 @@ def search():
     # Return a response to the interface. This is also currently unecessary. To remove later
     return jsonify(query)
 
+# Function to store the uploaded file
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    # Check if a file was uploaded
+    if 'file' not in request.files:
+        return "No file part in the request", 400
+
+    file = request.files['file']  # Get file from form
+
+    if file.filename == '':
+        return "No file selected", 400
+
+    # Save the file
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(filepath)
+
+    return f"File '{file.filename}' uploaded and stored successfully!"
+    print( file.filename )
 
 # Runs the functions that are needed to start everything
 if __name__ == "__main__":
