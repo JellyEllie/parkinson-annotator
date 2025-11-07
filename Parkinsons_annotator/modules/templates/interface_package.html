@@ -143,18 +143,17 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
 
       const resukts = await response.json(); // Once info is sent, it waits for a response
 
-      // Clear previous results
-      resultsList.innerHTML = `<li>${results}</li>`;
-
       // Display new results. If statement loops through results to display them on seperate lines
-      if (results.length > 0) {
-        results.forEach(item => {
+      if (data.results && data.results.length > 0) {
+        data.results.forEach(item => {
           const li = document.createElement("li");
           li.textContent = item;
           resultsList.appendChild(li);
         });
-      } else if (query.length > 0) {
-        resultsList.innerHTML = "<li>No matches found</li>"; // Returns text if no matches found
+      } else {
+        const li = document.createElement("Li");
+        li.textContent = data.message || "No results found";
+        resultsList.appendChild(Li);
       }
     });
   </script>
