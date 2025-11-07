@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Parkinsons Annotator</title>
+
+  <style>
+    h2 {
+      color: darkred;
+      text-align: center;
+      font-size: 40px;
+      font-family: 'Georgia', serif;
+    }
+
+    h4 {
+      color: black;
+      text-align: center;
+      font-size: 30px;
+      font-family: 'Georgia', serif;
+    }
+
+    form {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    input[type="text"] {
+      width: 300px;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 25px 0 0 25px;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 0 25px 25px 0;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    ul#results {
+      list-style-type: none;
+      padding: 0;
+      text-align: center;
+      margin-top: 30px;
+      font-family: Georgia, serif;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Welcome To the Dataset</h2>
+  <h4>Please search the database here</h4>
+
+  <form id="search-form">
+    <select id="category" required>
+      <option value="" disabled selected>Select category</option>
+      <option value="variant">Variant</option>
+      <option value="gene_symbol">Gene Symbol</option>
+      <option value="patient_name">Patient Name</option>
+      <option value="classification">Classification</option>
+    </select>
+
+    <input type="text" id="search-box" placeholder="Search..." required>
+    <button type="submit">Search</button>
+  </form>
+
+  <ul id="results"></ul>
+
+  <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" id="fileInput" required>
+    <button type="submit">Upload</button>
+  </form>
+
+  <script>
+    // Graceful shutdown
+    window.addEventListener("beforeunload", function () {
+      navigator.sendBeacon("/shutdown");
+    });
+
+    // Handle upload
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('file', document.getElementById('fileInput').files[0]);
+
+      const res = await fetch('/upload', { method: 'POST', body: formData });
+      alert(res.ok ? 'File uploaded successfully!' : 'Upload failed.');
+    });
+
+    // Handle search
+    const form = document.getElementById("search-form");
+    const searchBox = document.getElementById("search-box");
+    const category = document.getElementById("category");
+    const resultsList = document.getElementById("results");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const query = searchBox.value.trim();
+      const selectedCategory = category.value;
+
+      const response = await fetch("/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, category: selectedCategory }),
+      });
+
+      const data = await response.json();
+      console.log("Received from Flask:", data);
+
+      resultsList.innerHTML = "";
+
+      if (data.message) {
+        resultsList.innerHTML = `<li>${data.message}</li>`;
+        return;
+      }
+
+      const results = data.results;
+      if (results && results.length > 0) {
+        results.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          resultsList.appendChild(li);
+        });
+      } else {
+        resultsList.innerHTML = "<li>No matches found</li>";
+      }
+    });
+  </script>
+</body>
+</html>
