@@ -14,7 +14,12 @@ import requests
 
 
 class VariantDescriptionError(Exception):
-    """Custom exception raised when the variant descrption string is not in the appropriate format."""
+    """Custom exception raised when the variant description string is not in the appropriate format."""
+    pass
+
+
+class VariantValidatorResponseError(Exception):
+    """Custom exception raised when unable to connect to VariantValidator API or response lacks expected variant data."""
     pass
 
 
@@ -30,11 +35,13 @@ def fetch_variant_validator(variant_description):
     dict: A JSON response from the API.
 
     Raises:
-    VariantDescriptionError: If the variant descrption does not have the expected ": format.
+    VariantDescriptionError: If the variant description does not have the expected ": format.
     requests.exceptions.RequestException: If there is an API error.
     """
 
+
     # Validate VCF-style genomic format of variant
+    # Expected format: CHR:POSITION:REF:ALT
     variant_fields = variant_description.split(":")  # Splits the VCF-style format, separated by ":", and returns a list
     if len(variant_fields) != 4:
         raise VariantDescriptionError(
@@ -43,54 +50,57 @@ def fetch_variant_validator(variant_description):
         )
     
 
-    # Specifying genome build and transcript
+    # Specifying API parameters: genome build and transcript
     genome_build = "GRCh38"
     select_transcripts = "mane_select"
 
 
-    # Construct the API request URL
+    # Construct VariantValidator API request URL
     url = f"https://rest.variantvalidator.org/VariantValidator/variantvalidator/{genome_build}/{variant_description}/{select_transcripts}"
 
-    #Perform GET request to VariantValidator
+
+    # Perform GET request to VariantValidator API
     try:
         r = requests.get(url)
         r.raise_for_status()  
     except requests.exceptions.RequestException as e:
-        raise
-
+        raise VariantValidatorResponseError(f"Unable to connect to VariantValidator API: {e}") from e
 
 
     # VariantValidator response stored
-    try:
-        summary = r.json()
-    except ValueError as e:
-        raise SystemExit(f"Error parsing VariantValidator response: {e}")
-    
+    summary = r.json()
 
 
-    # Find the main variant record (i.e. the first key in dictionary 'summary)
+    # Identify the main variant record key
+    # API response includes metadata keys ('flag', 'metadata'), to skip
     for key in summary.keys():
         if key not in ("flag", "metadata"):
-            main_key = key
+            first_key = key
             break
+    
+    if not first_key:
+        raise VariantValidatorResponseError(
+            "No variant data found in VariantValidator response."
+        )
 
-    record = summary[main_key]
+    hgvs_record = summary[first_key]  # Stores main HGVS variant record
 
-    # Extract 3 key fields
+
+    # Extract key fields from VariantValidator response
     try:
-        hgvs_mane_select = main_key
+        hgvs_mane_select = first_key
     except(KeyError, IndexError, TypeError):
-        print("HGVS Mane Select nomenclature not found")
+        print("HGVS MANE Select nomenclature not found")
         hgvs_mane_select = "N/A"
 
     try:
-        hgnc_id = record["gene_ids"].get("hgnc_id")
+        hgnc_id = hgvs_record["gene_ids"]["hgnc_id"]
     except(KeyError, IndexError, TypeError):
         print("HGNC ID not found")
         hgnc_id = "N/A"
     
     try:
-        omim_id = record["gene_ids"].get("omim_id")
+        omim_id = hgvs_record["gene_ids"]["omim_id"]
     except(KeyError, IndexError, TypeError):
         print("OMIM ID not found")
         omim_id = "N/A"
@@ -99,7 +109,7 @@ def fetch_variant_validator(variant_description):
     return {
         "HGVS nomenclature": hgvs_mane_select,
         "HGNC ID": hgnc_id,
-        "OMIM ID": omim_id[0]
+        "OMIM ID": omim_id[0] if isinstance(omim_id, list) and omim_id else "N/A", # OMIM ID is a list, returns first item if OMIM list is present 
     }
 
 
