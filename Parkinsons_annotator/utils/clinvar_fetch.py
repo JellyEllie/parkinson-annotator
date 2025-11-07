@@ -14,9 +14,13 @@ Biopython Tutorial and Cookbook, "Accessing NCBI’s Entrez databases"
 
 import json
 from Bio import Entrez  # Import Entrez module from Biopython for NCBI queries
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Load environment variables from .env file
 
 # NCBI Entrez requires a valid email to identify the user
-Entrez.email = "naima.abdi@postgrad.manchester.ac.uk"  # Set email (required by NCBI Entrez API)
+Entrez.email = os.getenv("ENTREZ_EMAIL")  # Set email (required by NCBI Entrez API)
 
 
 class HGVSFormatError(Exception):
