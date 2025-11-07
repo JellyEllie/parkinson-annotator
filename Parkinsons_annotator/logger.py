@@ -14,7 +14,7 @@ from pathlib import Path
 logger = logging.getLogger("parkinsons_annotator_logger")
 logger.setLevel(logging.DEBUG)
 
-#set formatting for loggers
+# set formatting for loggers
 formatter = logging.Formatter(
     "%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M"
@@ -30,7 +30,7 @@ log_dir.mkdir(parents=True, exist_ok=True)
 
 # create handlers
 console_handler = logging.StreamHandler() #outputs logs to console
-console_handler.setLevel(logging.INFO)
+console_handler.setLevel(logging.DEBUG)
 console_handler.setFormatter(formatter)
 
 
