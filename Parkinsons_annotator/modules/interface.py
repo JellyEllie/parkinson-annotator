@@ -3,6 +3,8 @@ This script creates the user interface and generates vriables from the search an
 The visuals and interactive elements of the interface are stored in a html file
 '''
 
+from .database_search import database_list
+
 # Flask is to module which is used to create the interface. render_template allows for more complex design,
 # request allows for pulling data input into the interfce, jsonify outputs the data into the interface 
 from flask import Flask, render_template, request, jsonify
@@ -58,8 +60,8 @@ def search():
     data = request.get_json()
 
     # Query is defined in the html file, tring converted to lowercase, makes for a cae insensetive search
-    search_value = data.get('query', '').lower()  # Empty string returned if nothing entered
-    search_type = data.get('category',''). lower()
+    search_value = data.get('query', '').strip().lower()  # Empty string returned if nothing entered
+    search_type = data.get('category','').lower()
 
     # Print used to check the input works as it currently doesn't have any results to return
     print(f"User searched for: {search_value}, category: {search_type}")
@@ -73,7 +75,24 @@ def search():
             pass
         else:
             return jsonify("Invalid data type entered")
-    
+    try:
+        # --- Call your database search function ---
+        results = database_list(search_type=search_type, search_value=search_value)
+        print("Query returned: ", results)
+
+        # --- Format and send back results ---
+        return jsonify({
+            "search_type": search_type,
+            "search_value": search_value,
+            "results": results,
+            "message": f"Found {len(results)} result(s)" if results else "No results found"
+    }), 200
+
+    except Exception as e:
+        print(f"Error during search: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
     if search_type == "classification":
         if ("pathogenic" or "benign" or "likely benign" or "likely pathogenic" or "uncertain significance" or "other"):
             pass

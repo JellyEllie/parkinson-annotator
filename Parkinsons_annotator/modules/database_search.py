@@ -36,6 +36,15 @@ def database_list(search_type=None, search_value=None):
     Session = sessionmaker(bind=engine)
     db_session = Session()
 
+    # Check it's fnding the database
+    db_path = 'Parkinsons_annotator/parkinson-annotator/parkinsons_data.db'
+    print(f"Looking for database at: {os.path.abspath(db_path)}")
+    print(f"Exists? {os.path.exists(db_path)}")
+
+    # Create session for querying the database
+    Session = sessionmaker(bind=engine)
+    db_session = Session()
+
 
     # Based on search type, perform SQL query to return list from database
     try:
