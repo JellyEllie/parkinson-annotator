@@ -1,4 +1,6 @@
 biopython==1.86
-sqlalchemy==2.0.44
-requests==2.31.0
 dotenv==0.9.9
+flask==3.1.2
+pytest==8.4.2
+requests==2.31.0
+sqlalchemy==2.0.44
