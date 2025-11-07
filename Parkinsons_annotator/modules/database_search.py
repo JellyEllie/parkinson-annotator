@@ -11,6 +11,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from Parkinsons_annotator.modules.models import Variant, Patient, Connector
 from Parkinsons_annotator.utils.parse_genomic_notation import parse_genomic_notation
+from pathlib import Path
 
 
 def database_list(search_type=None, search_value=None):
@@ -29,8 +30,17 @@ def database_list(search_type=None, search_value=None):
     Returns:
         list: List of query results (e.g., patient names).
     """
+
     # Create database engine
-    engine = create_engine('sqlite:///parkinsons_data.db')  # database URL here
+    DB_PATH = Path(__file__).resolve().parents[1] / "parkinsons_data.db"
+
+    if not DB_PATH.exists():
+        print(f"❌ Database not found at: {DB_PATH}")
+        return []
+
+
+    engine = create_engine(f"sqlite:///{DB_PATH}")
+    print(f"Connecting to database at: {DB_PATH}")
 
     # Create session for querying the database
     Session = sessionmaker(bind=engine)
@@ -47,7 +57,7 @@ def database_list(search_type=None, search_value=None):
                     db_session.query(Patient.name)
                     .join(Connector, Patient.name == Connector.patient_name)
                     .join(Variant, Variant.id == Connector.variant_id)
-                    .filter(Variant.hgvs == search_value)
+                    .filter(Variant.hgvs.ilike(search_value))
                     .all()
                 )
                 return [r[0] for r in search_results]

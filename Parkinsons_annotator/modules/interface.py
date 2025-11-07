@@ -6,6 +6,7 @@ The visuals and interactive elements of the interface are stored in a html file
 # Flask is to module which is used to create the interface. render_template allows for more complex design,
 # request allows for pulling data input into the interfce, jsonify outputs the data into the interface 
 from flask import Flask, render_template, request, jsonify
+from Parkinsons_annotator.modules.database_search import database_list
 
 # Allows the interface to be opened in web browser from the script being run
 import webbrowser
@@ -49,41 +50,24 @@ def open_browser():
 
 
 # Creates the route to be able to pull the info from the search bar in the interface
-@app.route('/search', methods=['POST'])
-
 # Function to work with the search query to get the input from the search bar
+@app.route('/search', methods=['POST'])
 def search():
-    '''This function pulls the query from the database, converts it to lowercase, peints the search to the command line, and returns it to the interface'''
-    # Parses the json bodt from Flask
+    """Handle search queries from the interface."""
     data = request.get_json()
+    search_value = data.get('query', '').lower().strip()
+    search_type = data.get('category', '').lower().strip()
 
-    # Query is defined in the html file, tring converted to lowercase, makes for a cae insensetive search
-    search_value = data.get('query', '').lower()  # Empty string returned if nothing entered
-    search_type = data.get('category',''). lower()
-
-    # Print used to check the input works as it currently doesn't have any results to return
     print(f"User searched for: {search_value}, category: {search_type}")
-   
-    # Check that search_value matches expected input for search_type
-    if search_type == "variant":
-            # Validate HGVS format of variant
-        if (":" in search_value and "c." in search_value):
-            pass
-        elif (":" in search_type):
-            pass
-        else:
-            return jsonify("Invalid data type entered")
-    
-    if search_type == "classification":
-        if ("pathogenic" or "benign" or "likely benign" or "likely pathogenic" or "uncertain significance" or "other"):
-            pass
-        else:
-            return jsonify("Invalid classification")
-  
-    results = [f"Result for '{search_value}' in '{search_type}' category"]
 
-    # Return a response to the interface. This is also currently unecessary. To remove later
-    return jsonify(results)
+    # Call the database search function
+    results = database_list(search_type=search_type, search_value=search_value)
+
+    if not results:
+        return jsonify({"message": "No results found"}), 404
+
+    return jsonify({"results": results})
+
 
 
 # Function to store the uploaded file
