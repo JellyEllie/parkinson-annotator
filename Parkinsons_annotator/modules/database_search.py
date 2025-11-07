@@ -7,7 +7,7 @@ Functions:
 
 """
 
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from Parkinsons_annotator.modules.models import Variant, Patient, Connector
 from Parkinsons_annotator.utils.parse_genomic_notation import parse_genomic_notation
