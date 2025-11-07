@@ -1,2 +1,4 @@
 biopython==1.86
 sqlalchemy==2.0.44
+requests==2.31.0
+dotenv==0.9.9
