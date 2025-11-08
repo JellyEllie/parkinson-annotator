@@ -1,5 +1,8 @@
 """
-This module performs a database search using SQLAlchemy ORM.
+Performs a database search using SQLAlchemy ORM.
+
+This module queries the database for patients and genetic variants, and returns results dependent on the
+search type performed by the user.
 
 Functions:
     database_list: Return list of database objects matching the search criteria.
@@ -12,7 +15,6 @@ from sqlalchemy.orm import sessionmaker
 from Parkinsons_annotator.modules.models import Variant, Patient, Connector
 from Parkinsons_annotator.utils.parse_genomic_notation import parse_genomic_notation
 from pathlib import Path
-from Parkinsons_annotator.logger import logger
 
 
 def database_list(search_type=None, search_value=None):
