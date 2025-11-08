@@ -8,18 +8,19 @@ Functions:
 """
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker
 from Parkinsons_annotator.modules.models import Variant, Patient, Connector
 from Parkinsons_annotator.utils.parse_genomic_notation import parse_genomic_notation
 from pathlib import Path
+from Parkinsons_annotator.logger import logger
 
 
 def database_list(search_type=None, search_value=None):
     """
-    Search the database based on user-specified type and value.
+    Search the database using SQL queries based on user input into Flask search form.
 
     Args:
-        search_type (str): Type of search specified by the user.
+        search_type (str): Type of search specified by the user. Selected in Flask dropdrown.
             Determines what is returned:
                 - 'variant': List of patients with matching variant.
                 - 'gene_symbol': List of variants for that gene.
