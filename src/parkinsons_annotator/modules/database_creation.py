@@ -14,7 +14,7 @@ Other database parameters:
 import sqlite3
 from pathlib import Path
 
-def generatetable():
+def create_db_and_tables(db_name):
     """ Create the SQLite database and its table schemas for patients, variants, and their relationships."""
 
     # creates the database. this function is also used to open the database if it already exists
@@ -69,11 +69,11 @@ def generatetable():
     conn.close() # closing the connection to the database
 
 # When up and running, won't be needed as wil be called in a different script
-# Main execution
-db_path = Path(__file__).resolve().parents[1] / "parkinsons_data.db"
+# # Main execution
+# db_path = Path(__file__).resolve().parents[1] / "parkinsons_data.db"
 
-if not db_path.exists():
-    generatetable()
+# if not db_path.exists():
+#     generatetable()
 
 
 # # opens link to the database, the same as seen in the function

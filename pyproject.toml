@@ -1,0 +1,36 @@
+[project]
+name = "parkinsons-annotator"
+version = "0.1.0"
+description = "A web-based app for storing and querying variant data, returning the ClinVar annotation for variants."
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3.12"
+]
+dependencies = [
+    "flask",
+    "sqlalchemy",
+    "biopython"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "poetry"
+]
+
+# This creates a runnable CLI command
+[project.scripts]
+parkinsons-annotator = "parkinsons_annotator.main:main"
+
+[project.urls]
+Homepage = "https://github.com/JellyEllie/parkinson-annotator.git"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

@@ -6,7 +6,7 @@ The visuals and interactive elements of the interface are stored in a html file
 # Flask is to module which is used to create the interface. render_template allows for more complex design,
 # request allows for pulling data input into the interfce, jsonify outputs the data into the interface 
 from flask import Flask, render_template, request, jsonify
-from Parkinsons_annotator.modules.database_search import database_list
+from parkinsons_annotator.modules.database_search import database_list
 
 # Allows the interface to be opened in web browser from the script being run
 import webbrowser
@@ -101,6 +101,10 @@ if __name__ == "__main__":
     threading.Timer(1, open_browser).start()    # Opens the interface, several things happen at once for this to work
     app.run(debug=True, use_reloader=False)     # Prevents two interfaces from opening
 
+def start_flask():
+    '''Function to start the Flask server, used when called from main program'''
+    threading.Timer(1, open_browser).start()    # Opens the interface, several things happen at once for this to work
+    app.run(debug=True, use_reloader=False)     # Prevents two interfaces from opening
 
   # decorator to route URL 
 #@app.route('/help') 

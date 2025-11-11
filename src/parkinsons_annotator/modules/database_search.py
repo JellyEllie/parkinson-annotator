@@ -9,8 +9,8 @@ Functions:
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from Parkinsons_annotator.modules.models import Variant, Patient, Connector
-from Parkinsons_annotator.utils.parse_genomic_notation import parse_genomic_notation
+from parkinsons_annotator.modules.models import Variant, Patient, Connector
+from parkinsons_annotator.utils.parse_genomic_notation import parse_genomic_notation
 from pathlib import Path
 
 
