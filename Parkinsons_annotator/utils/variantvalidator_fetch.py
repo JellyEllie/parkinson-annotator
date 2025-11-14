@@ -1,8 +1,8 @@
 """
-This script fetches HGVS nomenclature using the VariantValidator REST API.
+This script fetches variant information using the VariantValidator REST API.
 For a given variant in the VCF-style genomic format (e.g "17:45983420:G:T"),
-it returns the HGVS-formatted nomenclature for the MANE Select transcript 
-(e.g. "NM_001377265.1:c.841G>T").
+the script returns: the HGVS transcript notation for the MANE Select transcript 
+(e.g. "NM_001377265.1:c.841G>T"), and the corresponding HGNC and OMIM IDs.
 
 References:
 VariantValidator REST API documentation
@@ -11,6 +11,7 @@ VariantValidator REST API documentation
 
 import json
 import requests
+from Parkinsons_annotator.logger import logger
 
 
 class VariantDescriptionError(Exception):
@@ -25,18 +26,19 @@ class VariantValidatorResponseError(Exception):
 
 def fetch_variant_validator(variant_description):
     """
-    This function queries the VariantValidator API to obtain HGVS nomenclature for a genomic 
-    variant, using genome build GRCh38 and the MANE Select transcript.
+    This function queries the VariantValidator API to obtain HGVS nomenclature, HGNC ID and OMIM ID
+    for a genomic variant, using genome build GRCh38 and the MANE Select transcript.
 
     Parameters:
-    variant_description (str): A variant in the VCF-style genomic format (e.g. "17:45983420:G:T").
+    variant_description (str): A variant in the VCF-style genomic format CHROM:POSITION:REF:ALT (e.g. "17:45983420:G:T").
  
     Returns:
-    dict: A JSON response from the API.
+    dict: A JSON response from the API containng: HGVS nomenclature, HGNC ID and OMIM ID
 
     Raises:
-    VariantDescriptionError: If the variant description does not have the expected ": format.
+    VariantDescriptionError: If the variant description does not have the expected format and values.
     requests.exceptions.RequestException: If there is an API error.
+    VariantValidatorResponseError: If the VariantValidator API connection failed or API response is invalid.
     """
 
     # Ensure input variant is a string
@@ -93,8 +95,8 @@ def fetch_variant_validator(variant_description):
 
     # Perform GET request to VariantValidator API
     try:
-        r = requests.get(url, timeout=15)
-        r.raise_for_status() 
+        r = requests.get(url, timeout=15)  
+        r.raise_for_status()
     except requests.exceptions.RequestException as e:
         raise VariantValidatorResponseError(f"Unable to connect to VariantValidator API: {e}") from e
 
