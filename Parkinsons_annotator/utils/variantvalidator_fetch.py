@@ -41,11 +41,13 @@ def fetch_variant_validator(variant_description):
 
     # Ensure input variant is a string
     if not isinstance(variant_description, str):
-        raise VariantDescriptionError("Variant description must be a string.")
+        raise VariantDescriptionError(
+            "Variant description must be a string."
+        )
 
 
     # Validate VCF-style genomic format of variant
-    # Expected format: CHR:POSITION:REF:ALT
+    # Expected format: CHROM:POSITION:REF:ALT
     variant_fields = variant_description.split(":")  # Splits the VCF-style format, separated by ":", and returns a list
     if len(variant_fields) != 4:
         raise VariantDescriptionError(
@@ -53,6 +55,32 @@ def fetch_variant_validator(variant_description):
             "Expected 4 colon-separated fields, e.g. '17:45983420:G:T'."
         )
     
+
+    # Validate that CHROM should be 1-22, X or Y
+    chrom, position, ref, alt = variant_fields
+    
+    valid_chromosomes = ["X", "Y"] + [str(i) for i in range(1, 23)]
+    if chrom not in valid_chromosomes:
+        raise VariantDescriptionError(
+            f"Invalid chromosome value: '{chrom}'. "
+             "Expected 1-22, X or Y."
+        )
+    
+    # Validate that POSITION should be digits only
+    if not position.isdigit():
+        raise VariantDescriptionError(
+            f"Invalid genomic position: '{position}'. "
+            "Position must be numeric."
+        )
+    
+    # Validate that REF and ALT must be A, C, G or T
+    valid_bases = ["A", "C", "G", "T"]
+    if ref not in valid_bases or alt not in valid_bases:
+        raise VariantDescriptionError(
+            f"Invalid base(s): '{ref}>{alt}'. "
+            "Reference and alternate bases must both be uppercase nucleotide letters A, C, G or T."
+        )
+
 
     # Specifying API parameters: genome build and transcript
     genome_build = "GRCh38"
@@ -65,26 +93,30 @@ def fetch_variant_validator(variant_description):
 
     # Perform GET request to VariantValidator API
     try:
-        r = requests.get(url)
-        r.raise_for_status()  
+        r = requests.get(url, timeout=15)
+        r.raise_for_status() 
     except requests.exceptions.RequestException as e:
         raise VariantValidatorResponseError(f"Unable to connect to VariantValidator API: {e}") from e
 
 
     # VariantValidator response stored
-    summary = r.json()
+    try:
+        summary = r.json()
+    except ValueError as e:
+        raise VariantValidatorResponseError(
+            f"Invalid JSON response from VariantValidator: {e}") from e
 
 
-    # Identify the main variant record key
-    # API response includes metadata keys ('flag', 'metadata'), to skip
+    # Identify the first key in the JSON response that corresponds with the HGVS transcript
+    first_key = None
     for key in summary.keys():
-        if key not in ("flag", "metadata"):
+        if ":c." in key:
             first_key = key
             break
-  
+
     if not first_key:
         raise VariantValidatorResponseError(
-            "No variant data found in VariantValidator response."
+            "VariantValidator returned no valid HGVS transcript notation."
         )
 
     hgvs_record = summary[first_key]  # Stores main HGVS variant record
@@ -113,7 +145,7 @@ def fetch_variant_validator(variant_description):
     return {
         "HGVS nomenclature": hgvs_mane_select,
         "HGNC ID": hgnc_id,
-        "OMIM ID": omim_id[0] if isinstance(omim_id, list) and omim_id else "N/A", # OMIM ID is a list, returns first item if OMIM list is present 
+        "OMIM ID": omim_id[0] if isinstance(omim_id, list) and omim_id else "N/A"  # OMIM ID is a list, returns first item if OMIM list is present 
     }
 
 
