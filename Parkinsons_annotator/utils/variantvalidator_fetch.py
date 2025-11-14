@@ -39,6 +39,10 @@ def fetch_variant_validator(variant_description):
     requests.exceptions.RequestException: If there is an API error.
     """
 
+    # Ensure input variant is a string
+    if not isinstance(variant_description, str):
+        raise VariantDescriptionError("Variant description must be a string.")
+
 
     # Validate VCF-style genomic format of variant
     # Expected format: CHR:POSITION:REF:ALT
