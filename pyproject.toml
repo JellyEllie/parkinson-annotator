@@ -6,8 +6,9 @@ readme = "README.md"
 # Specify minimum supported python distribution
 requires-python = ">=3.12"
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Programming Language :: Python :: 3.12"
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.12",
+    "Intended Audience :: Healthcare professionals"
 ]
 # Runtime dependencies required for package to function
 dependencies = [
