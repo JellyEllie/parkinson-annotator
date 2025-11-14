@@ -81,7 +81,7 @@ def fetch_variant_validator(variant_description):
         if key not in ("flag", "metadata"):
             first_key = key
             break
-    
+  
     if not first_key:
         raise VariantValidatorResponseError(
             "No variant data found in VariantValidator response."
@@ -102,7 +102,7 @@ def fetch_variant_validator(variant_description):
     except(KeyError, IndexError, TypeError):
         print("HGNC ID not found")
         hgnc_id = "N/A"
-    
+ 
     try:
         omim_id = hgvs_record["gene_ids"]["omim_id"]
     except(KeyError, IndexError, TypeError):
@@ -117,7 +117,7 @@ def fetch_variant_validator(variant_description):
     }
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     
     variant_description = "17:45983420:G:T"
     variant_validator_output = fetch_variant_validator(variant_description)
