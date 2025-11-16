@@ -1,0 +1,214 @@
+2025-11-12 20:56 - ERROR - Error retrieving HGVS for variant 5:150057361:G:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/5:150057361:G:T/mane_select
+2025-11-12 20:56 - ERROR - Error retrieving HGVS for variant 17:45983694:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:45983694:C:T/mane_select
+2025-11-12 20:56 - ERROR - Error retrieving HGVS for variant 5:150069981:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/5:150069981:C:A/mane_select
+2025-11-12 20:56 - ERROR - Error retrieving HGVS for variant 1:7965425:G:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7965425:G:C/mane_select
+2025-11-14 10:50 - ERROR - Error retrieving HGVS for variant 6:162727667:A:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/6:162727667:A:G/mane_select
+2025-11-14 10:50 - ERROR - Error retrieving HGVS for variant 17:45962351:G:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:45962351:G:A/mane_select
+2025-11-15 20:54 - ERROR - Error retrieving HGVS for variant 12:40310504:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40310504:C:A/mane_select
+2025-11-15 20:55 - ERROR - Error retrieving HGVS for variant 5:150069981:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/5:150069981:C:A/mane_select
+2025-11-15 20:55 - ERROR - Error retrieving HGVS for variant 6:161785807:T:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/6:161785807:T:G/mane_select
+2025-11-15 20:55 - ERROR - Error retrieving HGVS for variant 4:89729225:G:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/4:89729225:G:A/mane_select
+2025-11-15 21:00 - ERROR - Error retrieving HGVS for variant 6:161785807:T:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/6:161785807:T:G/mane_select
+2025-11-15 21:00 - ERROR - Error retrieving HGVS for variant 12:40320141:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40320141:C:A/mane_select
+2025-11-15 21:00 - ERROR - Error retrieving HGVS for variant 1:7965425:G:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7965425:G:C/mane_select
+2025-11-15 21:00 - ERROR - Error retrieving HGVS for variant 17:44352790:C:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:44352790:C:G/mane_select
+2025-11-15 21:01 - ERROR - Error retrieving HGVS for variant 12:40320141:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40320141:C:A/mane_select
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_004562.3:c.2T>C: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_001288705.3:c.719A>G: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_004562.3:c.915G>T: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_152296.5:c.1282G>A: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_004562.3:c.1213G>A: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_001288705.3:c.2350G>A: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_001288705.3:c.2245C>A: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_001377265.1:c.2078C>T: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_198578.4:c.4441G>A: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-15 21:36 - ERROR - Error retrieving HGVS for variant 4:89835580:C:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/4:89835580:C:G/mane_select
+2025-11-15 21:36 - ERROR - Error retrieving HGVS for variant 19:41985036:A:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/19:41985036:A:C/mane_select
+2025-11-15 21:36 - ERROR - Error retrieving HGVS for variant 1:7962813:C:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7962813:C:G/mane_select
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_001377265.1:c.1549G>A: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_198578.4:c.2987A>T: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_198578.4:c.6206C>G: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_002087.4:c.393C>A: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_004562.3:c.719C>T: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_000345.4:c.247G>C: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_007262.5:c.541G>C: Variant NM_007262.5:c.541G>C not found in ClinVar.
+2025-11-15 21:36 - ERROR - Error retrieving HGVS for variant 17:44349216:A:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:44349216:A:G/mane_select
+2025-11-15 21:36 - ERROR - Error retrieving HGVS for variant 19:41968837:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/19:41968837:C:T/mane_select
+2025-11-15 21:36 - ERROR - Error retrieving HGVS for variant 12:40310504:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40310504:C:A/mane_select
+2025-11-15 21:36 - ERROR - Error retrieving HGVS for variant 6:162727667:A:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/6:162727667:A:G/mane_select
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_152296.5:c.2479A>T: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_000345.4:c.31G>T: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_198578.4:c.2873C>T: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_004562.3:c.310C>T: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_002087.4:c.473G>A: name 'time' is not defined
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 21:36 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_001377265.1:c.841G>T: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_000345.4:c.247G>C: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_002087.4:c.1604G>A: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_001377265.1:c.1378G>A: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_002087.4:c.1460C>T: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_152296.5:c.2767G>C: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_001377265.1:c.1115C>T: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_007262.5:c.515T>A: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_007262.5:c.445G>A: Variant NM_007262.5:c.445G>A not found in ClinVar.
+2025-11-15 21:37 - ERROR - Error retrieving HGVS for variant 19:41970289:G:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/19:41970289:G:A/mane_select
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_198578.4:c.6347A>G: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_001288705.3:c.1402G>T: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_001377265.1:c.416A>G: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_004562.3:c.574A>C: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_004562.3:c.887C>T: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_007262.5:c.497T>C: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_198578.4:c.6241A>G: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_198578.4:c.4478A>C: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 21:37 - ERROR - Error retrieving HGVS for variant 1:7965425:G:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7965425:G:C/mane_select
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_198578.4:c.2830G>T: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_198578.4:c.4373A>C: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_007262.5:c.399G>C: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_007262.5:c.460A>G: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_004562.3:c.247A>G: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_002087.4:c.325G>A: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_002087.4:c.62C>T: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_004562.3:c.2T>C: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_004562.3:c.318C>A: Variant NM_004562.3:c.318C>A not found in ClinVar.
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_007262.5:c.115G>T: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_004562.3:c.823C>T: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_198578.4:c.17G>C: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_002087.4:c.1774C>G: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_000345.4:c.359C>T: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_000345.4:c.382C>A: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_001377265.1:c.848G>A: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_001288705.3:c.2809A>G: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_000345.4:c.247G>C: name 'time' is not defined
+2025-11-15 21:37 - ERROR - Error fetching ClinVar for NM_002087.4:c.775A>G: Variant NM_002087.4:c.775A>G not found in ClinVar.
+2025-11-15 21:38 - ERROR - Error retrieving HGVS for variant 12:40320141:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40320141:C:A/mane_select
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_198578.4:c.3091T>C: name 'time' is not defined
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_198578.4:c.7573T>C: name 'time' is not defined
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_198578.4:c.7454A>G: name 'time' is not defined
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_001377265.1:c.14G>A: name 'time' is not defined
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_000345.4:c.157G>A: name 'time' is not defined
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_004562.3:c.1193C>T: name 'time' is not defined
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_198578.4:c.2842C>G: name 'time' is not defined
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_001377265.1:c.1700C>T: name 'time' is not defined
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_004562.3:c.2T>C: name 'time' is not defined
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_004562.3:c.7+32846T>C: Variant NM_004562.3:c.7+32846T>C not found in ClinVar.
+2025-11-15 21:38 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-15 21:38 - ERROR - Error retrieving HGVS for variant 4:89835580:C:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/4:89835580:C:G/mane_select
+2025-11-15 21:39 - ERROR - Error fetching ClinVar for NM_007262.5:c.541G>C: Variant NM_007262.5:c.541G>C not found in ClinVar.
+2025-11-15 21:39 - ERROR - Error retrieving HGVS for variant 12:40320141:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40320141:C:A/mane_select
+2025-11-15 21:39 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 21:39 - ERROR - Error fetching ClinVar for NM_007262.5:c.445G>A: Variant NM_007262.5:c.445G>A not found in ClinVar.
+2025-11-15 21:39 - ERROR - Error retrieving HGVS for variant 19:41970289:G:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/19:41970289:G:A/mane_select
+2025-11-15 21:39 - ERROR - Error retrieving HGVS for variant 1:7984981:T:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7984981:T:C/mane_select
+2025-11-15 21:39 - ERROR - Error retrieving HGVS for variant 6:161785807:T:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/6:161785807:T:G/mane_select
+2025-11-15 21:40 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 21:40 - ERROR - Error retrieving HGVS for variant 1:7984944:A:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7984944:A:G/mane_select
+2025-11-15 21:40 - ERROR - Error fetching ClinVar for NM_004562.3:c.318C>A: Variant NM_004562.3:c.318C>A not found in ClinVar.
+2025-11-15 21:40 - ERROR - Error fetching ClinVar for NM_002087.4:c.775A>G: Variant NM_002087.4:c.775A>G not found in ClinVar.
+2025-11-15 21:41 - ERROR - Error fetching ClinVar for NM_004562.3:c.7+32846T>C: Variant NM_004562.3:c.7+32846T>C not found in ClinVar.
+2025-11-15 21:41 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 22:17 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-15 22:17 - ERROR - Error fetching ClinVar for NM_007262.5:c.541G>C: Variant NM_007262.5:c.541G>C not found in ClinVar.
+2025-11-15 22:17 - ERROR - Error retrieving HGVS for variant 12:40294909:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40294909:C:T/mane_select
+2025-11-15 22:17 - ERROR - Error retrieving HGVS for variant 12:40310504:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40310504:C:A/mane_select
+2025-11-15 22:17 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 22:17 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 22:17 - ERROR - Error retrieving HGVS for variant 17:45983694:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:45983694:C:T/mane_select
+2025-11-15 22:17 - ERROR - Error fetching ClinVar for NM_007262.5:c.445G>A: Variant NM_007262.5:c.445G>A not found in ClinVar.
+2025-11-15 22:18 - ERROR - Error retrieving HGVS for variant 12:40310591:A:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40310591:A:C/mane_select
+2025-11-15 22:18 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 22:18 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 22:18 - ERROR - Error retrieving HGVS for variant 1:7965425:G:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7965425:G:C/mane_select
+2025-11-15 22:18 - ERROR - Error retrieving HGVS for variant 17:44349226:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:44349226:C:T/mane_select
+2025-11-15 22:18 - ERROR - Error fetching ClinVar for NM_004562.3:c.318C>A: Variant NM_004562.3:c.318C>A not found in ClinVar.
+2025-11-15 22:18 - ERROR - Error retrieving HGVS for variant 4:89729225:G:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/4:89729225:G:A/mane_select
+2025-11-15 22:18 - ERROR - Error retrieving HGVS for variant 4:89729202:G:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/4:89729202:G:T/mane_select
+2025-11-15 22:18 - ERROR - Error retrieving HGVS for variant 17:45983427:G:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:45983427:G:A/mane_select
+2025-11-15 22:18 - ERROR - Error fetching ClinVar for NM_002087.4:c.775A>G: Variant NM_002087.4:c.775A>G not found in ClinVar.
+2025-11-15 22:19 - ERROR - Error fetching ClinVar for NM_004562.3:c.7+32846T>C: Variant NM_004562.3:c.7+32846T>C not found in ClinVar.
+2025-11-15 22:19 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 22:26 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-15 22:27 - ERROR - Error retrieving HGVS for variant 4:89835580:C:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/4:89835580:C:G/mane_select
+2025-11-15 22:27 - ERROR - Error fetching ClinVar for NM_007262.5:c.541G>C: Variant NM_007262.5:c.541G>C not found in ClinVar.
+2025-11-15 22:27 - ERROR - Error retrieving HGVS for variant 12:40320141:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40320141:C:A/mane_select
+2025-11-15 22:27 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 22:27 - ERROR - Error retrieving HGVS for variant 17:45983694:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:45983694:C:T/mane_select
+2025-11-15 22:27 - ERROR - Error fetching ClinVar for NM_007262.5:c.445G>A: Variant NM_007262.5:c.445G>A not found in ClinVar.
+2025-11-15 22:28 - ERROR - Error retrieving HGVS for variant 12:40310591:A:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40310591:A:C/mane_select
+2025-11-15 22:28 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 22:28 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 22:28 - ERROR - Error retrieving HGVS for variant 1:7977728:G:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7977728:G:C/mane_select
+2025-11-15 22:28 - ERROR - Error retrieving HGVS for variant 1:7965425:G:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7965425:G:C/mane_select
+2025-11-15 22:28 - ERROR - Error retrieving HGVS for variant 17:44349727:G:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:44349727:G:A/mane_select
+2025-11-15 22:28 - ERROR - Error fetching ClinVar for NM_004562.3:c.318C>A: Variant NM_004562.3:c.318C>A not found in ClinVar.
+2025-11-15 22:28 - ERROR - Error fetching ClinVar for NM_002087.4:c.775A>G: Variant NM_002087.4:c.775A>G not found in ClinVar.
+2025-11-15 22:29 - ERROR - Error fetching ClinVar for NM_004562.3:c.7+32846T>C: Variant NM_004562.3:c.7+32846T>C not found in ClinVar.
+2025-11-15 22:29 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 22:38 - ERROR - Error retrieving HGVS for variant 5:150057361:G:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/5:150057361:G:T/mane_select
+2025-11-15 22:38 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-15 22:39 - ERROR - Error fetching ClinVar for NM_007262.5:c.541G>C: Variant NM_007262.5:c.541G>C not found in ClinVar.
+2025-11-15 22:39 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 22:39 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 22:39 - ERROR - Error fetching ClinVar for NM_007262.5:c.445G>A: Variant NM_007262.5:c.445G>A not found in ClinVar.
+2025-11-15 22:40 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 22:40 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 22:40 - ERROR - Error fetching ClinVar for NM_004562.3:c.318C>A: Variant NM_004562.3:c.318C>A not found in ClinVar.
+2025-11-15 22:40 - ERROR - Error retrieving HGVS for variant 12:40225148:G:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40225148:G:C/mane_select
+2025-11-15 22:40 - ERROR - Error fetching ClinVar for NM_002087.4:c.775A>G: Variant NM_002087.4:c.775A>G not found in ClinVar.
+2025-11-15 22:41 - ERROR - Error fetching ClinVar for NM_004562.3:c.7+32846T>C: Variant NM_004562.3:c.7+32846T>C not found in ClinVar.
+2025-11-15 22:41 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 22:54 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-15 22:59 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-15 23:09 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-15 23:22 - ERROR - Error retrieving HGVS for variant 6:161360160:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/6:161360160:C:T/mane_select
+2025-11-15 23:22 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-15 23:33 - ERROR - Error retrieving HGVS for variant 17:46010389:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:46010389:C:T/mane_select
+2025-11-15 23:33 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-15 23:34 - ERROR - Error fetching ClinVar for NM_007262.5:c.541G>C: Variant NM_007262.5:c.541G>C not found in ClinVar.
+2025-11-15 23:34 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 23:34 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 23:34 - ERROR - Error fetching ClinVar for NM_007262.5:c.445G>A: Variant NM_007262.5:c.445G>A not found in ClinVar.
+2025-11-15 23:35 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-15 23:35 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-15 23:35 - ERROR - Error retrieving HGVS for variant 1:7984944:A:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7984944:A:G/mane_select
+2025-11-15 23:35 - ERROR - Error fetching ClinVar for NM_004562.3:c.318C>A: Variant NM_004562.3:c.318C>A not found in ClinVar.
+2025-11-15 23:35 - ERROR - Error fetching ClinVar for NM_002087.4:c.775A>G: Variant NM_002087.4:c.775A>G not found in ClinVar.
+2025-11-15 23:35 - ERROR - Error fetching ClinVar for NM_004562.3:c.7+32846T>C: Variant NM_004562.3:c.7+32846T>C not found in ClinVar.
+2025-11-15 23:35 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-16 01:32 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-16 01:34 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-16 01:39 - ERROR - Error retrieving HGVS for variant 6:161569373:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/6:161569373:C:A/mane_select
+2025-11-16 01:39 - ERROR - Error retrieving HGVS for variant 19:41981742:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/19:41981742:C:T/mane_select
+2025-11-16 01:39 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-16 01:41 - ERROR - Error retrieving HGVS for variant 6:161360160:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/6:161360160:C:T/mane_select
+2025-11-16 01:41 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-16 01:45 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.
+2025-11-16 01:45 - ERROR - Error retrieving HGVS for variant 4:89835580:C:G: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/4:89835580:C:G/mane_select
+2025-11-16 01:45 - ERROR - Error fetching ClinVar for NM_007262.5:c.541G>C: Variant NM_007262.5:c.541G>C not found in ClinVar.
+2025-11-16 01:45 - ERROR - Error retrieving HGVS for variant 12:40294909:C:T: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40294909:C:T/mane_select
+2025-11-16 01:45 - ERROR - Error retrieving HGVS for variant 12:40320141:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/12:40320141:C:A/mane_select
+2025-11-16 01:45 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-16 01:46 - ERROR - Error fetching ClinVar for NM_007262.5:c.445G>A: Variant NM_007262.5:c.445G>A not found in ClinVar.
+2025-11-16 01:46 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-16 01:46 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-16 01:46 - ERROR - Error fetching ClinVar for NM_004562.3:c.318C>A: Variant NM_004562.3:c.318C>A not found in ClinVar.
+2025-11-16 01:47 - ERROR - Error fetching ClinVar for NM_002087.4:c.775A>G: Variant NM_002087.4:c.775A>G not found in ClinVar.
+2025-11-16 01:47 - ERROR - Error fetching ClinVar for NM_004562.3:c.7+32846T>C: Variant NM_004562.3:c.7+32846T>C not found in ClinVar.
+2025-11-16 01:47 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-16 02:07 - ERROR - Error retrieving HGVS for variant 17:44350271:C:A: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/17:44350271:C:A/mane_select
+2025-11-16 02:07 - ERROR - Error fetching ClinVar for NM_007262.5:c.541G>C: Variant NM_007262.5:c.541G>C not found in ClinVar.
+2025-11-16 02:07 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-16 02:07 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-16 02:08 - ERROR - Error fetching ClinVar for NM_007262.5:c.445G>A: Variant NM_007262.5:c.445G>A not found in ClinVar.
+2025-11-16 02:08 - ERROR - Error fetching ClinVar for NM_004562.3:c.836A>C: Variant NM_004562.3:c.836A>C not found in ClinVar.
+2025-11-16 02:08 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-16 02:08 - ERROR - Error retrieving HGVS for variant 1:7977728:G:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/1:7977728:G:C/mane_select
+2025-11-16 02:08 - ERROR - Error retrieving HGVS for variant 6:162262690:T:C: Unable to connect to VariantValidator API: 429 Client Error: TOO MANY REQUESTS for url: https://rest.variantvalidator.org/VariantValidator/variantvalidator/GRCh38/6:162262690:T:C/mane_select
+2025-11-16 02:08 - ERROR - Error fetching ClinVar for NM_004562.3:c.318C>A: Variant NM_004562.3:c.318C>A not found in ClinVar.
+2025-11-16 02:09 - ERROR - Error fetching ClinVar for NM_002087.4:c.775A>G: Variant NM_002087.4:c.775A>G not found in ClinVar.
+2025-11-16 02:09 - ERROR - Error fetching ClinVar for NM_004562.3:c.7+32846T>C: Variant NM_004562.3:c.7+32846T>C not found in ClinVar.
+2025-11-16 02:09 - ERROR - Error fetching ClinVar for NM_198578.4:c.4981C>A: Variant NM_198578.4:c.4981C>A not found in ClinVar.
+2025-11-16 02:10 - ERROR - Error fetching ClinVar for NM_002087.4:c.413C>A: Variant NM_002087.4:c.413C>A not found in ClinVar.

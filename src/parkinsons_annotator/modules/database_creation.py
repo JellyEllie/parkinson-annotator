@@ -10,6 +10,8 @@ Other database parameters:
     PRIMARY KEY: Used to uniquely identify each record and potentially link tables.
 """
 
+# TODO: THIS FILE HAS BEEN REPLACED BY SQLALCHEMY MODELS IN modules/models.py AND TABLE CREATION IN db.py.
+# SO CAN BE DELETED
 
 import sqlite3
 from pathlib import Path
@@ -32,37 +34,39 @@ def create_db_and_tables(db_name):
                 )
             """)
     
-    # creating variants table to input data into.
+
     cur.execute("""
-            CREATE TABLE IF NOT EXISTS variants (                    
-                chromosome INTEGER NOT NULL,            
-                position INTEGER NOT NULL,                   
-                ref CHAR(1) NOT NULL,                   
-                alt CHAR(1) NOT NULL,
-                hgvs TEXT,                              
-                classification TEXT,
-                gene_symbol TEXT,
-                clinvar_id TEXT,
-                PRIMARY KEY (chromosome, position, ref, alt)
-                )
-            """)
+        CREATE TABLE IF NOT EXISTS variants (
+            id TEXT PRIMARY KEY,         -- uses the id from the dataframe
+            chromosome INTEGER NOT NULL,
+            position INTEGER NOT NULL,
+            ref CHAR(1) NOT NULL,
+            alt CHAR(1) NOT NULL,
+            hgvs TEXT,
+            classification TEXT,
+            gene_symbol TEXT,
+            clinvar_id TEXT,
+            cdna_change TEXT,
+            clinvar_accession TEXT,
+            num_submissions INTEGER,
+            review_status TEXT,
+            associated_condition TEXT,
+            clinvar_url TEXT
+        )
+        """)
     
-    # creating junction table to link patients to variants
+
     cur.execute("""
-            CREATE TABLE IF NOT EXISTS patient_variant (
-                patient_name TEXT NOT NULL,
-                chromosome INTEGER NOT NULL,
-                position INTEGER NOT NULL,
-                ref CHAR(1) NOT NULL,
-                alt CHAR(1) NOT NULL,
-                PRIMARY KEY (patient_name, chromosome, position, ref, alt),
-                FOREIGN KEY (patient_name) REFERENCES patients(name)
-                    ON DELETE CASCADE,
-                FOREIGN KEY (chromosome, position, ref, alt)
-                    REFERENCES variants(chromosome, position, ref, alt)
-                    ON DELETE CASCADE
-            )
-            """)
+        CREATE TABLE IF NOT EXISTS patient_variant (
+            patient_name TEXT NOT NULL,
+            variant_id TEXT NOT NULL,
+            PRIMARY KEY (patient_name, variant_id),
+            FOREIGN KEY (patient_name) REFERENCES patients(name)
+                ON DELETE CASCADE,
+            FOREIGN KEY (variant_id) REFERENCES variants(id)
+                ON DELETE CASCADE
+        )
+        """)
     
     conn.commit() # committing the changes to the database
 
