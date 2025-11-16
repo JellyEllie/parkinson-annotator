@@ -1,0 +1,37 @@
+[project]
+name = "parkinsons-annotator"
+version = "0.1.0"
+description = "A web-based app for storing and querying variant data, returning the ClinVar annotation for variants."
+readme = "README.md"
+# Specify minimum supported python distribution
+requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.12",
+    "Intended Audience :: Healthcare professionals"
+]
+# Runtime dependencies required for package to function
+dependencies = [
+    "flask",
+    "sqlalchemy",
+    "biopython",
+]
+
+# Optional dependencies used by developers
+[project.optional-dependencies]
+dev = [
+    "pytest",       # Testing framework
+    "pytest-cov"]   # Test coverage reporting
+
+# Project repo
+[project.urls]
+Homepage = "https://github.com/JellyEllie/parkinson-annotator.git"
+
+# Using setuptools and wheel to build
+[build-system]
+requires = ["setuptools>=61.0",     # Using setuptools for build backend
+            "wheel"]                # Wheel for efficient distribution
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]                # Add the 'src' directory to Python's import path during tests
