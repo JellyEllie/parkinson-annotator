@@ -3,4 +3,12 @@ channels:
   - conda-forge
 dependencies:
   - python=3.13.2
+  - flask=3.1.2
+  - sqlalchemy=2.0.44
+  - biopython=1.86
   - pip
+  - pip:
+      - pytest==8.4.2
+      - pytest-cov
+      - poetry==2.2.1
+      - -e .   # install your package in editable mode

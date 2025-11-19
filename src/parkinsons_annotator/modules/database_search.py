@@ -9,9 +9,10 @@ Functions:
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from Parkinsons_annotator.modules.models import Variant, Patient, Connector
-from Parkinsons_annotator.utils.parse_genomic_notation import parse_genomic_notation
+from parkinsons_annotator.modules.models import Variant, Patient, Connector
+from parkinsons_annotator.utils.parse_genomic_notation import parse_genomic_notation
 from pathlib import Path
+from parkinsons_annotator.logger import logger
 
 
 def database_list(search_type=None, search_value=None):
@@ -31,21 +32,25 @@ def database_list(search_type=None, search_value=None):
         list: List of query results (e.g., patient names).
     """
 
-    # Create database engine
-    DB_PATH = Path(__file__).resolve().parents[1] / "parkinsons_data.db"
+    # Create database engine.       #TODO: THIS WHOLE SECTION IS INCLUDED IN MAIN.PY A BIT LATE TO BE CHECKING FOR DB EXISTENCE
+    DB_PATH = "parkinsons_data.db"
 
-    if not DB_PATH.exists():
-        print(f"❌ Database not found at: {DB_PATH}")
-        return []
+    if not Path(DB_PATH).exists():
+        print(f"Database not found at: {DB_PATH}")
+        return []           # UP TO HERE ALSO WHY RETURN EMPTY LIST IF NO DB?
 
 
-    engine = create_engine(f"sqlite:///{DB_PATH}")
-    print(f"Connecting to database at: {DB_PATH}")
+    engine = create_engine(f"sqlite:///{DB_PATH}") ## TODO: THIS WHOLE SECTION
+    print(f"Connecting to database at: {DB_PATH}") ## IS INCLUDED IN DB.PY
 
-    # Create session for querying the database
-    Session = sessionmaker(bind=engine)
-    db_session = Session()
+    # Create session for querying the database.    ## SO IS REPETED HERE
+    Session = sessionmaker(bind=engine)            ## UP TO HERE
+    db_session = Session()                         ## ALL OF IT        
 
+
+    # TODO: IMPORT GET_DB_SESSION FROM DB.PY INSTEAD (E.G. BELOW)
+    # from parkinsons_annotator.db import get_db_session
+    # db_session = get_db_session()  # Get session from db.py
 
     # Based on search type, perform SQL query to return list from database
     try:
@@ -83,7 +88,7 @@ def database_list(search_type=None, search_value=None):
                     )
                     .all()
                 )
-
+                logger.info(f"results = {results} results for genomic notation search.\n {[r[0] for r in results]} ")
                 return [r[0] for r in results]
 
         else:
@@ -95,7 +100,7 @@ def database_list(search_type=None, search_value=None):
             return []
 
     finally:
-        db_session.close()
+        db_session.close()      # TODO: THIS CLOSING SHOULD BE HANDLED IN DB.PY INSTEAD
 
 
  ### take variant info and return clinvar accession ID for that variant

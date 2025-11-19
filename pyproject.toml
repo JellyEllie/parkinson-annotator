@@ -21,7 +21,13 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest",       # Testing framework
-    "pytest-cov"]   # Test coverage reporting
+    "pytest-cov",   # Test coverage reporting
+    "poetry"
+    ]
+
+# This creates a runnable CLI command
+[project.scripts]
+parkinsons-annotator = "parkinsons_annotator.main:main"
 
 # Project repo
 [project.urls]
