@@ -1,7 +1,7 @@
 """
 This script fetches variant information using the VariantValidator REST API.
 For a given variant in the VCF-style genomic format (e.g "17:45983420:G:T"),
-the script returns: the HGVS transcript notation for the MANE Select transcript 
+the script retrieves the HGVS transcript notation for the MANE Select transcript 
 (e.g. "NM_001377265.1:c.841G>T"), and the corresponding HGNC and OMIM IDs.
 
 References:
