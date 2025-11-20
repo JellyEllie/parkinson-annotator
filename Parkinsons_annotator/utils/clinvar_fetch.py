@@ -187,10 +187,10 @@ def extract_clinvar_annotation(hgvs_variant):
             "Expected transcript HGVS e.g. 'NM_001377265.1:c.841G>T'. "
         )
     
-    # Comment here
+    # Fetch the ClinVar ID for the given HGVS variant
     clinvar_id = fetch_clinvar_id(hgvs_variant)
 
-    # Comment here
+    # Fetch the ClinVar ESummary record for the ClinVar ID
     clinvar_doc = fetch_clinvar_esummary(clinvar_id)
 
 
