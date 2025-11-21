@@ -4,8 +4,8 @@ from flask import Flask
 from dotenv import load_dotenv
 
 from .logger import logger
-from modules.routes import route_blueprint
-from modules.db import close_db_session, create_db_engine, create_tables
+from .modules.routes import route_blueprint
+from .modules.db import close_db_session, create_db_engine, create_tables
 from .modules.data_extraction import load_and_insert_data
 
 def create_app(test_config=None):
@@ -48,6 +48,8 @@ def create_app(test_config=None):
 
     # Log app creation
     logger.info("Flask application created successfully.")
+
+    return app
 
 
 
