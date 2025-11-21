@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 from .logger import logger
 from modules.routes import route_blueprint
-from modules.db import close_db_session, create_db_engine
+from modules.db import close_db_session, create_db_engine, create_tables
 from .modules.data_extraction import load_and_insert_data
 
 def create_app(test_config=None):
@@ -42,7 +42,7 @@ def create_app(test_config=None):
         # TODO: Add check for database being fully populated
         if not db_path.exists():
             logger.info(f"Database {db_path} not found — creating new database and loading data.")
-            create_db_engine()  # Create the database engine
+            create_db_engine()  # Create the database engine to connect to database
             create_tables()     # Create tables in the database
             load_and_insert_data()  # Load data and insert into the database
 
