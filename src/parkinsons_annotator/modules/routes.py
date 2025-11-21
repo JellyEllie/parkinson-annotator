@@ -39,13 +39,23 @@ def search():
 
     logger.info(f"User searched for: {search_value}, category: {search_type}")
 
-    # Call the database search function
-    results = database_list(search_type=search_type, search_value=search_value)
+    # Validate user input before searching
+    if not search_type or not search_value:
+        return jsonify({"message": "Invalid search request"}), 400
 
+    # Call the database search function
+    try:
+        results = database_list(search_type=search_type, search_value=search_value)
+
+    except Exception as e:
+        logger.error(f"Database search failed: {e}")
+        return jsonify({"message": "Internal search error"}), 500
+
+    # If the query is valid but empty, respond 404
     if not results:
         return jsonify({"message": "No results found"}), 404
 
-    return jsonify({"results": results})
+    return jsonify({"results": results}), 200
 
 @route_blueprint.route('/upload', methods=['POST'])
 def upload_file():
