@@ -1,7 +1,7 @@
-'''
+"""
 This script creates the user interface and generates vriables from the search and input sections which can be used within the rest of the program
 The visuals and interactive elements of the interface are stored in a html file
-'''
+"""
 
 import os
 import signal
@@ -11,19 +11,19 @@ load_dotenv()  # Load environment variables from .env file
 
 from .database_search import database_list
 from .data_extraction import load_and_insert_data
-from parkinsons_annotator.logger import logger
+from src.parkinsons_annotator.logger import logger
 
 route_blueprint = Blueprint('routes', __name__)
 
 @route_blueprint.route('/', methods=['GET'])
 def index():
-    '''This function opens the html file which contains the interface informtion'''
+    """This function opens the html file which contains the interface informtion"""
     # return render_template("interface_package.html")
     return render_template("interface_package.html")
 
 @route_blueprint.route('/shutdown', methods=['POST'])
 def shutdown_server():
-    '''This function shuts the server, which will be activated from inside the html file, triggered by the web browser shutting down'''
+    """This function shuts the server, which will be activated from inside the html file, triggered by the web browser shutting down"""
     func = request.environ.get('werkzeug.server.shutdown')  # Calls from a WSGI enviornment using a speical key which shuts down the Flask server
     if func:
         func()                                              # If the shut down function isn't found, don't shut down the server
