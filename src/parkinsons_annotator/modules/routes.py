@@ -9,7 +9,7 @@ from flask import Blueprint, render_template, request, jsonify, current_app as a
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
 
-from .database_search import database_list
+from .database_search import database_list, SearchFieldEmptyError, NoMatchingRecordsError
 from .data_extraction import load_and_insert_data
 from src.parkinsons_annotator.logger import logger
 
@@ -39,21 +39,16 @@ def search():
 
     logger.info(f"User searched for: {search_value}, category: {search_type}")
 
-    # Validate user input before searching
-    if not search_type or not search_value:
-        return jsonify({"message": "Invalid search request"}), 400
-
     # Call the database search function
     try:
         results = database_list(search_type=search_type, search_value=search_value)
-
+    except SearchFieldEmptyError:
+        return jsonify({"message": "Missing search fields"}), 400
+    except NoMatchingRecordsError:
+        return jsonify({"message": "No matching records found"}), 404
     except Exception as e:
-        logger.error(f"Database search failed: {e}")
-        return jsonify({"message": "Internal search error"}), 500
-
-    # If the query is valid but empty, respond 404
-    if not results:
-        return jsonify({"message": "No results found"}), 404
+        logger.error(f"Unexpected database error: {e}")
+        return jsonify({"message": "Internal server error"}), 500
 
     return jsonify({"results": results}), 200
 

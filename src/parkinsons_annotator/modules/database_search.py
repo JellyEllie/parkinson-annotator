@@ -11,7 +11,13 @@ from src.parkinsons_annotator.modules.models import Variant, Patient, Connector
 from src.parkinsons_annotator.logger import logger
 from src.parkinsons_annotator.modules.db import get_db_session
 
+# Custom exceptions
+class SearchFieldEmptyError(Exception):
+    pass
+class NoMatchingRecordsError(Exception):
+    pass
 
+# Search function
 def database_list(search_type=None, search_value=None):
     """
     Search the database based on user-specified type and value.
@@ -32,51 +38,53 @@ def database_list(search_type=None, search_value=None):
     # Get database session for query
     db_session = get_db_session()
 
+    # Raise error if no search type or value provided
     if not search_type or not search_value:
         logger.warning("Search called without search_type or search_value")
-        return []
+        raise SearchFieldEmptyError
 
     # Based on search type, perform SQL query to return list from database
-    try:
-        # --- Search by variant ---
-        if search_type == 'variant':
+    # --- Search by variant ---
+    if search_type == 'variant':
 
-            # If input value is in HGVS format:
-            if search_value.lower().startswith(("nm", "nc")):
-                logger.info(f"Searching variant by HGVS: {search_value}")
+        # Search in HGVS format:
+        if search_value.lower().startswith(("nm", "nc")):
+            logger.info(f"Searching variant by HGVS: {search_value}")
 
-                # Return list of patients with matching hgvs id
-                search_results = (
-                    db_session.query(Patient.name)
-                    .join(Connector, Patient.name == Connector.patient_name)
-                    .join(Variant, Variant.id == Connector.variant_id)
-                    .filter(Variant.hgvs.ilike(search_value))
-                    .all()
-                )
-                return [r[0] for r in search_results]
-
-            # If input value is in genomic notation format:
-            logger.info(
-                f"Searching variant by genomic notation: {search_value}"
+            # Find list of patients with matching hgvs id
+            query = (
+                db_session.query(Patient.name)
+                .join(Connector, Patient.name == Connector.patient_name)
+                .join(Variant, Variant.id == Connector.variant_id)
+                .filter(Variant.hgvs.ilike(search_value))
             )
-            # Return list of patients with matching genomic notation
-            search_results = (
+
+        # Search in genomic notation format:
+        else:
+            logger.info(f"Searching variant by genomic notation: {search_value}")
+
+            # Find list of patients with matching genomic notation
+            query = (
                 db_session.query(Patient.name)
                 .join(Connector, Patient.name == Connector.patient_name)
                 .join(Variant, Variant.id == Connector.variant_id)
                 .filter(Variant.vcf_form.ilike(search_value))
-                .all()
             )
-            logger.info(f"Found {len(search_results)} patients with variant.")
-            return [r[0] for r in search_results]
 
-            # --- Other search types not yet implemented ---
-            logger.info(f"Search type '{search_type}' not implemented yet.")
-            return []
+            # Execute query and fetch results
+            query_results = query.all()
+            logger.info(f"Found {len(query_results)} patients with variant.")
 
-    except Exception as e:
-        logger.error(f"Database search failed: {e}")
-        return []
+            # Raise exception if no matching records found
+            if not query_results:
+                logger.info(f"No matching records found for search value='{search_value}'.")
+                raise NoMatchingRecordsError
+
+            return [r[0] for r in query_results]
+
+    # --- Other search types not yet implemented ---
+    logger.info(f"Search type '{search_type}' not implemented yet.")
+    return []
 
         # if search_type == 'gene_symbol': return all variants for that gene, with the patient name and pathogencity
         # if search_type == 'patient': return all variants for that patient, with the pathogencity
