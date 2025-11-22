@@ -5,9 +5,12 @@ Functions:
     database_list: Return list of database objects matching the search criteria.
         Example: if search_type is 'variant', return list of patients with that variant.
 
+Exceptions:
+    SearchFieldEmptyError: Raised if search_type or search_value is empty.
+    NoMatchingRecordsError: Raised if search finds no records matching the search criteria.
 """
 
-from src.parkinsons_annotator.modules.models import Variant, Patient, Connector
+from src.parkinsons_annotator.modules.models import Variant, Patient, Patient_Variant, Genes
 from src.parkinsons_annotator.logger import logger
 from src.parkinsons_annotator.modules.db import get_db_session
 
@@ -41,11 +44,12 @@ def database_list(search_type=None, search_value=None):
     # Raise error if no search type or value provided
     if not search_type or not search_value:
         logger.warning("Search called without search_type or search_value")
-        raise SearchFieldEmptyError
+        raise SearchFieldEmptyError("Missing search fields.")
 
     # Based on search type, perform SQL query to return list from database
     # --- Search by variant ---
     if search_type == 'variant':
+        logger.info("Searching database for variant")
 
         # Search in HGVS format:
         if search_value.lower().startswith(("nm", "nc")):
@@ -54,8 +58,8 @@ def database_list(search_type=None, search_value=None):
             # Find list of patients with matching hgvs id
             query = (
                 db_session.query(Patient.name)
-                .join(Connector, Patient.name == Connector.patient_name)
-                .join(Variant, Variant.id == Connector.variant_id)
+                .join(Patient_Variant, Patient.name == Patient_Variant.patient_name)
+                .join(Variant, Variant.id == Patient_Variant.variant_id)
                 .filter(Variant.hgvs.ilike(search_value))
             )
 
@@ -66,25 +70,56 @@ def database_list(search_type=None, search_value=None):
             # Find list of patients with matching genomic notation
             query = (
                 db_session.query(Patient.name)
-                .join(Connector, Patient.name == Connector.patient_name)
-                .join(Variant, Variant.id == Connector.variant_id)
+                .join(Patient_Variant, Patient.name == Patient_Variant.patient_name)
+                .join(Variant, Variant.id == Patient_Variant.variant_id)
                 .filter(Variant.vcf_form.ilike(search_value))
             )
 
-            # Execute query and fetch results
-            query_results = query.all()
-            logger.info(f"Found {len(query_results)} patients with variant.")
+        # Execute query and fetch results
+        query_results = query.all()
+        logger.info(f"Found {len(query_results)} patients with variant.")
 
-            # Raise exception if no matching records found
-            if not query_results:
-                logger.info(f"No matching records found for search value='{search_value}'.")
-                raise NoMatchingRecordsError
+        # Raise exception if no matching records found
+        if not query_results:
+            logger.info(f"No patients found with variant '{search_value}'.")
+            raise NoMatchingRecordsError(f"No patients found with variant '{search_value}'.")
 
-            return [r[0] for r in query_results]
+        # Flatten SQLAlchemy tuple into list of patient names
+        return [r[0] for r in query_results]
 
-    # --- Other search types not yet implemented ---
-    logger.info(f"Search type '{search_type}' not implemented yet.")
-    return []
+    # --- Search by gene symbol ---
+    elif search_type == 'gene_symbol':
+        logger.info(f"Searching database for gene symbol= '{search_value}'")
+
+        # Find list of variants for that gene with patient name and variant classification
+        query = (
+            db_session.query(
+                Variant.hgvs,
+                Patient.name,
+                Variant.classification
+            )
+            .join(Patient_Variant, Patient_Variant.variant_id == Variant.hgvs)
+            .join(Patient, Patient.name == Patient_Variant.patient_name)
+            .filter(Variant.gene_symbol.ilike(search_value))
+        )
+        query_results = query.all()
+        logger.info(f"Found {len(query_results)} for gene symbol '{search_value}'")
+
+        # Raise exception if no matching records found
+        if not query_results:
+            logger.info(f"No matching variants found with gene symbol '{search_value}'.")
+            raise NoMatchingRecordsError(f"No matching variatns found with gene symbol '{search_value}'.")
+
+        # Flatten SQLAlchemy tuple into list of dictionaries
+        return [
+            {
+                "hgvs": r[0],
+                "patient": r[1],
+                "classification": r[2]
+            }
+            for r in query_results
+        ]
+    if search_type == 'patient':
 
         # if search_type == 'gene_symbol': return all variants for that gene, with the patient name and pathogencity
         # if search_type == 'patient': return all variants for that patient, with the pathogencity
