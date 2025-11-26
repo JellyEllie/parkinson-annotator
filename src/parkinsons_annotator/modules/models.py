@@ -3,79 +3,65 @@ models.py
 Defines ORM models for the Parkinson’s Annotator database.
 """
 
-from sqlalchemy import Column, Integer, String, ForeignKey, SmallInteger, CHAR, Text, PrimaryKeyConstraint
+from sqlalchemy import Column, Integer, ForeignKey, VARCHAR
 from sqlalchemy.orm import declarative_base
 
 # Create base class for declarative mapping
 Base = declarative_base()
 
+class Genes(Base):
+    """ORM mapping for the 'genes' table."""
+    __tablename__ = 'genes'
+
+    gene_symbol = Column(VARCHAR(10), primary_key=True)
+    gene_url = Column(VARCHAR(500))
+
+    def __repr__(self):
+        return (
+            f"<Gene(gene={self.gene_symbol})>"
+        )
+
 class Variant(Base):
     """ORM mapping for the 'variants' table."""
     __tablename__ = 'variants'
 
-    # id = Column(Integer, primary_key=True, autoincrement=True)  
-    # pos = Column(Integer, nullable=False)                         
-    # ref = Column(String(1), nullable=False)
-    # alt = Column(String(1), nullable=False)
-    # hgvs = Column(String)
-    # classification = Column(String)
-    # gene_symbol = Column(String)
-    # clinvar_id = Column(String)
-
-    #TODO: 
-    id = Column(String, primary_key=True)
-    chromosome = Column(SmallInteger, nullable=False)
-    position = Column(Integer, nullable=False)
-    ref = Column(CHAR(1), nullable=False)
-    alt = Column(CHAR(1), nullable=False)
-    hgvs = Column(Text)
-    classification = Column(Text)
-    gene_symbol = Column(Text)
-    clinvar_id = Column(Text)
-    cdna_change = Column(Text)
-    clinvar_accession = Column(Text)
-    num_submissions = Column(Integer)
-    review_status = Column(Text)
-    associated_condition = Column(Text)
-    clinvar_url = Column(Text)
+    vcf_form = Column(VARCHAR(30))
+    hgvs = Column(VARCHAR(50), primary_key=True)
+    clinvar_id = Column(VARCHAR(20))
+    gene_symbol = Column(VARCHAR(10), ForeignKey("genes.gene_symbol"))
+    classification = Column(VARCHAR(50))
+    cdna_change = Column(VARCHAR(20))
+    clinvar_accession = Column(VARCHAR(20))
+    num_records = Column(VARCHAR(3))
+    review_status = Column(VARCHAR(50))
+    associated_condition = Column(VARCHAR(50))
+    clinvar_url = Column(VARCHAR(500))
 
     def __repr__(self):
         return (
-            f"<Variant(id={self.id}, chr={self.chromosome}, pos={self.pos}, "
-            f"ref={self.ref}, alt={self.alt}, gene={self.gene_symbol})>"
+            f"<Variant(hgvs={self.hgvs}, gene={self.gene_symbol})>"
         )
-#TODO: 
-    # id = Column(String, primary_key=True)
-    # chromosome = Column(Integer, nullable=False) SmallInteger
-    # position = Column(Integer, nullable=False)
-    # ref = Column(CHAR(1), nullable=False)
-    # alt = Column(CHAR(1), nullable=False)
-    # hgvs = Column(Text)
-    # classification = Column(Text)
-    # gene_symbol = Column(Text)
-    # clinvar_id = Column(Text)
-    # cdna_change = Column(Text)
-    # clinvar_accession = Column(Text)
-    # num_submissions = Column(Integer)
-    # review_status = Column(Text)
-    # associated_condition = Column(Text)
-    # clinvar_url = Column(Text)
-
+# To discuss. I don't think we need the rest of this code
 class Patient(Base):
     """ORM mapping for the 'patients' table."""
     __tablename__ = 'patients'
 
-    name = Column(String, primary_key=True)
+    name = Column(VARCHAR(15), primary_key=True)
 
+    def __repr__(self):
+        return (
+            f"<Patient(name={self.name})>"
+        )
 
-class Connector(Base):                           
+class Connector(Base):
     """ORM mapping for linking patients to variants."""
     __tablename__ = 'patient_variant'
 
-    # id = Column(Integer, primary_key=True, autoincrement=True)
-    patient_name = Column(String, ForeignKey("patients.name"), nullable=False)
-    variant_id = Column(Integer, ForeignKey("variants.id"), nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    patient_name = Column(VARCHAR(15), ForeignKey("patients.name"), nullable=False)
+    variant_hgvs = Column(VARCHAR(50), ForeignKey("variants.hgvs"), nullable=False)
 
-    __table_args__ = (
-        PrimaryKeyConstraint('patient_name', 'variant_id'),
-    )
+    def __repr__(self):
+        return (
+            f"<Connection(name={self.patient_name}, hgvs={self.variant_hgvs})>"
+        )
