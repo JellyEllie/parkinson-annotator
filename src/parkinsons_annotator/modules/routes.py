@@ -11,7 +11,7 @@ load_dotenv()  # Load environment variables from .env file
 
 from .database_search import database_list, SearchFieldEmptyError, NoMatchingRecordsError
 from .data_extraction import load_and_insert_data
-from src.parkinsons_annotator.logger import logger
+from parkinsons_annotator.logger import logger
 
 route_blueprint = Blueprint('routes', __name__)
 
