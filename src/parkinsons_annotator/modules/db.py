@@ -1,7 +1,7 @@
 from flask import g, current_app
 from sqlalchemy import create_engine, event, MetaData, Table, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, scoped_session
-from .modules.models import Base
+from .models import Base
 
 # Global placeholders
 engine = None

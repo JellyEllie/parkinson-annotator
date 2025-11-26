@@ -10,9 +10,9 @@ Exceptions:
     NoMatchingRecordsError: Raised if search finds no records matching the search criteria.
 """
 
-from src.parkinsons_annotator.modules.models import Variant, Patient, Patient_Variant, Genes
-from src.parkinsons_annotator.logger import logger
-from src.parkinsons_annotator.modules.db import get_db_session
+from parkinsons_annotator.modules.models import Variant, Patient, Patient_Variant, Genes
+from parkinsons_annotator.logger import logger
+from parkinsons_annotator.modules.db import get_db_session
 
 # Custom exceptions
 class SearchFieldEmptyError(Exception):
@@ -119,9 +119,12 @@ def database_list(search_type=None, search_value=None):
             }
             for r in query_results
         ]
-    if search_type == 'patient':
 
-        # if search_type == 'gene_symbol': return all variants for that gene, with the patient name and pathogencity
+    # --- Search by patient ---
+    elif search_type == 'patient':
+        logger.info(f"Searching database for patient= '{search_value}'")
+
+
         # if search_type == 'patient': return all variants for that patient, with the pathogencity
         # if search_type == 'classification': return all variants with that classification, with the patient name and pathogencity
 

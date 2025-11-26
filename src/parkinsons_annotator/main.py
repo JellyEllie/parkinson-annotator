@@ -5,7 +5,7 @@ import webbrowser
 from dotenv import load_dotenv
 from flask import Flask
 
-from .logger import logger
+from parkinsons_annotator.logger import logger
 from .modules.db import close_db_session, has_full_data, create_db_engine, create_tables
 from .modules.database_creation import create_db_and_tables
 from .modules.data_extraction import load_and_insert_data
