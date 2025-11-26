@@ -10,7 +10,7 @@ Exceptions:
     NoMatchingRecordsError: Raised if search finds no records matching the search criteria.
 """
 
-from parkinsons_annotator.modules.models import Variant, Patient, Patient_Variant, Genes
+from parkinsons_annotator.modules.models import Variant, Patient, Connector, Genes
 from parkinsons_annotator.logger import logger
 from parkinsons_annotator.modules.db import get_db_session
 
@@ -58,8 +58,8 @@ def database_list(search_type=None, search_value=None):
             # Find list of patients with matching hgvs id
             query = (
                 db_session.query(Patient.name)
-                .join(Patient_Variant, Patient.name == Patient_Variant.patient_name)
-                .join(Variant, Variant.id == Patient_Variant.variant_id)
+                .join(Connector, Patient.name == Connector.patient_name)
+                .join(Variant, Variant.id == Connector.variant_id)
                 .filter(Variant.hgvs.ilike(search_value))
             )
 
@@ -70,8 +70,8 @@ def database_list(search_type=None, search_value=None):
             # Find list of patients with matching genomic notation
             query = (
                 db_session.query(Patient.name)
-                .join(Patient_Variant, Patient.name == Patient_Variant.patient_name)
-                .join(Variant, Variant.id == Patient_Variant.variant_id)
+                .join(Connector, Patient.name == Connector.patient_name)
+                .join(Variant, Variant.id == Connector.variant_id)
                 .filter(Variant.vcf_form.ilike(search_value))
             )
 
@@ -98,8 +98,8 @@ def database_list(search_type=None, search_value=None):
                 Patient.name,
                 Variant.classification
             )
-            .join(Patient_Variant, Patient_Variant.variant_id == Variant.hgvs)
-            .join(Patient, Patient.name == Patient_Variant.patient_name)
+            .join(Connector, Connector.variant_id == Variant.hgvs)
+            .join(Patient, Patient.name == Connector.patient_name)
             .filter(Variant.gene_symbol.ilike(search_value))
         )
         query_results = query.all()
