@@ -85,7 +85,7 @@ def database_list(search_type=None, search_value=None):
             raise NoMatchingRecordsError(f"No patients found with variant '{search_value}'.")
 
         # Flatten SQLAlchemy tuple into list of patient names
-        return [r[0] for r in query_results]
+        return [{"Patient": r[0]} for r in query_results]
 
     # --- Search by gene symbol ---
     elif search_type == 'gene_symbol':
@@ -170,7 +170,7 @@ def database_list(search_type=None, search_value=None):
             raise NoMatchingRecordsError(f"No variants found for classification '{search_value}'.")
 
         # Flatten SQLAlchemy tuple into list of dictionaries
-        return [r[0] for r in query_results]
+        return [{"Variant": r[0]} for r in query_results]
 
 ### take variant info and return clinvar accession ID for that variant
  ### take clinvar accession ID and pass to clinvar API to get clinvar summary, and return patients
