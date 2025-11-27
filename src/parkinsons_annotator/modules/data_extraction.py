@@ -198,7 +198,7 @@ def insert_dataframe_to_db(name, df):
 
 def load_and_insert_data():
     # data_path = "../uploads/" # Path to data or upload directory
-    data_path = os.getenv("UPLOAD_FOLDER")
+    data_path = os.getenv("UPLOAD_FOLDER", "parkinsons_data.db")
     logger.info(f"Loading data from: {data_path}")
     logger.info(f"Database path: {Path(data_path)}")
     

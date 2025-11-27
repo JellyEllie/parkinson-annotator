@@ -1,7 +1,8 @@
 from flask import g, current_app
 from sqlalchemy import create_engine, event, MetaData, Table, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, scoped_session
-from .modules.models import Base
+from . import models
+from .models import Base
 
 # Global placeholders
 engine = None
@@ -30,7 +31,12 @@ def create_tables():
     global engine
     if engine is None:
         create_db_engine()
+    import parkinsons_annotator.modules.models
     Base.metadata.create_all(engine)
+
+    print("Tables registered in Base.metadata:")
+    print(Base.metadata.tables.keys())
+
 
 def get_db_session():
     """Get a SQLAlchemy session tied to Flask's g context."""

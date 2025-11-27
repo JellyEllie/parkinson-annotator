@@ -21,31 +21,32 @@ def open_browser():
     '''The specified URL (whiich is the default created by the command to create the interface)'''
     webbrowser.open_new("http://127.0.0.1:5000/")
 
-def main():
-    logger.info("Starting Parkinsons Annotator Application")
-
+def create_app():
     # Set template_folder to the templates directory within the modules folder, so Flask can find the HTML files
     app = Flask(__name__, template_folder=str(Path(__file__).parent / "templates"))
     app.config['DB_NAME'] = DB_NAME
     app.teardown_appcontext(close_db_session)  # Ensure DB session is closed after each request
     app.register_blueprint(route_blueprint)
 
+    return app
+
+def main():
+    logger.info("Starting Parkinsons Annotator Application")
+
+    app = create_app()
+
     with app.app_context():
         # Also need to check if the database is fully populated
         if not Path(DB_NAME).exists():
             logger.info(f"Database '{DB_NAME}' not found. Creating new database and loading data.")
             # create_db_and_tables(DB_NAME) # Ensure the database and table are created
-            create_db_engine()          # Create the database engine
-            create_tables()             # Create tables in the database
+            create_db_engine()  # Create the database engine
+            create_tables()  # Create tables in the database
 
-        # if not has_full_data():
-            load_and_insert_data() # Load data and insert into the database
+            # if not has_full_data():
+            load_and_insert_data()  # Load data and insert into the database
             # enrich_database()
 
-    # Do the API bits to grab the extra data here before starting the app
-    # if not has_full_data(DB_NAME):
-    #     enrich_database(DB_NAME)
-    # app.run(host='
     threading.Timer(1, open_browser).start()    # Opens the interface, several things happen at once for this to work
     app.run(debug=True, use_reloader=False)     # Prevents two interfaces from opening
 
