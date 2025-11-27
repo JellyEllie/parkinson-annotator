@@ -59,7 +59,7 @@ def database_list(search_type=None, search_value=None):
             query = (
                 db_session.query(Patient.name)
                 .join(Connector, Patient.name == Connector.patient_name)
-                .join(Variant, Variant.id == Connector.variant_id)
+                .join(Variant, Variant.vcf_form == Connector.variant_vcf_form)
                 .filter(Variant.hgvs.ilike(search_value))
             )
 
@@ -71,7 +71,7 @@ def database_list(search_type=None, search_value=None):
             query = (
                 db_session.query(Patient.name)
                 .join(Connector, Patient.name == Connector.patient_name)
-                .join(Variant, Variant.id == Connector.variant_id)
+                .join(Variant, Variant.vcf_form == Connector.variant_vcf_form)
                 .filter(Variant.vcf_form.ilike(search_value))
             )
 
@@ -98,7 +98,7 @@ def database_list(search_type=None, search_value=None):
                 Patient.name,
                 Variant.classification
             )
-            .join(Connector, Connector.variant_id == Variant.hgvs)
+            .join(Connector, Connector.variant_vcf_form == Variant.vcf_form)
             .join(Patient, Patient.name == Connector.patient_name)
             .filter(Variant.gene_symbol.ilike(search_value))
         )
@@ -107,8 +107,8 @@ def database_list(search_type=None, search_value=None):
 
         # Raise exception if no matching records found
         if not query_results:
-            logger.info(f"No matching variants found with gene symbol '{search_value}'.")
-            raise NoMatchingRecordsError(f"No matching variatns found with gene symbol '{search_value}'.")
+            logger.info(f"No variants found with gene symbol '{search_value}'.")
+            raise NoMatchingRecordsError(f"No variants found with gene symbol '{search_value}'.")
 
         # Flatten SQLAlchemy tuple into list of dictionaries
         return [
@@ -124,10 +124,51 @@ def database_list(search_type=None, search_value=None):
     elif search_type == 'patient':
         logger.info(f"Searching database for patient= '{search_value}'")
 
+        # Find list of variants for that patient with the pathogencity
+        query = (
+            db_session.query
+            (Variant.hgvs,
+             Variant.classification)
+            .join(Connector, Connector.variant_vcf_form == Variant.vcf_form)
+            .join(Patient, Patient.name == Connector.patient_name)
+            .filter(Patient.name.ilike(search_value))
+        )
+        query_results = query.all()
+        logger.info(f"Found {len(query_results)} for patient '{search_value}'")
 
-        # if search_type == 'patient': return all variants for that patient, with the pathogencity
-        # if search_type == 'classification': return all variants with that classification, with the patient name and pathogencity
+        # Raise exception if no matching records found
+        if not query_results:
+            logger.info(f"No variants found for patient '{search_value}'.")
+            raise NoMatchingRecordsError(f"No variants found for patient '{search_value}'.")
 
+        # Flatten SQLAlchemy tuple into list of dictionaries
+        return [
+            {
+                "hgvs": r[0],
+                "classification": r[1],
+            }
+            for r in query_results
+        ]
+
+    elif search_type == 'classification':
+        logger.info(f"Searching database for classification= '{search_value}'")
+        # Find list of variants with that classification
+        query = (
+            db_session.query
+            (Variant.hgvs)
+            .filter(Variant.classification.ilike(search_value))
+        )
+
+        query_results = query.all()
+        logger.info(f"Found {len(query_results)} for classification '{search_value}'")
+
+        # Raise exception if no matching records found
+        if not query_results:
+            logger.info(f"No variants found for classification '{search_value}'.")
+            raise NoMatchingRecordsError(f"No variants found for classification '{search_value}'.")
+
+        # Flatten SQLAlchemy tuple into list of dictionaries
+        return [r[0] for r in query_results]
 
 ### take variant info and return clinvar accession ID for that variant
  ### take clinvar accession ID and pass to clinvar API to get clinvar summary, and return patients
