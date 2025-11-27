@@ -135,6 +135,7 @@
   li.innerHTML = `
     ${item.patient ? `<strong>Patient:</strong> ${item.patient}<br>` : ""}
     ${item.hgvs ? `<strong>HGVS:</strong> ${item.hgvs}<br>` : ""}
+    ${item.gene_symbol ? `<strong>Gene:</strong> ${item.gene_symbol}<br>` : ""}
     ${item.classification ? `<strong>Classification:</strong> ${item.classification}` : ""}
   `;
 }
