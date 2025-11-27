@@ -19,7 +19,7 @@ def create_db_engine():
 
     #Determine database name
     if has_app_context():
-        db_name = current_app.config("DB_NAME")
+        db_name = current_app.config["DB_NAME"]
     else:
         # Fallback for scripts: use the SAME instance folder as the Flask app
         base_dir = Path(__file__).resolve().parent.parent  # parkinsons_annotator/

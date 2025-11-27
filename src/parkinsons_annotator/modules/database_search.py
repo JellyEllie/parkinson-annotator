@@ -131,7 +131,7 @@ def database_list(search_type=None, search_value=None):
              Variant.classification)
             .join(Connector, Connector.variant_vcf_form == Variant.vcf_form)
             .join(Patient, Patient.name == Connector.patient_name)
-            .filter(Patient.name.ilike(search_value))
+            .filter(Patient.name.ilike(f"%{search_value}%"))
         )
         query_results = query.all()
         logger.info(f"Found {len(query_results)} for patient '{search_value}'")
