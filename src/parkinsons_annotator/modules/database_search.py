@@ -10,7 +10,7 @@ Exceptions:
     NoMatchingRecordsError: Raised if search finds no records matching the search criteria.
 """
 
-from parkinsons_annotator.modules.models import Variant, Patient, Connector, Genes
+from parkinsons_annotator.modules.models import Variant, Patient, Connector
 from parkinsons_annotator.logger import logger
 from parkinsons_annotator.modules.db import get_db_session
 
@@ -134,7 +134,7 @@ def database_list(search_type=None, search_value=None):
             .filter(Patient.name.ilike(f"%{search_value}%"))
         )
         query_results = query.all()
-        logger.info(f"Found {len(query_results)} for patient '{search_value}'")
+        logger.info(f"Found {len(query_results)} variants for patient '{search_value}'")
 
         # Raise exception if no matching records found
         if not query_results:
@@ -160,7 +160,7 @@ def database_list(search_type=None, search_value=None):
         )
 
         query_results = query.all()
-        logger.info(f"Found {len(query_results)} for classification '{search_value}'")
+        logger.info(f"Found {len(query_results)} variants for classification '{search_value}'")
 
         # Raise exception if no matching records found
         if not query_results:
