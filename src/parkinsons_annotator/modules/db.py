@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 from flask import g, current_app, has_app_context, has_request_context
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -16,11 +18,16 @@ def create_db_engine():
     global engine, Session
 
     #Determine database name
-    db_name = "parkinsons_data.db"
     if has_app_context():
-        db_name = current_app.config.get("DB_NAME", db_name)
+        db_name = current_app.config("DB_NAME")
+    else:
+        # Fallback for scripts: use the SAME instance folder as the Flask app
+        base_dir = Path(__file__).resolve().parent.parent  # parkinsons_annotator/
+        instance_dir = base_dir / "instance"
+        db_name = instance_dir / "parkinsons_data.db"
 
-    engine = create_engine(f"sqlite:///{db_name}", echo=True)
+    db_path = Path(db_name).resolve()
+    engine = create_engine(f"sqlite:///{db_path}", echo=True)
 
     # Enable SQLite foreign keys
     @event.listens_for(engine, "connect")
