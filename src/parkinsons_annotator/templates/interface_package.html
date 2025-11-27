@@ -127,12 +127,25 @@
 
       const results = data.results;
       if (results && results.length > 0) {
-        results.forEach(item => {
-          const li = document.createElement("li");
-          li.textContent = item;
-          resultsList.appendChild(li);
-        });
-      } else {
+  results.forEach(item => {
+    const li = document.createElement("li");
+
+    // If backend returned a dictionary (patient search, gene search)
+    if (typeof item === "object" && item !== null) {
+  li.innerHTML = `
+    ${item.patient ? `<strong>Patient:</strong> ${item.patient}<br>` : ""}
+    ${item.hgvs ? `<strong>HGVS:</strong> ${item.hgvs}<br>` : ""}
+    ${item.classification ? `<strong>Classification:</strong> ${item.classification}` : ""}
+  `;
+}
+    // If backend returned a string (variant search → patient names)
+    else {
+      li.textContent = item;
+    }
+
+    resultsList.appendChild(li);
+  });
+} else {
         resultsList.innerHTML = "<li>No matches found</li>";
       }
     });

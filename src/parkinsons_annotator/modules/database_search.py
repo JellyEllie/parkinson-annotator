@@ -121,7 +121,7 @@ def database_list(search_type=None, search_value=None):
         ]
 
     # --- Search by patient ---
-    elif search_type == 'patient':
+    elif search_type in ('patient', 'patient_name'):
         logger.info(f"Searching database for patient= '{search_value}'")
 
         # Find list of variants for that patient with the pathogencity
