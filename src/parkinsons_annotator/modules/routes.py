@@ -1,16 +1,20 @@
 """
-This script creates the user interface and generates vriables from the search and input sections which can be used within the rest of the program
-The visuals and interactive elements of the interface are stored in a html file
+Routes for UI, search, upload, and shutdown.
+
+These creates the user interface and generates variables from the search and input sections which can
+be used within the rest of the program.
+The visuals and interactive elements of the interface are stored in a html file.
 """
 
 import os
 import signal
-from flask import Blueprint, render_template, request, jsonify, current_app as app
+from flask import Blueprint, render_template, request, jsonify, current_app
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
 
 from .database_search import database_list, SearchFieldEmptyError, NoMatchingRecordsError
 from .data_extraction import load_and_insert_data
+from parkinsons_annotator.modules.db import get_db_session, close_db_session
 from parkinsons_annotator.logger import logger
 
 route_blueprint = Blueprint('routes', __name__)
@@ -59,24 +63,31 @@ def upload_file():
         return "No file part in the request", 400
 
     file = request.files['file']  # Get file from form
-
     if file.filename == '':
         return "No file selected", 400
 
-    # Save the file
-    # filepath = os.path.join(app.config['upload_folder'], file.filename)
+    # Ensure upload folder exists
+    upload_dir = current_app.config["UPLOAD_FOLDER"]
+    os.makedirs(upload_dir, exist_ok=True)
 
-    # UPLOAD_FOLDER = 'uploads'  # folder name
-    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "uploads")
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # create it if it doesn’t exist
-    app.config['upload_folder'] = UPLOAD_FOLDER
-
-    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+    # Save file to upload directory
+    filepath = os.path.join(upload_dir, file.filename)
     file.save(filepath)
+    logger.info(f"Uploaded file saved to: {filepath}")
 
-    # TODO: This route handler doesn't handle errors during data insertion
-    # So causes upload failed alert to the user and a flask crash if something goes wrong
-    load_and_insert_data()
+    # Run data extraction and insertion
+    session = None
+    try:
+        session = get_db_session()  # ensures a session is available
+        load_and_insert_data()
+        session.commit()  # commit any changes
+    except Exception as e:
+        logger.error(f"Data extraction failed: {e}")
+        if session:
+            session.rollback()  # rollback on error
+        return f"Upload failed: {e}", 500
+    finally:
+        if session:
+            close_db_session()  # ensures session is closed
 
-    logger.info( file.filename )
-    return f"File '{file.filename}' uploaded and stored successfully!"
+    return f"File '{file.filename}' uploaded and processed successfully!"

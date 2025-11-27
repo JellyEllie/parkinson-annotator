@@ -25,14 +25,14 @@ class Variant(Base):
     """ORM mapping for the 'variants' table."""
     __tablename__ = 'variants'
 
-    vcf_form = Column(VARCHAR(30))
-    hgvs = Column(VARCHAR(50), primary_key=True)
+    vcf_form = Column(VARCHAR(30), primary_key=True) # Use genomic notation as primary key
+    hgvs = Column(VARCHAR(50))
     clinvar_id = Column(VARCHAR(20))
     gene_symbol = Column(VARCHAR(10), ForeignKey("genes.gene_symbol"))
     classification = Column(VARCHAR(50))
     cdna_change = Column(VARCHAR(20))
     clinvar_accession = Column(VARCHAR(20))
-    num_records = Column(VARCHAR(3))
+    num_records = Column(VARCHAR(10))
     review_status = Column(VARCHAR(50))
     associated_condition = Column(VARCHAR(50))
     clinvar_url = Column(VARCHAR(500))
@@ -59,9 +59,9 @@ class Connector(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     patient_name = Column(VARCHAR(15), ForeignKey("patients.name"), nullable=False)
-    variant_hgvs = Column(VARCHAR(50), ForeignKey("variants.hgvs"), nullable=False)
+    variant_vcf_form = Column(VARCHAR(50), ForeignKey("variants.vcf_form"), nullable=False)
 
     def __repr__(self):
         return (
-            f"<Connection(name={self.patient_name}, hgvs={self.variant_hgvs})>"
+            f"<Connection(name={self.patient_name}, hgvs={self.variant_vcf_form})>"
         )
