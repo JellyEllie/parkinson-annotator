@@ -2,6 +2,7 @@ from flask import g, current_app, has_app_context, has_request_context
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker, scoped_session
 from .models import Base
+from parkinsons_annotator.logger import logger
 
 # Global placeholders
 engine = None
@@ -77,10 +78,11 @@ def has_full_data():
     session = get_db_session()
 
     try:
-        tables = ['patients', 'variants', 'patient_variant', 'genes']
+        tables = ['patients', 'variants', 'patient_variant']
         for table_name in tables:
             count = session.execute(f"SELECT COUNT(*) FROM {table_name}").scalar()
             if count == 0:
+                logger.info(f"Database incomplete: table '{table_name}' is empty.")
                 return False
         return True
     finally:

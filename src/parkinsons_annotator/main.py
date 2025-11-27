@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask import Flask
 
 from parkinsons_annotator.logger import logger
-from parkinsons_annotator.modules.db import close_db_session, create_db_engine, create_tables
+from parkinsons_annotator.modules.db import close_db_session, create_db_engine, create_tables, has_full_data
 from parkinsons_annotator.modules.routes import route_blueprint
 from parkinsons_annotator.modules.data_extraction import load_and_insert_data
 
@@ -55,12 +55,13 @@ def main():
             create_db_engine()          # Create the database engine and session
             create_tables()             # Create tables in the database
 
-        # Load initial data
-        try:
-            logger.info("Loading initial data into the database...")
-            load_and_insert_data()
-        except Exception as e:
-            logger.error(f"Failed to load initial data: {e}")
+        # Load initial data if a table is empty
+        if not has_full_data():
+            try:
+                logger.info("Loading initial data into the database...")
+                load_and_insert_data()
+            except Exception as e:
+                logger.error(f"Failed to load initial data: {e}")
 
     # Do the API bits to grab the extra data here before starting the app
     # if not has_full_data(DB_NAME):
