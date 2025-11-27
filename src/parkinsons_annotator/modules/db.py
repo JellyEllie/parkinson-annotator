@@ -1,7 +1,7 @@
 from flask import g, current_app, has_app_context, has_request_context
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker, scoped_session
-from .models import Base
+from parkinsons_annotator.modules.models import Base, Patient, Variant, Connector
 from parkinsons_annotator.logger import logger
 
 # Global placeholders
@@ -77,14 +77,25 @@ def has_full_data():
     """Check if the database has data in patients, variants, and patient_variant tables."""
     session = get_db_session()
 
+    # Tables to check and their corresponding models:
+    tables = [
+        ("patients", Patient),
+        ("variants", Variant),
+        ("patient_variant", Connector),
+    ]
+
     try:
-        tables = ['patients', 'variants', 'patient_variant']
-        for table_name in tables:
-            count = session.execute(f"SELECT COUNT(*) FROM {table_name}").scalar()
+        for table_name, model in tables:
+            count = session.query(model).count()
+            logger.info(f"Table '{table_name}' contains {count} rows.")
+
             if count == 0:
-                logger.info(f"Database incomplete: table '{table_name}' is empty.")
+                logger.warning(f"Table '{table_name}' is empty — database is NOT fully populated.")
                 return False
+
+        logger.info("All required tables have data — database is fully populated.")
         return True
+
     finally:
         if not has_request_context():
             session.close()
