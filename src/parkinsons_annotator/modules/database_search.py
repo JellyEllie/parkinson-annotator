@@ -128,6 +128,7 @@ def database_list(search_type=None, search_value=None):
         query = (
             db_session.query
             (Variant.hgvs,
+             Variant.gene_symbol,
              Variant.classification)
             .join(Connector, Connector.variant_vcf_form == Variant.vcf_form)
             .join(Patient, Patient.name == Connector.patient_name)
@@ -145,7 +146,8 @@ def database_list(search_type=None, search_value=None):
         return [
             {
                 "hgvs": r[0],
-                "classification": r[1],
+                "gene_symbol": r[1],
+                "classification": r[2],
             }
             for r in query_results
         ]
