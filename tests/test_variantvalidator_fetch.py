@@ -75,12 +75,12 @@ def test_fetch_variant_validator_invalid_bases():
 # API failure
 @patch("requests.get")  # Replaces requests.get with a mock object during this test
 def test_fetch_variant_validator_api_failure(mock_get):  # The mock_get is the mock object
-    """Test that an API failure raises VariantValidatorResponseError using a mocked request"""
+    """Test that an API failure raises VariantValidatorResponseError after max retries using a mocked request."""
     variant_description = "17:45983420:G:T"
     mock_get.side_effect = requests.exceptions.RequestException()  # Simulate an API failure
     with pytest.raises(VariantValidatorResponseError):
         fetch_variant_validator(variant_description)
-    mock_get.assert_called_once()  # Verify that exactly one GET request was attempted
+    assert mock_get.call_count == 5  # Retry loop should call API 5 times before failing
 
 
 # No valid HGVS key in the JSON response from Variant Validator
