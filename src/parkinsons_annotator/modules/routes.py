@@ -30,14 +30,9 @@ def index():
     # return render_template("interface_package.html")
     return render_template("interface_package.html")
 
-@route_blueprint.route('/shutdown', methods=['POST'])
-def shutdown_server():
-    """This function shuts the server, which will be activated from inside the html file, triggered by the web browser shutting down"""
-    func = request.environ.get('werkzeug.server.shutdown')  # Calls from a WSGI enviornment using a speical key which shuts down the Flask server
-    if func:
-        func()                                              # If the shut down function isn't found, don't shut down the server
-    else:
-        os.kill(os.getpid(), signal.SIGINT)                 # Sends an interupt signal (kill) to the current process ID (getpid). This is the equivalant of typing in Ctl + C
+@route_blueprint.route('/about', methods=['GET'])
+def about():
+    return render_template("info.html")
 
 @route_blueprint.route('/search', methods=['POST'])
 def search():

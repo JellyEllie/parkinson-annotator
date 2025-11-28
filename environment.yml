@@ -6,9 +6,11 @@ dependencies:
   - flask=3.1.2
   - sqlalchemy=2.0.44
   - biopython=1.86
+  - requests
+  - pandas
   - pip
   - pip:
       - pytest==8.4.2
+      - python-dotenv
       - pytest-cov
-      - poetry==2.2.1
       - -e .   # install your package in editable mode
