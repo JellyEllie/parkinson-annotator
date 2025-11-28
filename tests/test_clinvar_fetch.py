@@ -1,6 +1,6 @@
 """
 Tests for ClinVar fetch functions:
-the fetch_clinvar_id(), 
+fetch_clinvar_id(),
 fetch_clinvar_esummary(),
 extract_clinvar_annotation().
 
@@ -9,8 +9,7 @@ Testing APIs with PyTest
 (https://codilime.com/blog/testing-apis-with-pytest-mocks-in-python/)
 """
 
-from unittest.mock import patch, MagicMock
-from Bio import Entrez
+from unittest.mock import patch
 import pytest
 from Parkinsons_annotator.utils.clinvar_fetch import fetch_clinvar_id, fetch_clinvar_esummary, extract_clinvar_annotation, HGVSFormatError, ClinVarConnectionError, ClinVarIDFormatError
 
@@ -90,9 +89,9 @@ def test_fetch_clinvar_esummary_api_failure(mock_esummary):
 def test_extract_clinvar_annotation_success(mock_esummary, mock_id):
     """Test that the correct ClinVar annotations are extracted from the ESummary."""
 
-    mock_id.return_value = "12345"  # Mock the ClinVar ID returned
+    mock_id.return_value = "12345"  # Mocks the ClinVar ID returned
 
-    mock_esummary.return_value = {  # Mock the ClinVar ESummary record
+    mock_esummary.return_value = {  # Mocks the ClinVar ESummary record
         "genes": [{"symbol": "GENE"}],
         "variation_set": [{"cdna_change": "c.123A>T"}],
         "accession": "ACCESSION123",
@@ -105,7 +104,6 @@ def test_extract_clinvar_annotation_success(mock_esummary, mock_id):
     }
 
     result = extract_clinvar_annotation("NM_001377265.1:c.841G>T") # HGVS string variant is not sent to the real ClinVar API, API calls are fully mocked above
-
     assert result["Gene symbol"] == "GENE"
     assert result["cDNA change"] == "c.123A>T"
     assert result["ClinVar variant ID"] == "12345"
@@ -113,4 +111,26 @@ def test_extract_clinvar_annotation_success(mock_esummary, mock_id):
     assert result["ClinVar consensus classification"] == "pathogenic"
     assert result["Number of submitted records"] == 3
     assert result["Associated condition"] == "Condition"
+
+
+# Missing annotation fields from ClinVar ESummary
+@patch("Parkinsons_annotator.utils.clinvar_fetch.fetch_clinvar_id")  # Replaces 'fetch_clinvar_id' function with a mock object during this test
+@patch("Parkinsons_annotator.utils.clinvar_fetch.fetch_clinvar_esummary")  # Replaces 'fetch_clinvar_esummary' function with a mock object during this test
+def test_extract_clinvar_annotation_missing_fields(mock_esummary, mock_id):
+    """Test that missing fields in ClinVar ESummary returns "N/A"."""
+
+    mock_id.return_value = "12345"  # Mocks the ClinVar ID returned
+    
+    mock_esummary.return_value = {} # Mocks that all fields missing in ClinVar ESummary
+
+    result = extract_clinvar_annotation("NM_001377265.1:c.841G>T")  # HGVS string variant is not sent to the real ClinVar API, API calls are fully mocked above
+    assert result["Gene symbol"] == "N/A"
+    assert result["cDNA change"] == "N/A"
+    assert result["ClinVar accession"] == "N/A"
+    assert result["ClinVar consensus classification"] == "N/A"
+    assert result["Number of submitted records"] == "N/A"
+    assert result["Review status"] == "N/A"
+    assert result["Associated condition"] == "N/A"
+    assert result["ClinVar variant ID"] == "12345"
+    assert result["ClinVar record URL"].endswith("12345")
 
