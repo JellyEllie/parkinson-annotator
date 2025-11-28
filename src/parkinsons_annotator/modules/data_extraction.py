@@ -1,46 +1,55 @@
 #!/usr/bin/env python3
 """
+data_extraction.py
+
 Loads all patient variant files (CSV and VCF) from ParkCSV/ and ParkVCF/,
 parses them into DataFrames, and inserts the data into the parkinsons_data.db
 SQLite database with proper patient–variant relationships.
+
 """
 
 import os
 import pandas as pd
 from pathlib import Path
-import time
 from dotenv import load_dotenv
+import time
 
-from parkinsons_annotator.utils.variantvalidator_fetch import fetch_variant_validator
-from parkinsons_annotator.utils.clinvar_fetch import fetch_clinvar_record
+from flask import current_app
 from parkinsons_annotator.logger import logger
 from parkinsons_annotator.modules.db import get_db_session
-from .models import Variant, Patient, Connector
+from .models import Genes, Variant, Patient, Connector
+from parkinsons_annotator.utils.variantvalidator_fetch import fetch_variant_validator
+from parkinsons_annotator.utils.clinvar_fetch import fetch_clinvar_record
+from parkinsons_annotator.utils.clinvar_fetch import ClinVarIDNotFoundError, ClinVarConnectionError, HGVSFormatError
 
 load_dotenv()
 
 dataframes = {}
-data_columns = data_columns = [
-    "chromosome", "position", "id", "ref", "alt", "hgvs",
+
+# Full list of columns; CSV can have fewer, missing columns will be added as None and later overwritten
+data_columns = [
+    "chromosome", "position", "id", "ref", "alt", "vcf_form", "hgvs",
     "gene_symbol", "cdna_change", "clinvar_id", "clinvar_accession",
-    "classification", "num_submissions", "review_status", "condition", "clinvar_url"
+    "classification", "num_records", "review_status", "associated_condition", "clinvar_url"
 ]
 
+# Read parameters for CSV/VCF files:
+# 'names' forces column names to match data_columns, 'skiprows' skips header row of CSV
 data_params = {
     ".csv": {"sep": ",", "names": data_columns, "dtype": str, "skiprows": 1},
     ".vcf": {"sep": "\t", "comment": "#", "names": data_columns, "dtype": str}
 }
 
-# Mapping from ClinVar dict keys to your DataFrame columns
+# Mapping from ClinVar keys to DataFrame columns
 CLINVAR_FIELDS = {
     "Gene symbol": "gene_symbol",
     "cDNA change": "cdna_change",
     "ClinVar variant ID": "clinvar_id",
     "ClinVar accession": "clinvar_accession",
     "ClinVar consensus classification": "classification",
-    "Number of submitted records": "num_submissions",
+    "Number of submitted records": "num_records",
     "Review status": "review_status",
-    "Associated condition": "condition",
+    "Associated condition": "associated_condition",
     "ClinVar record URL": "clinvar_url"
 }
 
@@ -56,58 +65,128 @@ def load_raw_data(path):
     """
     for raw_file in Path(path).glob("*"): # Recursively find all files in 'data' directory
         if raw_file.suffix in data_params: # Check if file extension exists in data_params
-            df = pd.read_csv(raw_file, **data_params[raw_file.suffix]) # Load file into DataFrame with appropriate parameters
+            df = pd.read_csv(raw_file, **data_params[raw_file.suffix]) # Load file into df with appropriate parameters
+            # Ensure all columns exist
+            for col in data_columns:
+                if col not in df.columns:
+                    df[col] = None # Add missing columns as None if not contained in file
             dataframes[raw_file.stem] = df # Store DataFrame in dictionary with file base (stem) name as key
             logger.info(f"Loaded {raw_file.name}") # Log loading
 
+def load_single_file(file_path):
+    """
+        Load one CSV or VCF file into the global dataframes dict.
+        Used in upload route to avoid reloading all existing files in upload directory when uploading a new file.
 
-def fill_variant_id(df: pd.DataFrame) -> pd.DataFrame:
-    """Fill the 'id' column using chromosome:position:ref:alt."""
-    df['id'] = df.apply(lambda r: f"{r.chromosome}:{r.position}:{r.ref}:{r.alt}", axis=1)
+        Parameters:
+        file_path (str): Path to file to load. Must be a CSV or VCF file.
+
+        Returns:
+        None: DataFrames are stored in global 'dataframes' dict.
+    """
+
+    raw_file = Path(file_path)
+
+    if raw_file.suffix not in data_params:
+        raise ValueError(f"Unsupported file type: {raw_file.suffix}")
+
+    # Load file
+    df = pd.read_csv(raw_file, **data_params[raw_file.suffix])
+
+    # Ensure all required columns exist
+    for col in data_columns:
+        if col not in df.columns:
+            df[col] = None
+
+    # Store under patient name (filename without extension)
+    dataframes[raw_file.stem] = df
+
+    logger.info(f"Loaded single file: {raw_file.name}")
+
+def fill_variant_notation(df: pd.DataFrame) -> pd.DataFrame:
+    """Fill the 'vcf_form' column using chromosome:position:ref:alt."""
+    df['vcf_form'] = df.apply(lambda r: f"{r.chromosome}:{r.position}:{r.ref}:{r.alt}", axis=1)
     return df
 
-
-def enrich_hgvs(df):
+def enrich_hgvs(df, throttle: float = 0.3):
     """
     Enrich the 'hgvs' column for all variants in the loaded DataFrames
-    using the VariantValidator API.
+    using the VariantValidator API, with optional throttling.
+
+    Parameters:
+    df (pd.DataFrame): DataFrame with variant data.
+    throttle (float): Seconds to wait between API calls.
     """
-    missing_hgvs = df['hgvs'].isna() | (df['hgvs'] == '')
+    missing_hgvs = df['hgvs'].isna() | (df['hgvs'] == '') # Collate rows where hgvs is missing (NA) or empty string
+
     for idx in df[missing_hgvs].index:
         try:
-            hgvs_data = fetch_variant_validator(df.at[idx, 'id'])
+            # fetch HGVS from VV API using genomic notation and add to DataFrame
+            hgvs_data = fetch_variant_validator(df.at[idx, 'vcf_form'])
             df.at[idx, 'hgvs'] = hgvs_data.get('HGVS nomenclature', None)
         except Exception as e:
-            logger.error(f"Error retrieving HGVS for variant {df.at[idx, 'id']}: {e}")
+            logger.error(f"Error retrieving HGVS for variant {df.at[idx, 'vcf_form']}: {e}")
             df.at[idx, 'hgvs'] = None
+        # Throttle API calls
+        if throttle > 0:
+            time.sleep(throttle)
     return df
 
-def enrich_clinvar(df):
-    # Only rows where clinvar_id is missing
+def enrich_clinvar(df, throttle: float = 0.3):
+    """
+    Enrich the 'clinvar' columns for all variants in the DataFrame
+    using the ClinVar API, with optional throttling.
+
+    Parameters:
+    df (pd.DataFrame): DataFrame with variant data.
+    throttle (float): Seconds to wait between API calls.
+
+    Returns:
+    pd.DataFrame: enriched DataFrame with ClinVar data.
+    """
+    # Only rows where clinvar_id is missing/empty string
     missing = df['clinvar_id'].isna() | (df['clinvar_id'] == '')
+
     for idx in df[missing].index:
         hgvs = df.at[idx, 'hgvs']
         if not hgvs:
-            continue  # skip if HGVS missing
+            continue  # Skip if HGVS missing as ClinVar cannot be queried without it
 
         try:
+            # Call ClinVar API - this may raise ClinVarIDNotFoundError
             clinvar_data = fetch_clinvar_record(hgvs)
-            #time.sleep(0.3)  # optional throttle to avoid rate limits
+
+            # Map ClinVar fields to DataFrame columns
+            for field, col in CLINVAR_FIELDS.items():
+                value = clinvar_data.get(field)
+                df.at[idx, col] = value
+
+        except (ClinVarIDNotFoundError, ClinVarConnectionError, HGVSFormatError) as e:
+            # Variant not found in ClinVar or other ClinVar-specific error
+            logger.warning(f"ClinVar lookup failed for {hgvs}: {e}")
+            # Set all ClinVar fields to None for this variant
+            for col in CLINVAR_FIELDS.values():
+                df.at[idx, col] = None
+
         except Exception as e:
-            logger.error("Error fetching ClinVar for %s: %s", hgvs, e)
-            clinvar_data = {k: None for k in CLINVAR_FIELDS.keys()}
+            # Unexpected error
+            logger.error(f"Unexpected error fetching ClinVar for {hgvs}: {e}")
+            # Set all ClinVar fields to None for this variant
+            for col in CLINVAR_FIELDS.values():
+                df.at[idx, col] = None
 
-        # Fill the DataFrame columns
-        for field, col in CLINVAR_FIELDS.items():
-            df.at[idx, col] = clinvar_data.get(field)
+        # Throttle API calls
+        if throttle > 0:
+            time.sleep(throttle)
 
+    # Return enriched DataFrame
     return df
 
 def insert_dataframe_to_db(name, df):
     """
     Insert patient and variant data from a DataFrame into SQLite,
     and link the patient to variants via the patient_variant junction table.
-    
+
     Assumes variants table uses a composite primary key:
     (chromosome, position, ref, alt)
 
@@ -118,103 +197,87 @@ def insert_dataframe_to_db(name, df):
     Returns:
     None
     """
-    # Get DB session
+    # Get SQLAlchemy database session (to connect to DB)
     db_session = get_db_session()
 
-    # Expected columns for variants
-    # expected_cols = ["chromosome", "position", "ref", "alt", "hgvs",
-    #                  "classification", "gene_symbol", "clinvar_id"]
-    expected_cols = [
-        "id", "chromosome", "position", "ref", "alt", "hgvs",
-        "classification", "gene_symbol", "clinvar_id", "clinvar_accession",
-        "num_submissions", "review_status", "associated_condition", "clinvar_url"
-    ]
-    # Fill missing columns with None
-    for col in expected_cols:
-        if col not in df.columns:
-            df[col] = None
-    
-    # Insert patient if not exists
-    # cur.execute("INSERT OR IGNORE INTO patients (name) VALUES (?)", (name,))
-    
+    # Convert all NaN values to None to avoid SQL errors
+    df = df.where(pd.notnull(df), None)
+
     # Ensure patient exists
     patient = db_session.get(Patient, name)
     if not patient:
         patient = Patient(name=name)
         db_session.add(patient)
         db_session.commit()
-    
-    # Iterate variants
+
+    # Assign genomic notation as primary key
     for _, row in df.iterrows():
-        variant = db_session.get(Variant, row["id"])
+        # Skip rows with missing vcf_form and warn if so
+        vcf_form = row["vcf_form"]
+        if not vcf_form:
+            logger.warning(f"Skipping variant with missing vcf_form for patient {name}")
+            continue
+
+        # Add gene to Genes table if missing
+        gene_symbol = row.get("gene_symbol") or "UNKNOWN"
+        if not db_session.get(Genes, gene_symbol):
+            db_session.add(Genes(gene_symbol=gene_symbol, gene_url=""))
+            db_session.flush()  # Flush communicates changes to DB to ensure data is visible so queries work
+
+        # Insert variant
+        variant = db_session.get(Variant, row["vcf_form"])
         if not variant:
             variant = Variant(
-                id=row["id"],
-                chromosome=int(row["chromosome"]),
-                position=int(row["position"]),
-                ref=row["ref"],
-                alt=row["alt"],
                 hgvs=row.get("hgvs"),
-                classification=row.get("classification"),
-                gene_symbol=row.get("gene_symbol"),
+                vcf_form=row.get("vcf_form"),
                 clinvar_id=row.get("clinvar_id"),
+                gene_symbol=gene_symbol,
+                classification=row.get("classification"),
                 cdna_change=row.get("cdna_change"),
                 clinvar_accession=row.get("clinvar_accession"),
-                num_submissions=row.get("num_submissions"),
+                num_records=row.get("num_records"),
                 review_status=row.get("review_status"),
-                associated_condition=row.get("condition"),
+                associated_condition=row.get("associated_condition"),
                 clinvar_url=row.get("clinvar_url")
             )
             db_session.add(variant)
-        
-        # Link patient to variant
-        link = db_session.get(Connector, (name, row["id"]))
-        if not link:
-            link = Connector(patient_name=name, variant_id=row["id"])
-            db_session.add(link)
+            db_session.flush()
 
-    # # Insert variants and link to patient
-    # for _, row in df.iterrows():
-    #     values = tuple(row[col] for col in expected_cols)
-        
-    #     # Insert variant (replace if same composite key exists)
-    #     cur.execute(f"""
-    #             INSERT OR REPLACE INTO variants
-    #             ({', '.join(expected_cols)})
-    #             VALUES ({', '.join(['?'] * len(expected_cols))})
-    #         """, values)
-        
-    #     # Link patient to variant in junction table using foreign key entries
-    #     cur.execute("""
-    #         INSERT OR IGNORE INTO patient_variant
-    #         (patient_name, variant_id)
-    #         VALUES (?, ?)
-    #     """, (name, row["id"]))
+        # Link patient to variant via Connector table
+        try:
+            link_exists = db_session.query(Connector).filter_by(
+                patient_name=name,
+                variant_vcf_form=vcf_form
+            ).first()
+        except Exception as e:
+            logger.error(f"Error querying Connector for patient {name}, variant {vcf_form}: {e}")
+            link_exists = True  # Skip insert to avoid NoneType issues
 
-    # conn.commit()
-    # conn.close()
-    logger.info(f"Inserted {len(df)} variants for patient '{name}' into the database.")
+        # Create link only if link is missing
+        if not link_exists:
+            db_session.add(Connector(patient_name=name, variant_vcf_form=row['vcf_form']))
 
+    db_session.commit() # Commit all changes to DB permanently (finalises flushed changes)
+    logger.info(f"Inserted {len(df)} variants for patient '{name}'.")
 
 def load_and_insert_data():
-    # data_path = "../uploads/" # Path to data or upload directory
-    data_path = os.getenv("UPLOAD_FOLDER", "parkinsons_data.db")
-    logger.info(f"Loading data from: {data_path}")
-    logger.info(f"Database path: {Path(data_path)}")
-    
-    load_raw_data(data_path)
+    """Top-level function to load, enrich, and insert all patient data."""
 
+    # Clear old data so it doesn't get reprocessed
+    dataframes.clear()
+    # Read upload folder from Flask app config
+    upload_folder = current_app.config["UPLOAD_FOLDER"]
+    logger.info(f"Loading data from: {upload_folder}")
+    #Load CSV and VCF files
+    load_raw_data(upload_folder)
+
+    # Enrich variant df with variant genomic notation, HGVS notation, and ClinVar data and insert into DB
     for patient_name, df in dataframes.items():
-        df = (df
-            .pipe(fill_variant_id)
-            .pipe(enrich_hgvs)
-            .pipe(enrich_clinvar)
-            )
+        df = (df.
+              pipe(fill_variant_notation)
+              .pipe(enrich_hgvs)
+              .pipe(enrich_clinvar)
+              )
         insert_dataframe_to_db(patient_name, df)
 
-    print(dataframes.keys())
-    print(dataframes['Patient1'].head())
-    # Insert all loaded DataFrames into the database
-
-if __name__ == "__main__":
-    load_and_insert_data()
+    logger.info(f"Finished processing {len(dataframes)} patient files.")

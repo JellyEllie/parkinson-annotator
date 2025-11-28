@@ -76,7 +76,7 @@
     <button type="submit">Search</button>
   </form>
 
-  <ul id="results"></ul>
+  <div id="results"></div>
 
   <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
     <input type="file" name="file" id="fileInput" required>
@@ -129,12 +129,47 @@
 
       const results = data.results;
       if (results && results.length > 0) {
-        results.forEach(item => {
-          const li = document.createElement("li");
-          li.textContent = item;
-          resultsList.appendChild(li);
-        });
-      } else {
+  // Build a table dynamically
+const table = document.createElement("table");
+table.style.margin = "20px auto";
+table.style.borderCollapse = "collapse";
+table.style.fontFamily = "Georgia, serif";
+table.style.fontSize = "18px";
+
+const header = document.createElement("tr");
+
+// Determine table columns based on fields returned
+const columns = Object.keys(results[0]);
+
+columns.forEach(col => {
+  const th = document.createElement("th");
+  th.textContent = col.replace("_", " ").toUpperCase();
+  th.style.padding = "10px 15px";
+  th.style.backgroundColor = "#e0e0e0";
+  th.style.border = "1px solid black";
+  header.appendChild(th);
+});
+
+table.appendChild(header);
+
+// Fill table rows
+results.forEach(row => {
+  const tr = document.createElement("tr");
+
+  columns.forEach(col => {
+    const td = document.createElement("td");
+    td.textContent = row[col];
+    td.style.padding = "8px 12px";
+    td.style.border = "1px solid black";
+    tr.appendChild(td);
+  });
+
+  table.appendChild(tr);
+});
+
+resultsList.appendChild(table);
+
+} else {
         resultsList.innerHTML = "<li>No matches found</li>";
       }
     });

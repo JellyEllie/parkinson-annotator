@@ -15,6 +15,7 @@ dependencies = [
     "flask",
     "sqlalchemy",
     "biopython",
+    "requests"
 ]
 
 # Optional dependencies used by developers

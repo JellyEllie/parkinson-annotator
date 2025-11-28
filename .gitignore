@@ -1,5 +1,9 @@
 .env
 __pycache__/
 *.egg-info
-poetry.lock
-src/logs/parkinsons_annotator.log
+logs/
+instance/
+*.csv
+*.vcf
+# pycharm idea folder
+.idea/

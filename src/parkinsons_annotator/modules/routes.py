@@ -1,23 +1,32 @@
-'''
-This script creates the user interface and generates vriables from the search and input sections which can be used within the rest of the program
-The visuals and interactive elements of the interface are stored in a html file
-'''
+"""
+Routes for UI, search, upload, and shutdown.
+
+These creates the user interface and generates variables from the search and input sections which can
+be used within the rest of the program.
+The visuals and interactive elements of the interface are stored in a html file.
+"""
 
 import os
 import signal
-from flask import Blueprint, render_template, request, jsonify, current_app as app
+from flask import Blueprint, render_template, request, jsonify, current_app
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
 
-from .database_search import database_list
-from .data_extraction import load_and_insert_data
+from parkinsons_annotator.modules.database_search import database_list, SearchFieldEmptyError, NoMatchingRecordsError
+from parkinsons_annotator.modules.data_extraction import (dataframes,
+                                                          load_single_file,
+                                                          fill_variant_notation,
+                                                          enrich_hgvs,
+                                                          enrich_clinvar,
+                                                          insert_dataframe_to_db)
+from parkinsons_annotator.modules.db import get_db_session, close_db_session
 from parkinsons_annotator.logger import logger
 
 route_blueprint = Blueprint('routes', __name__)
 
 @route_blueprint.route('/', methods=['GET'])
 def index():
-    '''This function opens the html file which contains the interface informtion'''
+    """This function opens the html file which contains the interface informtion"""
     # return render_template("interface_package.html")
     return render_template("interface_package.html")
 
@@ -35,12 +44,17 @@ def search():
     logger.info(f"User searched for: {search_value}, category: {search_type}")
 
     # Call the database search function
-    results = database_list(search_type=search_type, search_value=search_value)
+    try:
+        results = database_list(search_type=search_type, search_value=search_value)
+    except SearchFieldEmptyError:
+        return jsonify({"message": "Missing search fields"}), 400
+    except NoMatchingRecordsError:
+        return jsonify({"message": "No matching records found"}), 404
+    except Exception as e:
+        logger.error(f"Unexpected database error: {e}")
+        return jsonify({"message": "Internal server error"}), 500
 
-    if not results:
-        return jsonify({"message": "No results found"}), 404
-
-    return jsonify({"results": results})
+    return jsonify({"results": results}), 200
 
 @route_blueprint.route('/upload', methods=['POST'])
 def upload_file():
@@ -48,25 +62,46 @@ def upload_file():
     if 'file' not in request.files:
         return "No file part in the request", 400
 
-    file = request.files['file']  # Get file from form
-
+    # Get file from form
+    file = request.files['file']
     if file.filename == '':
         return "No file selected", 400
 
-    # Save the file
-    # filepath = os.path.join(app.config['upload_folder'], file.filename)
+    # Ensure upload folder exists
+    upload_dir = current_app.config["UPLOAD_FOLDER"]
+    os.makedirs(upload_dir, exist_ok=True)
 
-    # UPLOAD_FOLDER = 'uploads'  # folder name
-    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "uploads")
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # create it if it doesn’t exist
-    app.config['upload_folder'] = UPLOAD_FOLDER
-
-    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+    # Save file to upload directory
+    filepath = os.path.join(upload_dir, file.filename)
     file.save(filepath)
+    logger.info(f"Uploaded file saved to: {filepath}")
 
-    # TODO: This route handler doesn't handle errors during data insertion
-    # So causes upload failed alert to the user and a flask crash if something goes wrong
-    load_and_insert_data()
+    # Get database session
+    session = get_db_session()
 
-    logger.info( file.filename )
-    return f"File '{file.filename}' uploaded and stored successfully!"
+    # Run data extraction and insertion
+    try:
+        # Clear cache of previous dataframes
+        dataframes.clear()
+        # Load uploaded file
+        load_single_file(filepath)
+        # Enrich + insert for ONLY this patient
+        for patient_name, df in dataframes.items():
+            df = (df
+                  .pipe(fill_variant_notation)
+                  .pipe(enrich_hgvs)
+                  .pipe(enrich_clinvar)
+                  )
+            insert_dataframe_to_db(patient_name, df)
+        # Commit any changes to DB
+        session.commit()
+    except Exception as e:
+        logger.error(f"Data extraction failed: {e}")
+        if session:
+            session.rollback()  # rollback on error
+        return f"Upload failed: {e}", 500
+    finally:
+        if session:
+            close_db_session()  # ensures session is closed
+
+    return f"File '{file.filename}' uploaded and processed successfully!"
