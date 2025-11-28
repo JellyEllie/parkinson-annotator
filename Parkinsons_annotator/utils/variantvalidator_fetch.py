@@ -5,12 +5,16 @@ the script retrieves the HGVS transcript notation for the MANE Select transcript
 (e.g. "NM_001377265.1:c.841G>T"), and the corresponding HGNC and OMIM IDs.
 
 References:
+Tenacity: Retrying library for Python
+(https://tenacity.readthedocs.io/en/latest/)
+
 VariantValidator REST API documentation
 (https://rest.variantvalidator.org/)
 """
 
 import json
 import requests
+import time
 from Parkinsons_annotator.logger import logger
 
 
@@ -107,16 +111,33 @@ def fetch_variant_validator(variant_description):
 
     logger.info(f"Querying the VariantValidator API at URL: {url}.")
 
+    # Perform GET request to VariantValidator API with retry support
+    MAX_RETRIES = 5  # Maximum number of attempts
+    WAIT_SECONDS = 5  # Time to wait between attempts
 
-    # Perform GET request to VariantValidator API
-    try:
-        r = requests.get(url, timeout=15)  
-        r.raise_for_status()
-        logger.info("VariantValidator API request is successful.")
-    except requests.exceptions.RequestException as e:
-        logger.error ("Connection to the VariantValidator API was unsuccessful.")
-        logger.exception(e)
-        raise VariantValidatorResponseError(f"Unable to connect to the VariantValidator API: {e}") from e
+    for variantvalidator_attempt in range(1, MAX_RETRIES + 1):
+        try:
+            r = requests.get(url, timeout=15)
+            if r.status_code == 429:  # Handling HTTP 429 (rate limiting)
+                logger.warning(f"VariantValidator API rate limit encountered (HHTP429) on attempt {variantvalidator_attempt}. "
+                               f"Retrying in {WAIT_SECONDS} seconds"
+                )
+                time.sleep(WAIT_SECONDS)
+                continue
+
+            r.raise_for_status()  # Raise for any other HTTP error
+            logger.info("VariantValidator API request is successful.")
+            break  # Exit loop after success
+
+        except requests.exceptions.RequestException as e:
+            if variantvalidator_attempt == MAX_RETRIES:  # Final attempt
+                logger.error("Maximum retry attempts reached for VariantValidator API.")
+                logger.exception("API connection error.")
+                raise VariantValidatorResponseError(
+                    f"Unable to connect to the VariantValidator API after {MAX_RETRIES} attempts: {e}") from e
+            else:
+                logger.warning(f"Request failed on attempt {variantvalidator_attempt}: {e}. Retrying in {WAIT_SECONDS} seconds.")
+                time.sleep(WAIT_SECONDS)
 
 
     # VariantValidator response stored
