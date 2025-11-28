@@ -73,6 +73,36 @@ def load_raw_data(path):
             dataframes[raw_file.stem] = df # Store DataFrame in dictionary with file base (stem) name as key
             logger.info(f"Loaded {raw_file.name}") # Log loading
 
+def load_single_file(file_path):
+    """
+        Load one CSV or VCF file into the global dataframes dict.
+        Used in upload route to avoid reloading all existing files in upload directory when uploading a new file.
+
+        Parameters:
+        file_path (str): Path to file to load. Must be a CSV or VCF file.
+
+        Returns:
+        df (pd.DataFrame): Loaded DataFrame.
+    """
+
+    raw_file = Path(file_path)
+
+    if raw_file.suffix not in data_params:
+        raise ValueError(f"Unsupported file type: {raw_file.suffix}")
+
+    # Load file
+    df = pd.read_csv(raw_file, **data_params[raw_file.suffix])
+
+    # Ensure all required columns exist
+    for col in data_columns:
+        if col not in df.columns:
+            df[col] = None
+
+    # Store under patient name (filename without extension)
+    dataframes[raw_file.stem] = df
+
+    logger.info(f"Loaded single file: {raw_file.name}")
+
 def fill_variant_notation(df: pd.DataFrame) -> pd.DataFrame:
     """Fill the 'vcf_form' column using chromosome:position:ref:alt."""
     df['vcf_form'] = df.apply(lambda r: f"{r.chromosome}:{r.position}:{r.ref}:{r.alt}", axis=1)
@@ -169,6 +199,9 @@ def insert_dataframe_to_db(name, df):
     """
     # Get SQLAlchemy database session (to connect to DB)
     db_session = get_db_session()
+
+    # Convert all NaN values to None to avoid SQL errors
+    df = df.where(pd.notnull(df), None)
 
     # Ensure patient exists
     patient = db_session.get(Patient, name)

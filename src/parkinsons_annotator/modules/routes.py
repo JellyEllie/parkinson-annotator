@@ -12,8 +12,12 @@ from flask import Blueprint, render_template, request, jsonify, current_app
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
 
-from .database_search import database_list, SearchFieldEmptyError, NoMatchingRecordsError
-from .data_extraction import load_and_insert_data
+from parkinsons_annotator.modules.database_search import database_list, SearchFieldEmptyError, NoMatchingRecordsError
+from parkinsons_annotator.modules.data_extraction import (dataframes,
+                                                          fill_variant_notation,
+                                                          enrich_hgvs,
+                                                          enrich_clinvar,
+                                                          insert_dataframe_to_db)
 from parkinsons_annotator.modules.db import get_db_session, close_db_session
 from parkinsons_annotator.logger import logger
 
@@ -62,7 +66,8 @@ def upload_file():
     if 'file' not in request.files:
         return "No file part in the request", 400
 
-    file = request.files['file']  # Get file from form
+    # Get file from form
+    file = request.files['file']
     if file.filename == '':
         return "No file selected", 400
 
@@ -75,12 +80,25 @@ def upload_file():
     file.save(filepath)
     logger.info(f"Uploaded file saved to: {filepath}")
 
+    # Get database session
+    session = get_db_session()
+
     # Run data extraction and insertion
-    session = None
     try:
-        session = get_db_session()  # ensures a session is available
-        load_and_insert_data()
-        session.commit()  # commit any changes
+        # Clear cache of previous dataframes
+        dataframes.clear()
+        # Load uploaded file
+        load_single_file(filepath)
+        # Enrich + insert for ONLY this patient
+        for patient_name, df in dataframes.items():
+            df = (df
+                  .pipe(fill_variant_notation)
+                  .pipe(enrich_hgvs)
+                  .pipe(enrich_clinvar)
+                  )
+            insert_dataframe_to_db(patient_name, df)
+        # Commit any changes to DB
+        session.commit()
     except Exception as e:
         logger.error(f"Data extraction failed: {e}")
         if session:
