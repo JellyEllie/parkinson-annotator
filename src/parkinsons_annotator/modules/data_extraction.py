@@ -82,7 +82,7 @@ def load_single_file(file_path):
         file_path (str): Path to file to load. Must be a CSV or VCF file.
 
         Returns:
-        df (pd.DataFrame): Loaded DataFrame.
+        None: DataFrames are stored in global 'dataframes' dict.
     """
 
     raw_file = Path(file_path)
