@@ -9,13 +9,10 @@ Testing APIs with PyTest
 (https://codilime.com/blog/testing-apis-with-pytest-mocks-in-python/)
 """
 
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from Bio import Entrez
 import pytest
 from Parkinsons_annotator.utils.clinvar_fetch import fetch_clinvar_id, fetch_clinvar_esummary, extract_clinvar_annotation, HGVSFormatError, ClinVarConnectionError, ClinVarIDFormatError
-
-# fetch_clinvar_esummary, extract_clinvar_annotation, 
-# HGVSFormatError, ClinVarIDFormatError, ClinVarIDNotFoundError, ClinVarESummaryError
 
 # Expected successful API call for ESearch
 def test_fetch_clinvar_id_success():
