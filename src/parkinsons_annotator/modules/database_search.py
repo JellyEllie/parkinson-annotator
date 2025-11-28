@@ -173,6 +173,3 @@ def database_list(search_type=None, search_value=None):
 
         # Flatten SQLAlchemy tuple into list of dictionaries
         return [{"Variant": r[0]} for r in query_results]
-
-### take variant info and return clinvar accession ID for that variant
-### take clinvar accession ID and pass to clinvar API to get clinvar summary, and return patients
