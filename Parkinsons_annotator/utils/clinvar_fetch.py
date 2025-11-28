@@ -262,7 +262,7 @@ def extract_clinvar_annotation(hgvs_variant):
         "ClinVar record URL": clinvar_url,
     }
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
 
     hgvs_variant = "NM_001377265.1:c.841G>T"
     clinvar_output= extract_clinvar_annotation(hgvs_variant)
