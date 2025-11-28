@@ -1,7 +1,6 @@
 .env
 __pycache__/
 *.egg-info
-poetry.lock
 logs/
 instance/
 *.csv
