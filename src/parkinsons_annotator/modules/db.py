@@ -90,7 +90,7 @@ def has_full_data():
         ("variants", Variant),
         ("patient_variant", Connector),
     ]
-
+    # Check all tables contain data
     try:
         for table_name, model in tables:
             count = session.query(model).count()

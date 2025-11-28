@@ -41,9 +41,12 @@ class Variant(Base):
         return (
             f"<Variant(hgvs={self.hgvs}, gene={self.gene_symbol})>"
         )
-# To discuss. I don't think we need the rest of this code
+
 class Patient(Base):
-    """ORM mapping for the 'patients' table."""
+    """
+    ORM mapping for the 'patients' table.
+    Can be expanded in future to include more patient metadata.
+    """
     __tablename__ = 'patients'
 
     name = Column(VARCHAR(15), primary_key=True)

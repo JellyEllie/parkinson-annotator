@@ -96,7 +96,8 @@ def database_list(search_type=None, search_value=None):
             db_session.query(
                 Variant.hgvs,
                 Patient.name,
-                Variant.classification
+                Variant.classification,
+                Variant.clinvar_url
             )
             .join(Connector, Connector.variant_vcf_form == Variant.vcf_form)
             .join(Patient, Patient.name == Connector.patient_name)
@@ -115,7 +116,8 @@ def database_list(search_type=None, search_value=None):
             {
                 "hgvs": r[0],
                 "patient": r[1],
-                "classification": r[2]
+                "classification": r[2],
+                "clinvar_url": r[3]
             }
             for r in query_results
         ]
@@ -147,7 +149,7 @@ def database_list(search_type=None, search_value=None):
             {
                 "hgvs": r[0],
                 "gene_symbol": r[1],
-                "classification": r[2],
+                "classification": r[2]
             }
             for r in query_results
         ]
@@ -173,4 +175,4 @@ def database_list(search_type=None, search_value=None):
         return [{"Variant": r[0]} for r in query_results]
 
 ### take variant info and return clinvar accession ID for that variant
- ### take clinvar accession ID and pass to clinvar API to get clinvar summary, and return patients
+### take clinvar accession ID and pass to clinvar API to get clinvar summary, and return patients
