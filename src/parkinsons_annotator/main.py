@@ -56,6 +56,8 @@ def main():
     app = create_app()
 
     with app.app_context():
+        # Get path to database file
+        db_path = Path(app.config["DB_NAME"])
         # If database does not exist, create database and tables
         if not db_path.exists():
             logger.info(f"Database '{DB_NAME}' not found. Creating new database and tables.")
