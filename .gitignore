@@ -5,3 +5,5 @@ logs/
 instance/
 *.csv
 *.vcf
+# pycharm idea folder
+.idea/
