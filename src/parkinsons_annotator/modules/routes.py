@@ -14,6 +14,7 @@ load_dotenv()  # Load environment variables from .env file
 
 from parkinsons_annotator.modules.database_search import database_list, SearchFieldEmptyError, NoMatchingRecordsError
 from parkinsons_annotator.modules.data_extraction import (dataframes,
+                                                          load_single_file,
                                                           fill_variant_notation,
                                                           enrich_hgvs,
                                                           enrich_clinvar,
