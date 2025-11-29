@@ -3,6 +3,18 @@
 
 <html lang="en">
 <head>
+
+    <div id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput" required>
+        <button type="submit">Upload</button>
+    </div>
+    <style>
+        uploadForm{
+            position: absolute;
+            top: 15px;
+            right: 20px;
+        }
+    </style>
   <meta charset="UTF-8">
   <title>Parkinsons Annotator</title>
 
@@ -74,14 +86,26 @@
 
     <input type="text" id="search-box" placeholder="Search..." required>
     <button type="submit">Search</button>
+
+      <select id="classification-dropdown" style="display:none;">
+          <option value="" disabled selected>Select classification</option>
+          <option value="Pathogenic">Pathogenic</option>
+          <option value="Likely Pathogenic">Likely Pathogenic</option>
+          <option value="Benign">Benign</option>
+          <option value="Likely Benign">Likely Benign</option>
+          <option value="Uncertain Significance">Uncertain Significance</option>
+          <option value="Conflicting classifications of pathogenicity">Conflicting</option>
+          <option value="not provided">Not Classified</option>
+          <option value="NULL">Not Found in Clinvar</option>
+      </select>
+
   </form>
 
   <div id="results"></div>
-
-  <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" id="fileInput" required>
-    <button type="submit">Upload</button>
-  </form>
+  <p>Variant Search - Input: vcf or hgvf format. Ouput: all patients with that variant and Clinvar information</p>
+  <p>Gene Symbol Search - Input: gene symbol Ouput: all patients and their vairants found in that gene, plus classification and link to Clinvar</p>
+  <p>Patient Search - Input: patient name Output: all variants for that patient, their classifications and the genes they are in</p>
+  <p>Classification Search - Input:  Output:</p>
 
   <script>
     // Graceful shutdown
@@ -100,21 +124,42 @@
     });
 
     // Handle search
+
     const form = document.getElementById("search-form");
     const searchBox = document.getElementById("search-box");
     const category = document.getElementById("category");
+    const searchCat = document.getElementById("classification-dropdown")
     const resultsList = document.getElementById("results");
+
+// Toggle search input depending on category
+category.addEventListener("change", function () {
+  if (category.value === "classification") {
+    searchBox.style.display = "none";
+    searchBox.required = false;
+
+    document.getElementById("classification-dropdown").style.display = "inline-block";
+    document.getElementById("classification-dropdown").required = true;
+
+  } else {
+    searchBox.style.display = "inline-block";
+    searchBox.required = true;
+
+    document.getElementById("classification-dropdown").style.display = "none";
+    document.getElementById("classification-dropdown").required = false;
+  }
+});
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const query = searchBox.value.trim();
       const selectedCategory = category.value;
+      const selectedSearchCat = searchCat.value;
 
       const response = await fetch("/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, category: selectedCategory }),
+        body: JSON.stringify({ query, searchCat: selectedSearchCat, category: selectedCategory }),
       });
 
       const data = await response.json();
