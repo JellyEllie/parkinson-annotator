@@ -21,7 +21,7 @@ class NoMatchingRecordsError(Exception):
     pass
 
 # Search function
-def database_list(search_type=None, search_value=None):
+def database_list(search_type=None, search_value=None, search_cat=None):
     """
     Search the database based on user-specified type and value.
 
@@ -42,8 +42,8 @@ def database_list(search_type=None, search_value=None):
     db_session = get_db_session()
 
     # Raise error if no search type or value provided
-    if not search_type or not search_value:
-        logger.warning("Search called without search_type or search_value")
+    if not search_type:
+        logger.warning("Search called without search_type")
         raise SearchFieldEmptyError("Missing search fields.")
 
     # Based on search type, perform SQL query to return list from database
@@ -155,16 +155,16 @@ def database_list(search_type=None, search_value=None):
         ]
 
     elif search_type == 'classification':
-        logger.info(f"Searching database for classification= '{search_value}'")
+        logger.info(f"Searching database for classification= '{search_cat}'")
         # Find list of variants with that classification
         query = (
             db_session.query
             (Variant.hgvs)
-            .filter(Variant.classification.ilike(search_value))
+            .filter(Variant.classification.ilike(search_cat))
         )
 
         query_results = query.all()
-        logger.info(f"Found {len(query_results)} variants for classification '{search_value}'")
+        logger.info(f"Found {len(query_results)} variants for classification '{search_cat}'")
 
         # Raise exception if no matching records found
         if not query_results:

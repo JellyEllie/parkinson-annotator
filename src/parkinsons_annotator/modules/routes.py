@@ -40,12 +40,13 @@ def search():
     data = request.get_json()
     search_value = data.get('query', '').lower().strip()
     search_type = data.get('category', '').lower().strip()
+    search_cat = data.get('searchCat', '').lower().strip()
 
     logger.info(f"User searched for: {search_value}, category: {search_type}")
 
     # Call the database search function
     try:
-        results = database_list(search_type=search_type, search_value=search_value)
+        results = database_list(search_type=search_type, search_value=search_value, search_cat=search_cat)
     except SearchFieldEmptyError:
         return jsonify({"message": "Missing search fields"}), 400
     except NoMatchingRecordsError:
