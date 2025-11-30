@@ -59,7 +59,31 @@ def search():
         logger.error(f"Unexpected database error: {e}")
         return jsonify({"message": "Internal server error"}), 500
 
-    return jsonify({"results": results}), 200
+    if search_type == 'variant':
+        variant_object = results[0][0]
+        patient_list = [row[1] for row in results]
+
+        return jsonify({
+            # Create an outer dictionary with variant: variant_info and patients: patient_list
+            "variant": {
+                # Create an inner dictionary for the variant with variant info fields
+                "HGVS notation": variant_object.hgvs,
+                "Genomic notation": variant_object.gene_symbol,
+                "ClinVar variant ID": variant_object.clinvar_id,
+                "Gene symbol": variant_object.gene_symbol,
+                "cDNA change": variant_object.cdna_change,
+                "ClinVar accession": variant_object.clinvar_accession,
+                "ClinVar consensus classification": variant_object.classification,
+                "Number of submitted records": variant_object.num_records,
+                "Review status": variant_object.review_status,
+                "Associated condition": variant_object.associated_condition,
+                "ClinVar record URL": variant_object.clinvar_url,
+            },
+            "patients": patient_list
+            }), 200
+    else:
+        # All other searches are a basic list of tuples/values (containing no objects) which jsonify can handle
+        return jsonify({"results": results}), 200
 
 @route_blueprint.route('/upload', methods=['POST'])
 def upload_file():
