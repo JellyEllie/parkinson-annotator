@@ -3,18 +3,6 @@
 
 <html lang="en">
 <head>
-
-    <div id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" id="fileInput" required>
-        <button type="submit">Upload</button>
-    </div>
-    <style>
-        uploadForm{
-            position: absolute;
-            top: 15px;
-            right: 20px;
-        }
-    </style>
   <meta charset="UTF-8">
   <title>Parkinsons Annotator</title>
 
@@ -71,6 +59,18 @@
   </style>
 </head>
 
+<form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput" required>
+        <button type="submit">Upload</button>
+    </form>
+    <style>
+        #uploadForm{
+            position: absolute;
+            top: 15px;
+            right: 20px;
+        }
+    </style>
+
 <body>
   <h2>Welcome To the Dataset</h2>
   <h4>Please search the database here</h4>
@@ -96,7 +96,7 @@
           <option value="Uncertain Significance">Uncertain Significance</option>
           <option value="Conflicting classifications of pathogenicity">Conflicting</option>
           <option value="not provided">Not Classified</option>
-          <option value="NULL">Not Found in Clinvar</option>
+          <option value="None">Not Found in Clinvar</option>
       </select>
 
   </form>

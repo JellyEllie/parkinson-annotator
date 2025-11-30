@@ -201,7 +201,7 @@ def insert_dataframe_to_db(name, df):
     db_session = get_db_session()
 
     # Convert all NaN values to None to avoid SQL errors
-    df = df.where(pd.notnull(df), None)
+    df = df.where(pd.notnull(df), "None")
 
     # Ensure patient exists
     patient = db_session.get(Patient, name)
