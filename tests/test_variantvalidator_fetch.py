@@ -1,5 +1,5 @@
 import pytest
-from Parkinsons_annotator.utils.variantvalidator_fetch import fetch_variant_validator
+from parkinsons_annotator.utils.variantvalidator_fetch import fetch_variant_validator
 
 # Expected successful API call
 def test_fetch_variant_validator_success():
