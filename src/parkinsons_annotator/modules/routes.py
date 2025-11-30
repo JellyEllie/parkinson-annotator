@@ -68,7 +68,7 @@ def search():
             "variant": {
                 # Create an inner dictionary for the variant with variant info fields
                 "HGVS notation": variant_object.hgvs,
-                "Genomic notation": variant_object.gene_symbol,
+                "Genomic notation": variant_object.vcf_form,
                 "ClinVar variant ID": variant_object.clinvar_id,
                 "Gene symbol": variant_object.gene_symbol,
                 "cDNA change": variant_object.cdna_change,
