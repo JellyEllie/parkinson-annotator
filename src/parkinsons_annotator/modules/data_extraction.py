@@ -200,8 +200,8 @@ def insert_dataframe_to_db(name, df):
     # Get SQLAlchemy database session (to connect to DB)
     db_session = get_db_session()
 
-    # Convert all NaN values to None to avoid SQL errors
-    df = df.where(pd.notnull(df), None)
+    # Convert all NaN values to None (str) to avoid SQL errors
+    df = df.where(pd.notnull(df), "Not found in Clinvar")
 
     # Ensure patient exists
     patient = db_session.get(Patient, name)
