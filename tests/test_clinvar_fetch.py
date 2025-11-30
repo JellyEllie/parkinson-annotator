@@ -11,7 +11,7 @@ Testing APIs with PyTest
 
 from unittest.mock import patch
 import pytest
-from Parkinsons_annotator.utils.clinvar_fetch import fetch_clinvar_id, fetch_clinvar_esummary, extract_clinvar_annotation, HGVSFormatError, ClinVarConnectionError, ClinVarIDFormatError
+from parkinsons_annotator.utils.clinvar_fetch import fetch_clinvar_id, fetch_clinvar_esummary, extract_clinvar_annotation, HGVSFormatError, ClinVarConnectionError, ClinVarIDFormatError
 
 # Expected successful API call for ESearch
 def test_fetch_clinvar_id_success():
