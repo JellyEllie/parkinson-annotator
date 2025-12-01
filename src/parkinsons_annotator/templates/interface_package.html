@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Parkinsons Annotator</title>
@@ -96,7 +95,7 @@
           <option value="Uncertain Significance">Uncertain Significance</option>
           <option value="Conflicting classifications of pathogenicity">Conflicting</option>
           <option value="not provided">Not Classified</option>
-          <option value="None">Not Found in Clinvar</option>
+          <option value="Not found in Clinvar">Not Found in Clinvar</option>
       </select>
 
   </form>
@@ -165,10 +164,33 @@ category.addEventListener("change", function () {
       const data = await response.json();
       console.log("Received from Flask:", data);
 
+        let resultSentence = "";
+
+        if (selectedCategory === "variant") {
+            resultSentence = `Patients with variant <strong>${query}</strong>:`;
+
+        } else if (selectedCategory === "gene_symbol") {
+            resultSentence = `Patient variants found in gene <strong>${query}</strong>:`;
+
+        } else if (selectedCategory === "classification") {
+            if (selectedSearchCat === "Not found in Clinvar") {
+                resultSentence = 'Patient variants which were not identified in ClinVar:';
+            }else {
+                resultSentence = `Patient variants with ClinVar classification: <strong>${selectedSearchCat}</strong>:`;
+            }
+        } else if (selectedCategory === "patient_name") {
+            if (query === "patient") {
+                resultSentence = 'Variants found in all patients:';
+            } else
+                resultSentence = `Variants identified in  <strong>${query}</strong>:`;
+        } else {
+            resultSentence = `${selectedCategory} found in <strong>${query}</strong>`;
+        }
+
         resultsList.innerHTML = `<p style="text-align:center; font-family: Georgia, serif; font-size: 22px;">
-          ${selectedCategory.replace("_"," ")} found in
-          <strong>${selectedCategory === "classification" ? selectedSearchCat : query}</strong>
-      </p>`;
+          ${resultSentence}
+        </p>`;
+
 
         if (data.message) {
         resultsList.innerHTML = `<li>${data.message}</li>`;
@@ -223,5 +245,4 @@ resultsList.appendChild(table);
     });
   </script>
 </body>
-</html>
 {% endblock %}
