@@ -11,7 +11,7 @@ Testing APIs with PyTest
 
 from unittest.mock import patch
 import pytest
-from parkinsons_annotator.utils.clinvar_fetch import fetch_clinvar_id, fetch_clinvar_esummary, extract_clinvar_annotation, HGVSFormatError, ClinVarConnectionError, ClinVarIDFormatError
+from src.parkinsons_annotator.utils.clinvar_fetch import fetch_clinvar_id, fetch_clinvar_esummary, extract_clinvar_annotation, HGVSFormatError, ClinVarConnectionError, ClinVarIDFormatError
 
 # Expected successful API call for ESearch
 def test_fetch_clinvar_id_success():
@@ -84,8 +84,8 @@ def test_fetch_clinvar_esummary_api_failure(mock_esummary):
 
 
 # Expected successful extraction of ClinVar annotation from the ESummary
-@patch("Parkinsons_annotator.utils.clinvar_fetch.fetch_clinvar_id")  # Replaces 'fetch_clinvar_id' function with a mock object during this test
-@patch("Parkinsons_annotator.utils.clinvar_fetch.fetch_clinvar_esummary")  # Replaces 'fetch_clinvar_esummary' function with a mock object during this tes
+@patch("src.parkinsons_annotator.utils.clinvar_fetch.fetch_clinvar_id")  # Replaces 'fetch_clinvar_id' function with a mock object during this test
+@patch("src.parkinsons_annotator.utils.clinvar_fetch.fetch_clinvar_esummary")  # Replaces 'fetch_clinvar_esummary' function with a mock object during this tes
 def test_extract_clinvar_annotation_success(mock_esummary, mock_id):
     """Test that the correct ClinVar annotations are extracted from the ESummary."""
 
@@ -114,8 +114,8 @@ def test_extract_clinvar_annotation_success(mock_esummary, mock_id):
 
 
 # Missing annotation fields from ClinVar ESummary
-@patch("Parkinsons_annotator.utils.clinvar_fetch.fetch_clinvar_id")  # Replaces 'fetch_clinvar_id' function with a mock object during this test
-@patch("Parkinsons_annotator.utils.clinvar_fetch.fetch_clinvar_esummary")  # Replaces 'fetch_clinvar_esummary' function with a mock object during this test
+@patch("src.parkinsons_annotator.utils.clinvar_fetch.fetch_clinvar_id")  # Replaces 'fetch_clinvar_id' function with a mock object during this test
+@patch("src.parkinsons_annotator.utils.clinvar_fetch.fetch_clinvar_esummary")  # Replaces 'fetch_clinvar_esummary' function with a mock object during this test
 def test_extract_clinvar_annotation_missing_fields(mock_esummary, mock_id):
     """Test that missing fields in ClinVar ESummary returns "N/A"."""
 
@@ -133,4 +133,3 @@ def test_extract_clinvar_annotation_missing_fields(mock_esummary, mock_id):
     assert result["Associated condition"] == "N/A"
     assert result["ClinVar variant ID"] == "12345"
     assert result["ClinVar record URL"].endswith("12345")
-
