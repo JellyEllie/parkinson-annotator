@@ -61,15 +61,17 @@ def database_list(search_type=None, search_value=None, search_cat=None):
             filter_column = Variant.vcf_form
 
         # Single join query to get patient name and variant object info
-        query = (
-            db_session.query(Variant, Patient.name)
+        stmt = (
+            select(
+                Variant, Patient.name
+            )
             .join(Connector, Variant.vcf_form == Connector.variant_vcf_form)
             .join(Patient, Patient.name == Connector.patient_name)
-            .filter(filter_column.ilike(search_value))
+            .where(filter_column.ilike(search_value))
         )
 
         # Execute query and fetch results
-        query_results = query.all()
+        query_results = db_session.execute(stmt).all()
         logger.info(f"Found {len(query_results)} patients with variant.")
 
         # Raise exception if no matching records found
@@ -78,6 +80,7 @@ def database_list(search_type=None, search_value=None, search_cat=None):
             raise NoMatchingRecordsError(f"No patients found with variant '{search_value}'.")
 
         # Returns list of tuples [(Variant Object, patient_name1), (Variant Object, patient_name2), ...]
+        # Variant search returns an ORM object which is not compatible with .mappings() so is handled in search route
         return query_results
 
     # --- Search by gene symbol ---
@@ -85,8 +88,8 @@ def database_list(search_type=None, search_value=None, search_cat=None):
         logger.info(f"Searching database for gene symbol= '{search_value}'")
 
         # Find list of variants for that gene with patient name and variant classification
-        query = (
-            db_session.query(
+        stmt = (
+            select(
                 Variant.hgvs,
                 Patient.name,
                 Variant.classification,
@@ -94,9 +97,9 @@ def database_list(search_type=None, search_value=None, search_cat=None):
             )
             .join(Connector, Connector.variant_vcf_form == Variant.vcf_form)
             .join(Patient, Patient.name == Connector.patient_name)
-            .filter(Variant.gene_symbol.ilike(search_value))
+            .where(Variant.gene_symbol.ilike(search_value))
         )
-        query_results = query.mappings().all()  # mappings() converts SQLAlchemy tuple to list of dictionaries for JSON
+        query_results = db_session.execute(stmt).mappings().all()  # mappings() converts SQLAlchemy tuple to list of dictionaries for JSON
         logger.info(f"Found {len(query_results)} for gene symbol '{search_value}'")
 
         # Raise exception if no matching records found
@@ -104,24 +107,25 @@ def database_list(search_type=None, search_value=None, search_cat=None):
             logger.info(f"No variants found with gene symbol '{search_value}'.")
             raise NoMatchingRecordsError(f"No variants found with gene symbol '{search_value}'.")
 
-        # Returns list of tuples [(hgvs_1, patient_name_1, classification, clinvar_url_1), ...]
-        return query_results
+        # Convert SQLAlchemy rowmapping objects into real dictionaries for JSON
+        return [dict(row) for row in query_results]
 
     # --- Search by patient ---
     elif search_type in ('patient', 'patient_name'):
         logger.info(f"Searching database for patient= '{search_value}'")
 
         # Find list of variants for that patient with the pathogencity
-        query = (
-            db_session.query
-            (Variant.hgvs,
-             Variant.gene_symbol,
-             Variant.classification)
+        stmt = (
+            select(
+                Variant.hgvs,
+                Variant.gene_symbol,
+                Variant.classification
+            )
             .join(Connector, Connector.variant_vcf_form == Variant.vcf_form)
             .join(Patient, Patient.name == Connector.patient_name)
-            .filter(Patient.name.ilike(f"%{search_value}%"))
+            .where(Patient.name.ilike(f"%{search_value}%"))
         )
-        query_results = query.mappings().all()
+        query_results = db_session.execute(stmt).mappings().all()
         logger.info(f"Found {len(query_results)} variants for patient '{search_value}'")
 
         # Raise exception if no matching records found
@@ -129,19 +133,18 @@ def database_list(search_type=None, search_value=None, search_cat=None):
             logger.info(f"No variants found for patient '{search_value}'.")
             raise NoMatchingRecordsError(f"No variants found for patient '{search_value}'.")
 
-        # Return list of tuples [(hgvs_1, gene_symbol_1, classification_1), ...]
-        return query_results
+        # Convert SQLAlchemy rowmapping objects into real dictionaries for JSON
+        return [dict(row) for row in query_results]
 
     elif search_type == 'classification':
         logger.info(f"Searching database for classification= '{search_cat}'")
         # Find list of variants with that classification
-        query = (
-            db_session.query
-            (Variant.hgvs)
-            .filter(Variant.classification.ilike(search_cat))
+        stmt = (
+            select(Variant.hgvs)
+            .where(Variant.classification.ilike(search_cat))
         )
 
-        query_results = query.mappings().all()
+        query_results = db_session.execute(stmt).mappings().all()
         logger.info(f"Found {len(query_results)} variants for classification '{search_cat}'")
 
         # Raise exception if no matching records found
@@ -149,5 +152,5 @@ def database_list(search_type=None, search_value=None, search_cat=None):
             logger.info(f"No variants found for classification '{search_value}'.")
             raise NoMatchingRecordsError(f"No variants found for classification '{search_value}'.")
 
-        # Flatten SQLAlchemy tuple into list of dictionaries
-        return query_results
+        # Convert SQLAlchemy rowmapping objects into real dictionaries for JSON
+        return [dict(row) for row in query_results]
