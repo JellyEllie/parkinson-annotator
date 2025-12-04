@@ -9,7 +9,7 @@ Testing APIs with PyTest
 from unittest.mock import patch
 import requests
 import pytest
-from src.parkinsons_annotator.utils.variantvalidator_fetch import fetch_variant_validator, VariantDescriptionError, VariantValidatorResponseError
+from parkinsons_annotator.utils.variantvalidator_fetch import fetch_variant_validator, VariantDescriptionError, VariantValidatorResponseError
 
 # Expected successful API call
 def test_fetch_variant_validator_success():

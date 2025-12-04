@@ -15,7 +15,7 @@ VariantValidator REST API documentation
 import json
 import requests
 import time
-from src.parkinsons_annotator.logger import logger
+from parkinsons_annotator.logger import logger
 
 
 class VariantDescriptionError(Exception):

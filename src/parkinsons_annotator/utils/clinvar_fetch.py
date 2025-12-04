@@ -13,7 +13,7 @@ import json
 import os
 from Bio import Entrez  # Import Entrez module from Biopython for NCBI queries
 from dotenv import load_dotenv
-from src.parkinsons_annotator.logger import logger
+from parkinsons_annotator.logger import logger
 
 
 load_dotenv()  # Load environment variables from .env file

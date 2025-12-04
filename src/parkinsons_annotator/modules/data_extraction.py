@@ -19,7 +19,7 @@ from parkinsons_annotator.logger import logger
 from parkinsons_annotator.modules.db import get_db_session
 from .models import Genes, Variant, Patient, Connector
 from parkinsons_annotator.utils.variantvalidator_fetch import fetch_variant_validator
-from parkinsons_annotator.utils.clinvar_fetch import fetch_clinvar_record
+from parkinsons_annotator.utils.clinvar_fetch import extract_clinvar_annotation
 from parkinsons_annotator.utils.clinvar_fetch import ClinVarIDNotFoundError, ClinVarConnectionError, HGVSFormatError
 
 load_dotenv()
@@ -154,7 +154,7 @@ def enrich_clinvar(df, throttle: float = 0.3):
 
         try:
             # Call ClinVar API - this may raise ClinVarIDNotFoundError
-            clinvar_data = fetch_clinvar_record(hgvs)
+            clinvar_data = extract_clinvar_annotation(hgvs)
 
             # Map ClinVar fields to DataFrame columns
             for field, col in CLINVAR_FIELDS.items():
