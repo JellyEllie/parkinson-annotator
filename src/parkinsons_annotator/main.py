@@ -20,8 +20,8 @@ def open_browser():
     """The specified URL (whiich is the default created by the command to create the interface)"""
     webbrowser.open_new("http://127.0.0.1:5000/")
 
-def main():
-    logger.info("Starting Parkinsons Annotator Application")
+def create_app():
+    logger.info("Building app")
 
     # Set template_folder to the templates directory within the modules folder, so Flask can find the HTML files
     app = Flask(
@@ -48,7 +48,16 @@ def main():
     # Register the blueprint
     app.register_blueprint(route_blueprint)
 
+    return app
+
+def main():
+    logger.info("Starting Parkinsons Annotator Application")
+
+    app = create_app()
+
     with app.app_context():
+        # Get path to database file
+        db_path = Path(app.config["DB_NAME"])
         # If database does not exist, create database and tables
         if not db_path.exists():
             logger.info(f"Database '{DB_NAME}' not found. Creating new database and tables.")

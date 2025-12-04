@@ -30,14 +30,9 @@ def index():
     # return render_template("interface_package.html")
     return render_template("interface_package.html")
 
-@route_blueprint.route('/shutdown', methods=['POST'])
-def shutdown_server():
-    """This function shuts the server, which will be activated from inside the html file, triggered by the web browser shutting down"""
-    func = request.environ.get('werkzeug.server.shutdown')  # Calls from a WSGI enviornment using a speical key which shuts down the Flask server
-    if func:
-        func()                                              # If the shut down function isn't found, don't shut down the server
-    else:
-        os.kill(os.getpid(), signal.SIGINT)                 # Sends an interupt signal (kill) to the current process ID (getpid). This is the equivalant of typing in Ctl + C
+@route_blueprint.route('/about', methods=['GET'])
+def about():
+    return render_template("info.html")
 
 @route_blueprint.route('/search', methods=['POST'])
 def search():
@@ -45,12 +40,13 @@ def search():
     data = request.get_json()
     search_value = data.get('query', '').lower().strip()
     search_type = data.get('category', '').lower().strip()
+    search_cat = data.get('searchCat', '').lower().strip()
 
     logger.info(f"User searched for: {search_value}, category: {search_type}")
 
     # Call the database search function
     try:
-        results = database_list(search_type=search_type, search_value=search_value)
+        results = database_list(search_type=search_type, search_value=search_value, search_cat=search_cat)
     except SearchFieldEmptyError:
         return jsonify({"message": "Missing search fields"}), 400
     except NoMatchingRecordsError:

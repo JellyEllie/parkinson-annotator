@@ -48,6 +48,10 @@ def create_tables():
         create_db_engine()
     Base.metadata.create_all(engine)
 
+    print("Tables registered in Base.metadata:")
+    print(Base.metadata.tables.keys())
+
+
 def get_db_session():
     """
     Get a SQLAlchemy session tied to Flask's g context.

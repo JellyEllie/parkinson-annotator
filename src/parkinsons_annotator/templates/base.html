@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{% block title %}Parkinson Annotator{% endblock %}</title>
+  </head>
+  <body>
+    <nav>
+      <a href="/">Search</a> | <a href="{{ url_for('routes.about') }}">About</a>
+    </nav>
+    <div id="content">
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>
