@@ -13,6 +13,7 @@ Exceptions:
 from parkinsons_annotator.modules.models import Variant, Patient, Connector
 from parkinsons_annotator.logger import logger
 from parkinsons_annotator.modules.db import get_db_session
+from sqlalchemy import select
 
 # Custom exceptions
 class SearchFieldEmptyError(Exception):
@@ -21,7 +22,7 @@ class NoMatchingRecordsError(Exception):
     pass
 
 # Search function
-def database_list(search_type=None, search_value=None):
+def database_list(search_type=None, search_value=None, search_cat=None):
     """
     Search the database based on user-specified type and value.
 
@@ -42,8 +43,8 @@ def database_list(search_type=None, search_value=None):
     db_session = get_db_session()
 
     # Raise error if no search type or value provided
-    if not search_type or not search_value:
-        logger.warning("Search called without search_type or search_value")
+    if not search_type:
+        logger.warning("Search called without search_type")
         raise SearchFieldEmptyError("Missing search fields.")
 
     # Based on search type, perform SQL query to return list from database
@@ -95,7 +96,7 @@ def database_list(search_type=None, search_value=None):
             .join(Patient, Patient.name == Connector.patient_name)
             .filter(Variant.gene_symbol.ilike(search_value))
         )
-        query_results = query.all()
+        query_results = query.mappings().all()  # mappings() converts SQLAlchemy tuple to list of dictionaries for JSON
         logger.info(f"Found {len(query_results)} for gene symbol '{search_value}'")
 
         # Raise exception if no matching records found
@@ -120,7 +121,7 @@ def database_list(search_type=None, search_value=None):
             .join(Patient, Patient.name == Connector.patient_name)
             .filter(Patient.name.ilike(f"%{search_value}%"))
         )
-        query_results = query.all()
+        query_results = query.mappings().all()
         logger.info(f"Found {len(query_results)} variants for patient '{search_value}'")
 
         # Raise exception if no matching records found
@@ -132,16 +133,16 @@ def database_list(search_type=None, search_value=None):
         return query_results
 
     elif search_type == 'classification':
-        logger.info(f"Searching database for classification= '{search_value}'")
+        logger.info(f"Searching database for classification= '{search_cat}'")
         # Find list of variants with that classification
         query = (
             db_session.query
             (Variant.hgvs)
-            .filter(Variant.classification.ilike(search_value))
+            .filter(Variant.classification.ilike(search_cat))
         )
 
-        query_results = query.all()
-        logger.info(f"Found {len(query_results)} variants for classification '{search_value}'")
+        query_results = query.mappings().all()
+        logger.info(f"Found {len(query_results)} variants for classification '{search_cat}'")
 
         # Raise exception if no matching records found
         if not query_results:
