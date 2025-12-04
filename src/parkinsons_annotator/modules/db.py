@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from flask import g, current_app, has_app_context, has_request_context
 from sqlalchemy import create_engine, event
@@ -23,8 +22,9 @@ def create_db_engine():
     else:
         # Fallback for scripts: use the SAME instance folder as the Flask app
         base_dir = Path(__file__).resolve().parent.parent  # parkinsons_annotator/
-        instance_dir = base_dir / "instance"
-        db_name = instance_dir / "parkinsons_data.db"
+        instance_dir = base_dir / "instance"  # path to instance directory
+        instance_dir.mkdir(parents=True, exist_ok=True)  # Create /instance if it doesn't exist'
+        db_name = instance_dir / "parkinsons_data.db"  # Set database path
 
     db_path = Path(db_name).resolve()
     engine = create_engine(f"sqlite:///{db_path}", echo=True)
@@ -36,7 +36,7 @@ def create_db_engine():
         cursor.execute("PRAGMA foreign_keys=ON;")
         cursor.close()
 
-    # Create session factory
+    # Create session factory and scoped session for thread/request safety
     SessionFactory = sessionmaker(bind=engine)
     Session = scoped_session(SessionFactory) # Flask request-safe session
     return engine
@@ -47,9 +47,7 @@ def create_tables():
     if engine is None:
         create_db_engine()
     Base.metadata.create_all(engine)
-
-    print("Tables registered in Base.metadata:")
-    print(Base.metadata.tables.keys())
+    logger.info("Created/validated tables.")
 
 
 def get_db_session():
@@ -65,6 +63,7 @@ def get_db_session():
         create_db_engine()
 
     if has_request_context():
+        # store session on Flask g so it persists for the request
         if 'db_session' not in g:
             g.db_session = Session()
         return g.db_session
@@ -83,6 +82,13 @@ def close_db_session(e=None):
         db_session = g.pop('db_session', None)
         if db_session:
             db_session.close()
+        # Also remove the scoped_session registry to be safe
+        if Session is not None:
+            try:
+                Session.remove()
+            except Exception:
+                # Session may not be a scoped_session in some edge cases
+                pass
 
 def has_full_data():
     """Check if the database has data in patients, variants, and patient_variant tables."""

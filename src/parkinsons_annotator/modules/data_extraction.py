@@ -19,7 +19,7 @@ from .models import Genes, Variant, Patient, Connector
 from parkinsons_annotator.utils.variantvalidator_fetch import fetch_variant_validator
 from parkinsons_annotator.utils.clinvar_fetch import extract_clinvar_annotation
 from parkinsons_annotator.utils.clinvar_fetch import ClinVarIDNotFoundError, ClinVarConnectionError, HGVSFormatError
-from parkinsons_annotator.utils.data_checks import existing_variant_check
+from parkinsons_annotator.utils.data_checks import existing_variant_check, compare_uploaded_vs_existing
 
 load_dotenv()
 
@@ -108,7 +108,7 @@ def fill_variant_notation(df: pd.DataFrame) -> pd.DataFrame:
     df['vcf_form'] = df.apply(lambda r: f"{r.chromosome}:{r.position}:{r.ref}:{r.alt}", axis=1)
     return df
 
-def enrich_hgvs(df, throttle: float = 0.3):
+def enrich_hgvs(df, session, throttle: float = 0.3):
     """
     Enrich the 'hgvs' column for all variants in the loaded DataFrames
     using the VariantValidator API, with optional throttling. API calls are performed only
@@ -124,7 +124,7 @@ def enrich_hgvs(df, throttle: float = 0.3):
         # Get variant genomic notation from DataFrame
         vcf_form = df.at[idx, 'vcf_form']
         # Check if variant already exists in database
-        existing_variant = existing_variant_check(vcf_form)
+        existing_variant = existing_variant_check(vcf_form, session)
         if existing_variant:
             # Fill in HGVS from database
             logger.info("Skipping VV API call.")
@@ -144,7 +144,7 @@ def enrich_hgvs(df, throttle: float = 0.3):
             time.sleep(throttle)
     return df
 
-def enrich_clinvar(df, throttle: float = 0.3):
+def enrich_clinvar(df, session, throttle: float = 0.3):
     """
     Enrich the 'clinvar' columns for all variants in the DataFrame
     using the ClinVar API, with optional throttling. Skips API call if variant ClinVar data is already in database.
@@ -164,7 +164,7 @@ def enrich_clinvar(df, throttle: float = 0.3):
         hgvs = df.at[idx, 'hgvs']
 
         # Check whether variant already exists in database
-        existing_variant = existing_variant_check(vcf_form)
+        existing_variant = existing_variant_check(vcf_form, session)
 
         if existing_variant and existing_variant.get("clinvar_id"):
             # Fill DataFrame from database
@@ -205,16 +205,17 @@ def enrich_clinvar(df, throttle: float = 0.3):
         if throttle > 0:
             time.sleep(throttle)
 
+    # Fill missing ClinVar fields with a default string
+    for col in CLINVAR_FIELDS.values():
+        df[col] = df[col].fillna("Not found in ClinVar")
+
     # Return enriched DataFrame
     return df
 
-def insert_dataframe_to_db(name, df):
+def insert_dataframe_to_db(name, df, session):
     """
     Insert patient and variant data from a DataFrame into SQLite,
     and link the patient to variants via the patient_variant junction table.
-
-    Assumes variants table uses a composite primary key:
-    (chromosome, position, ref, alt)
 
     Parameters:
     name (str): Patient name.
@@ -223,22 +224,14 @@ def insert_dataframe_to_db(name, df):
     Returns:
     None
     """
-    # Get SQLAlchemy database session (to connect to DB)
-    db_session = get_db_session()
-
     # Convert all NaN values to None to avoid SQL errors
     df = df.where(pd.notnull(df), None)
 
-    # Specifically mark ClinVar fields as "Not found in Clinvar" when missing
-    for col in CLINVAR_FIELDS.values():
-        df[col] = df[col].fillna("Not found in Clinvar")
-
     # Ensure patient exists
-    patient = db_session.get(Patient, name)
+    patient = session.get(Patient, name)
     if not patient:
         patient = Patient(name=name)
-        db_session.add(patient)
-        db_session.commit()
+        session.add(patient)
 
     # Assign genomic notation as primary key
     for _, row in df.iterrows():
@@ -250,12 +243,12 @@ def insert_dataframe_to_db(name, df):
 
         # Add gene to Genes table if missing
         gene_symbol = row.get("gene_symbol") or "UNKNOWN"
-        if not db_session.get(Genes, gene_symbol):
-            db_session.add(Genes(gene_symbol=gene_symbol, gene_url=""))
-            db_session.flush()  # Flush communicates changes to DB to ensure data is visible so queries work
+        if not session.get(Genes, gene_symbol):
+            session.add(Genes(gene_symbol=gene_symbol, gene_url=""))
+            session.flush()  # Flush communicates changes to DB to ensure data is visible so queries work
 
         # Insert variant
-        variant = db_session.get(Variant, row["vcf_form"])
+        variant = session.get(Variant, row["vcf_form"])
         if not variant:
             variant = Variant(
                 hgvs=row.get("hgvs"),
@@ -270,12 +263,12 @@ def insert_dataframe_to_db(name, df):
                 associated_condition=row.get("associated_condition"),
                 clinvar_url=row.get("clinvar_url")
             )
-            db_session.add(variant)
-            db_session.flush()
+            session.add(variant)
+            session.flush()
 
         # Link patient to variant via Connector table
         try:
-            link_exists = db_session.query(Connector).filter_by(
+            link_exists = session.query(Connector).filter_by(
                 patient_name=name,
                 variant_vcf_form=vcf_form
             ).first()
@@ -285,13 +278,16 @@ def insert_dataframe_to_db(name, df):
 
         # Create link only if link is missing
         if not link_exists:
-            db_session.add(Connector(patient_name=name, variant_vcf_form=row['vcf_form']))
+            session.add(Connector(patient_name=name, variant_vcf_form=row['vcf_form']))
 
-    db_session.commit() # Commit all changes to DB permanently (finalises flushed changes)
-    logger.info(f"Inserted {len(df)} variants for patient '{name}'.")
+    logger.info(f"Prepared {len(df)} variants for patient '{name}' to be committed.")
 
 def load_and_insert_data():
-    """Top-level function to load, enrich, and insert all patient data."""
+    """
+    Top-level function to load, enrich, and insert all patient data.
+
+    Manages (commits and closes) its own database session.
+    """
 
     # Clear old data so it doesn't get reprocessed
     dataframes.clear()
@@ -301,13 +297,32 @@ def load_and_insert_data():
     #Load CSV and VCF files
     load_raw_data(upload_folder)
 
-    # Enrich variant df with variant genomic notation, HGVS notation, and ClinVar data and insert into DB
-    for patient_name, df in dataframes.items():
-        df = (df.
-              pipe(fill_variant_notation)
-              .pipe(enrich_hgvs)
-              .pipe(enrich_clinvar)
-              )
-        insert_dataframe_to_db(patient_name, df)
+    session = get_db_session()
 
+    # Insert data into DB once patient variants have been checked to ensure the same patient variants are not uploaded
+    try:
+        for patient_name, df in dataframes.items():
+            # Check whether variants for a patient have been uploaded before
+            result = compare_uploaded_vs_existing(patient_name, df, session)
+            # If patient exists and variants are unchanged, skip processing
+            if result["exists"] and result["identical"]:
+                logger.info(f"Patient '{patient_name}'already uploaded with identical variants. Skipping upload.")
+                continue
+            # Enrich variant df with variant genomic notation, HGVS notation, and ClinVar data and insert into DB
+            df = (df.
+                  pipe(fill_variant_notation)
+                  .pipe(enrich_hgvs, session)
+                  .pipe(enrich_clinvar, session)
+                  )
+            insert_dataframe_to_db(patient_name, df, session)
+        # Commit all changes to DB permanently (finalises flushed changes from insert_dataframe_to_db)
+        session.commit()
+        logger.info(f"Finished processing {len(dataframes)} patient files.")
+    except Exception as e:
+        logger.error(f"Error during load_and_insert_data: {e}")
+        session.rollback()
+        raise
+    finally:
+        # Close session
+        session.close()
     logger.info(f"Finished processing {len(dataframes)} patient files.")
