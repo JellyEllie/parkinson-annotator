@@ -7,8 +7,6 @@ parses them into DataFrames, and inserts the data into the parkinsons_data.db
 SQLite database with proper patient–variant relationships.
 
 """
-
-import os
 import pandas as pd
 from pathlib import Path
 from dotenv import load_dotenv
@@ -129,11 +127,11 @@ def enrich_hgvs(df, throttle: float = 0.3):
         existing_variant = existing_variant_check(vcf_form)
         if existing_variant:
             # Fill in HGVS from database
-            logger.info(f"Found variant {vcf_form} in database. Skipping VV API call.")
+            logger.info("Skipping VV API call.")
             df.at[idx, 'hgvs'] = existing_variant['hgvs']
             continue # Skip API call
         # Otherwise, fetch HGVS from VariantValidator API
-        logger.info(f"Variant {vcf_form} not yet in database: Proceeding with VV API call")
+        logger.info("Proceeding with VariantValidator API call")
         try:
             # fetch HGVS from VV API using genomic notation and add to DataFrame
             hgvs_data = fetch_variant_validator(vcf_form)
