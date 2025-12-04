@@ -21,9 +21,11 @@ from .models import Genes, Variant, Patient, Connector
 from parkinsons_annotator.utils.variantvalidator_fetch import fetch_variant_validator
 from parkinsons_annotator.utils.clinvar_fetch import extract_clinvar_annotation
 from parkinsons_annotator.utils.clinvar_fetch import ClinVarIDNotFoundError, ClinVarConnectionError, HGVSFormatError
+from parkinsons_annotator.utils.data_checks import existing_variant_check
 
 load_dotenv()
 
+# Dictionary to store loaded DataFrames by patient name
 dataframes = {}
 
 # Full list of columns; CSV can have fewer, missing columns will be added as None and later overwritten
@@ -111,18 +113,30 @@ def fill_variant_notation(df: pd.DataFrame) -> pd.DataFrame:
 def enrich_hgvs(df, throttle: float = 0.3):
     """
     Enrich the 'hgvs' column for all variants in the loaded DataFrames
-    using the VariantValidator API, with optional throttling.
+    using the VariantValidator API, with optional throttling. API calls are performed only
+    if the variant is not already present in the database.
 
     Parameters:
     df (pd.DataFrame): DataFrame with variant data.
     throttle (float): Seconds to wait between API calls.
     """
-    missing_hgvs = df['hgvs'].isna() | (df['hgvs'] == '') # Collate rows where hgvs is missing (NA) or empty string
-
+    # Collate rows in patient's variant DataFrame where hgvs is missing or empty string
+    missing_hgvs = df['hgvs'].isna() | (df['hgvs'] == '')
     for idx in df[missing_hgvs].index:
+        # Get variant genomic notation from DataFrame
+        vcf_form = df.at[idx, 'vcf_form']
+        # Check if variant already exists in database
+        existing_variant = existing_variant_check(vcf_form)
+        if existing_variant:
+            # Fill in HGVS from database
+            logger.info(f"Found variant {vcf_form} in database. Skipping VV API call.")
+            df.at[idx, 'hgvs'] = existing_variant['hgvs']
+            continue # Skip API call
+        # Otherwise, fetch HGVS from VariantValidator API
+        logger.info(f"Variant {vcf_form} not yet in database: Proceeding with VV API call")
         try:
             # fetch HGVS from VV API using genomic notation and add to DataFrame
-            hgvs_data = fetch_variant_validator(df.at[idx, 'vcf_form'])
+            hgvs_data = fetch_variant_validator(vcf_form)
             df.at[idx, 'hgvs'] = hgvs_data.get('HGVS nomenclature', None)
         except Exception as e:
             logger.error(f"Error retrieving HGVS for variant {df.at[idx, 'vcf_form']}: {e}")
@@ -135,7 +149,7 @@ def enrich_hgvs(df, throttle: float = 0.3):
 def enrich_clinvar(df, throttle: float = 0.3):
     """
     Enrich the 'clinvar' columns for all variants in the DataFrame
-    using the ClinVar API, with optional throttling.
+    using the ClinVar API, with optional throttling. Skips API call if variant ClinVar data is already in database.
 
     Parameters:
     df (pd.DataFrame): DataFrame with variant data.
@@ -148,10 +162,24 @@ def enrich_clinvar(df, throttle: float = 0.3):
     missing = df['clinvar_id'].isna() | (df['clinvar_id'] == '')
 
     for idx in df[missing].index:
+        vcf_form = df.at[idx, 'vcf_form']
         hgvs = df.at[idx, 'hgvs']
+
+        # Check whether variant already exists in database
+        existing_variant = existing_variant_check(vcf_form)
+
+        if existing_variant and existing_variant.get("clinvar_id"):
+            # Fill DataFrame from database
+            for col in CLINVAR_FIELDS.values():
+                df.at[idx, col] = existing_variant.get(col)
+            logger.info(f"ClinVar data loaded from DB for {vcf_form}")
+            continue # Skip API call
+
         if not hgvs:
+            logger.warning(f"Skipping ClinVar API: Missing HGVS for {vcf_form}")
             continue  # Skip if HGVS missing as ClinVar cannot be queried without it
 
+        # Otherwise, fetch ClinVar data from API
         try:
             # Call ClinVar API - this may raise ClinVarIDNotFoundError
             clinvar_data = extract_clinvar_annotation(hgvs)
@@ -200,8 +228,12 @@ def insert_dataframe_to_db(name, df):
     # Get SQLAlchemy database session (to connect to DB)
     db_session = get_db_session()
 
-    # Convert all NaN values to None (str) to avoid SQL errors
-    df = df.where(pd.notnull(df), "Not found in Clinvar")
+    # Convert all NaN values to None to avoid SQL errors
+    df = df.where(pd.notnull(df), None)
+
+    # Specifically mark ClinVar fields as "Not found in Clinvar" when missing
+    for col in CLINVAR_FIELDS.values():
+        df[col] = df[col].fillna("Not found in Clinvar")
 
     # Ensure patient exists
     patient = db_session.get(Patient, name)
