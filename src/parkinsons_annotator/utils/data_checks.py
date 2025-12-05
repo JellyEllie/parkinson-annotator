@@ -12,6 +12,7 @@ def existing_variant_check(vcf_form:str, session):
 
     Args:
         vcf_form: Genomic notation of variant
+        session: Database session inherited from load_and_insert_ data function where check is performed
 
     Returns:
         Dictionary of variant data, or None if variant not found
@@ -45,6 +46,17 @@ def existing_variant_check(vcf_form:str, session):
 
 # Check whether patient with the same name has been uploaded before and whether variants are the same
 def existing_patient_check(patient_name:str,session):
+    """
+    Check whether patient with the same name has been uploaded before and return variants for patient
+
+    Args:
+        patient_name:
+        session:
+
+    Returns:
+        variant_list: list of variants(str) for patient
+
+    """
 
     # Check if patient exists in database: use get() method to retrieve patient object from database using primary key
     patient = session.get(Patient, patient_name)
@@ -70,6 +82,7 @@ def compare_uploaded_vs_existing(patient_name: str, df, session):
     Args:
         patient_name (str): Patient name
         df (pd.DataFrame): DataFrame containing variant data for a patient
+        session: Database session inherited from load_and_insert_ data function where check is performed
 
     Returns:
         Dictionary containing comparison results
