@@ -34,6 +34,7 @@ def database_list(search_type=None, search_value=None, search_cat=None):
                 - 'classification': List of variants with that classification.
                 - 'patient': List of variants for that patient.
         search_value (str): Input value for the search, e.g. "NM_001377265.1:c.841G>T".
+        search_cat (str): Classification to search for, e.g. "Pathogenic". Only used in classification search.
 
     Returns:
         list: List of query results (e.g., patient names).
