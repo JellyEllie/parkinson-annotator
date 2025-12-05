@@ -123,7 +123,8 @@ def upload_file():
 
             if result["exists"] and result["identical"]:
                 logger.info(f"Upload for '{patient_name}' skipped — identical variants.")
-                return f"Patient '{patient_name}' already exists with identical variants. Ignoring upload request"
+                return (f"Patient '{patient_name}' already exists in upload folder with identical variants. "
+                        f"Upload rejected."), 409
 
             # Get notation/HGVS/ClinVar annotation then insert into DB
             df = (df
