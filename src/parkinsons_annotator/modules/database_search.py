@@ -95,8 +95,7 @@ def database_list(search_type=None, search_value=None, search_cat=None):
             select(
                 Variant.hgvs,
                 Patient.name,
-                Variant.classification,
-                Variant.clinvar_url
+                Variant.classification
             )
             .join(Connector, Connector.variant_vcf_form == Variant.vcf_form)
             .join(Patient, Patient.name == Connector.patient_name)
@@ -117,7 +116,7 @@ def database_list(search_type=None, search_value=None, search_cat=None):
     elif search_type in ('patient', 'patient_name'):
         logger.info(f"Searching database for patient= '{search_value}'")
 
-        # Find list of variants for that patient with the pathogencity
+        # Find list of variants for that patient with the pathogenicity
         stmt = (
             select(
                 Variant.hgvs,

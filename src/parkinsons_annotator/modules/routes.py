@@ -62,7 +62,7 @@ def search():
         variant_object = results[0][0]  # get first ORM object in list, contains variant info
         patient_list = [row[1] for row in results]  # get list of patient names from all rows
 
-        # Create an dictionary for the variant with variant info fields
+        # Create a dictionary for the variant with variant info fields
         variant_dict = {
             "HGVS notation": variant_object.hgvs,
             "Genomic notation": variant_object.vcf_form,
@@ -120,7 +120,6 @@ def upload_file():
         for patient_name, df in dataframes.items():
             # Ensure patient does not already exist in DB with same variants
             result = compare_uploaded_vs_existing(patient_name, df, session)
-
             if result["exists"] and result["identical"]:
                 logger.info(f"Upload for '{patient_name}' skipped — identical variants.")
                 return (f"Patient '{patient_name}' already exists in upload folder with identical variants. "
