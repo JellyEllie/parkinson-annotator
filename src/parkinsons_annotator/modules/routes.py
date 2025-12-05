@@ -21,6 +21,7 @@ from parkinsons_annotator.modules.data_extraction import (dataframes,
                                                           insert_dataframe_to_db)
 from parkinsons_annotator.modules.db import get_db_session, close_db_session
 from parkinsons_annotator.logger import logger
+from parkinsons_annotator.utils.data_checks import compare_uploaded_vs_existing
 
 route_blueprint = Blueprint('routes', __name__)
 
@@ -87,6 +88,7 @@ def search():
 
 @route_blueprint.route('/upload', methods=['POST'])
 def upload_file():
+    """Handle a single file upload, enrich variant data, and insert into the database."""
     # Check if a file was uploaded
     if 'file' not in request.files:
         return "No file part in the request", 400
@@ -116,21 +118,31 @@ def upload_file():
         load_single_file(filepath)
         # Enrich + insert for ONLY this patient
         for patient_name, df in dataframes.items():
+            # Ensure patient does not already exist in DB with same variants
+            result = compare_uploaded_vs_existing(patient_name, df, session)
+
+            if result["exists"] and result["identical"]:
+                logger.info(f"Upload for '{patient_name}' skipped — identical variants.")
+                return f"Patient '{patient_name}' already exists with identical variants. Ignoring upload request"
+
+            # Get notation/HGVS/ClinVar annotation then insert into DB
             df = (df
                   .pipe(fill_variant_notation)
-                  .pipe(enrich_hgvs)
-                  .pipe(enrich_clinvar)
+                  .pipe(enrich_hgvs, session=session)
+                  .pipe(enrich_clinvar, session=session)
                   )
-            insert_dataframe_to_db(patient_name, df)
+            insert_dataframe_to_db(patient_name, df, session)
         # Commit any changes to DB
         session.commit()
+        logger.info(f"File '{file.filename}' uploaded and processed successfully!")
+        return f"File '{file.filename}' uploaded and processed successfully!", 200
+
     except Exception as e:
         logger.error(f"Data extraction failed: {e}")
         if session:
             session.rollback()  # rollback on error
         return f"Upload failed: {e}", 500
+
     finally:
         if session:
             close_db_session()  # ensures session is closed
-
-    return f"File '{file.filename}' uploaded and processed successfully!"
