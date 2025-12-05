@@ -44,15 +44,18 @@ def database_list(search_type=None, search_value=None, search_cat=None):
     # Raise error if no search type or value provided
     if not search_type:
         logger.warning("Search called without search_type")
-        raise SearchFieldEmptyError("Missing search fields.")
+        raise SearchFieldEmptyError("Missing search field input.")
 
     # Based on search type, perform SQL query to return list from database
     # --- Search by variant ---
     if search_type == 'variant':
         logger.info("Searching database for variant")
 
+        # Normalise search value: strip whitespace and convert to uppercase
+        search_value = search_value.strip().upper()
+
         # Search in HGVS format:
-        if search_value.lower().startswith(("nm", "nc")):
+        if search_value.startswith(("NM", "nNC")):
             logger.info(f"Searching variant by HGVS: {search_value}")
             filter_column = Variant.hgvs
 
