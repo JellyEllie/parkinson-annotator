@@ -101,7 +101,8 @@ def database_list(search_type=None, search_value=None, search_cat=None):
             .join(Patient, Patient.name == Connector.patient_name)
             .where(Variant.gene_symbol.ilike(search_value))
         )
-        query_results = db_session.execute(stmt).mappings().all()  # mappings() converts SQLAlchemy tuple to list of dictionaries for JSON
+        # Query DB: mappings() converts SQLAlchemy tuple to list of dictionaries for JSON
+        query_results = db_session.execute(stmt).mappings().all()
         logger.info(f"Found {len(query_results)} for gene symbol '{search_value}'")
 
         # Raise exception if no matching records found

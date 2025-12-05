@@ -7,7 +7,6 @@ The visuals and interactive elements of the interface are stored in a html file.
 """
 
 import os
-import signal
 from flask import Blueprint, render_template, request, jsonify, current_app
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
@@ -42,6 +41,14 @@ def search():
     search_value = data.get('query', '').lower().strip()
     search_type = data.get('category', '').lower().strip()
     search_cat = data.get('searchCat', '').lower().strip()
+
+    #Specify column orders to display in Flask for each search category
+    column_orders = {
+        "patient_name": ["hgvs", "gene_symbol", "classification"],
+        "classification": ["hgvs"],
+        "gene_symbol": ["hgvs", "classification", "name"],
+        "variant": "special",  # handled separately
+    }
 
     logger.info(f"User searched for: {search_value}, category: {search_type}")
 
@@ -78,13 +85,18 @@ def search():
         }
 
         return jsonify({
+            "column_order": list(variant_dict.keys()), # Table column order set to the same as variant_dict order
             "variant": variant_dict,
             "patients": patient_list
         }), 200
 
     # Other search types:
     else:
-        return jsonify({"results": results}), 200
+        column_order = column_orders.get(search_type)
+        return jsonify({
+            "column_order": column_order,
+            "results": results
+        }), 200
 
 @route_blueprint.route('/upload', methods=['POST'])
 def upload_file():
