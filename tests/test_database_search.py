@@ -33,6 +33,7 @@ def db_session(monkeypatch):
     yield session
 
     session.close()
+    engine.dispose()
 
 # Create fixture to add sample data to query:
 @pytest.fixture
