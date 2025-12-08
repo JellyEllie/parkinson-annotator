@@ -66,13 +66,14 @@ def seeded_db(db_session):
 
 ### TESTS ###
 
-# Missing search field raises error:
 def test_missing_search_type(db_session):
+    """Raises SearchFieldEmptyError if search_type is not provided."""
     with pytest.raises(SearchFieldEmptyError):
         database_list(search_type=None, search_value="x")
 
-# Variant search returns Variant object within patient list: [(VariantORM, "Alice"), (VariantORM, "Bob")]
+
 def test_search_variant(seeded_db):
+    """Variant search returns Variant object within patient list: [(VariantORM, "Alice"), (VariantORM, "Bob")]"""
     results = database_list(search_type="variant", search_value="NM_000111.1:c.100A>T")
 
     # Search produces patient list with length 2
@@ -85,8 +86,9 @@ def test_search_variant(seeded_db):
     # Ensure patient name is in list of patients
     assert patient in {"Alice", "Bob"}
 
-# Gene symbol search returns all fields correctly
+
 def test_search_gene_symbol(seeded_db):
+    """Gene symbol search returns all fields correctly"""
     # Search for "GENE1"
     results = database_list(search_type="gene_symbol", search_value="GENE1")
 
@@ -105,8 +107,9 @@ def test_search_gene_symbol(seeded_db):
     assert row["hgvs"] in {"NM_000111.1:c.100A>T", "NM_000111.1:c.200G>A"}
     assert row["classification"] in {"Pathogenic", "Likely benign"}
 
-# Patient search returns all variants correctly
+
 def test_search_patient(seeded_db):
+    """Patient search returns all variants correctly"""
     # Search for "Alice"
     results = database_list(search_type="patient_name", search_value="Alice")
 
@@ -125,8 +128,9 @@ def test_search_patient(seeded_db):
     # One of the variants is likely benign
     assert any(r["classification"] == "Likely benign" for r in results)
 
-# Classification search returns all variants correctly
+
 def test_search_classification(seeded_db):
+    """Classification search returns all variants correctly"""
     # Search for "Pathogenic"
     results = database_list(search_type="classification", search_value="None", search_cat="Pathogenic")
 
@@ -135,9 +139,9 @@ def test_search_classification(seeded_db):
     # HGVS field is correct
     assert results[0]["hgvs"] == "NM_000111.1:c.100A>T"
 
-# No match raised correctly
+
 def test_no_match_raises(seeded_db):
-    # NoMatchingRecordsError raised when no records found
+    """NoMatchingRecordsError raised when no records found"""
     search_cases = [
         #search_type, search_value, search_cat
         ("variant", "NM_000000.0:c.9999A>T", None),
