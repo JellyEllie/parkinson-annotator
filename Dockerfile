@@ -9,6 +9,9 @@ COPY . /app
 # Install dependencies via pip install
 RUN pip install .
 
+# Set env variable that Docker is running (used in main.py)
+ENV IN_DOCKER=true
+
 # Expose port for web app
 EXPOSE 5000
 

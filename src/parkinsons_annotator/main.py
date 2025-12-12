@@ -23,23 +23,32 @@ def open_browser():
 def create_app():
     logger.info("Building app")
 
-    # Set template_folder to the templates directory within the modules folder, so Flask can find the HTML files
+    # Get path to package folder (parkinsons_annotator) based on location of current file
+    pkg_root = Path(__file__).resolve().parent
+
+    # Determine instance folder depending on environment
+    if os.getenv("IN_DOCKER") == "true":
+        instance_path = Path("/app/instance")  # Docker location
+    else:
+        instance_path = pkg_root / "instance"  # Local development
+
+    # Create Flask app
     app = Flask(
         __name__,
-        template_folder=str(Path(__file__).parent / "templates"),
-        instance_relative_config=True
+        template_folder=str(pkg_root / "templates"),
+        instance_path=str(instance_path)
     )
 
     # Create instance folder if needed
-    Path(app.instance_path).mkdir(exist_ok=True)
+    instance_path.mkdir(parents=True, exist_ok=True)
 
     # Set upload folder to within Flask instance folder
-    upload_path = Path(app.instance_path) / "uploads"
+    upload_path = instance_path / "uploads"
     upload_path.mkdir(parents=True, exist_ok=True)
     app.config["UPLOAD_FOLDER"] = str(upload_path)
 
     # Put database within instance folder too because it is written at runtime
-    db_path = Path(app.instance_path) / DB_NAME
+    db_path = instance_path / DB_NAME
     app.config["DB_NAME"] = str(db_path)
 
     # Ensure DB session is closed after each request

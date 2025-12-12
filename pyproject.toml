@@ -41,5 +41,9 @@ requires = ["setuptools>=61.0",     # Using setuptools for build backend
             "wheel"]                # Wheel for efficient distribution
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.package-data]
+"parkinsons_annotator" = ["templates/*"]
+
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]                # Add the 'src' directory to Python's import path during tests
