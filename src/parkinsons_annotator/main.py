@@ -81,11 +81,14 @@ def main():
             except Exception as e:
                 logger.error(f"Failed to load initial data: {e}")
 
-    # Open browser after 1 second
-    threading.Timer(1, open_browser).start()
+    # Open browser after 1 second if running locally
+    if os.getenv("IN_DOCKER") != "true":
+        threading.Timer(1, open_browser).start()
 
     # Start the Flask app
-    app.run(debug=True, use_reloader=False)     # Prevents two interfaces from opening
+    host = "0.0.0.0" if os.getenv("IN_DOCKER") == "true" else "127.0.0.1"
+    app.run(host=host, port=5000, debug=True, use_reloader=False) # Use_reloader prevents two interfaces from opening
+
 
 if __name__ == "__main__":
     main()
