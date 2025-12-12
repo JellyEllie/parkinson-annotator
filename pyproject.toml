@@ -4,26 +4,27 @@ version = "0.1.0"
 description = "A web-based app for storing and querying variant data, returning the ClinVar annotation for variants."
 readme = "README.md"
 # Specify minimum supported python distribution
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Intended Audience :: Healthcare professionals"
 ]
 # Runtime dependencies required for package to function
 dependencies = [
-    "flask",
-    "sqlalchemy",
-    "biopython",
-    "requests"
+    "flask==3.1.2",
+    "sqlalchemy==2.0.44",
+    "biopython==1.86",
+    "pandas==2.3.3",
+    "requests==2.32.5",
+    "python-dotenv==1.2.1"
 ]
 
 # Optional dependencies used by developers
 [project.optional-dependencies]
 dev = [
-    "pytest",       # Testing framework
-    "pytest-cov",   # Test coverage reporting
-    "poetry"
+    "pytest==8.4.2",       # Testing framework
+    "pytest-cov==7.0.0"   # Test coverage reporting
     ]
 
 # This creates a runnable CLI command
