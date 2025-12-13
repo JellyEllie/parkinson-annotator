@@ -27,7 +27,7 @@ pipeline {
             steps {
                 // Remove any existing environment and create a new one from environment.yml
                 sh '''
-                source ${CONDA_PREFIX}/etc/profile.d/conda.sh
+                . ${CONDA_PREFIX}/etc/profile.d/conda.sh
                 conda env remove -n ${CONDA_ENV_NAME} || true
                 conda env create -f environment.yml
                 '''
@@ -37,7 +37,7 @@ pipeline {
             steps {
                 // Activate environment and install current project in editable mode
                 sh '''
-                source ${CONDA_PREFIX}/etc/profile.d/conda.sh
+                . ${CONDA_PREFIX}/etc/profile.d/conda.sh
                 conda activate ${CONDA_ENV_NAME}
                 pip install -e .
                 '''
@@ -47,7 +47,7 @@ pipeline {
             steps {
                 // Run the test suite using pytest with coverage
                 sh '''
-                source ${CONDA_PREFIX}/etc/profile.d/conda.sh
+                . ${CONDA_PREFIX}/etc/profile.d/conda.sh
                 conda activate ${CONDA_ENV_NAME}
                 pytest --cov=src.parkinsons_annotator tests/
                 '''
