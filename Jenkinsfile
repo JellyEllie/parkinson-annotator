@@ -11,7 +11,7 @@ pipeline {
     agent any
 
     environment {
-        CONDA_PREFIX = '/opt/miniconda3' // Adjust if your Jenkins Conda is elsewhere
+        CONDA_PREFIX = '/Users/naimaabdi/opt/miniconda3' // Adjust if your Jenkins Conda is elsewhere
         CONDA_ENV_NAME = 'parkinsons-env'
         PIP_DISABLE_PIP_VERSION_CHECK = '1'
         PYTHONUNBUFFERED = '1'
