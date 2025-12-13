@@ -34,6 +34,7 @@ def database_list(search_type=None, search_value=None, search_cat=None):
                 - 'classification': List of variants with that classification.
                 - 'patient': List of variants for that patient.
         search_value (str): Input value for the search, e.g. "NM_001377265.1:c.841G>T".
+        search_cat (str): Classification to search for, e.g. "Pathogenic". Only used in classification search.
 
     Returns:
         list: List of query results (e.g., patient names).
@@ -95,14 +96,14 @@ def database_list(search_type=None, search_value=None, search_cat=None):
             select(
                 Variant.hgvs,
                 Patient.name,
-                Variant.classification,
-                Variant.clinvar_url
+                Variant.classification
             )
             .join(Connector, Connector.variant_vcf_form == Variant.vcf_form)
             .join(Patient, Patient.name == Connector.patient_name)
             .where(Variant.gene_symbol.ilike(search_value))
         )
-        query_results = db_session.execute(stmt).mappings().all()  # mappings() converts SQLAlchemy tuple to list of dictionaries for JSON
+        # Query DB: mappings() converts SQLAlchemy tuple to list of dictionaries for JSON
+        query_results = db_session.execute(stmt).mappings().all()
         logger.info(f"Found {len(query_results)} for gene symbol '{search_value}'")
 
         # Raise exception if no matching records found
@@ -117,7 +118,7 @@ def database_list(search_type=None, search_value=None, search_cat=None):
     elif search_type in ('patient', 'patient_name'):
         logger.info(f"Searching database for patient= '{search_value}'")
 
-        # Find list of variants for that patient with the pathogencity
+        # Find list of variants for that patient with the pathogenicity
         stmt = (
             select(
                 Variant.hgvs,
