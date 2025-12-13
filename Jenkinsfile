@@ -49,7 +49,7 @@ pipeline {
                 sh '''
                 . ${CONDA_PREFIX}/etc/profile.d/conda.sh
                 conda activate ${CONDA_ENV_NAME}
-                pytest --cov=src.parkinsons_annotator tests/
+                pytest --cov=parkinsons_annotator tests/
                 '''
             }
         }
