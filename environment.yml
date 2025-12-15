@@ -3,14 +3,6 @@ channels:
   - conda-forge
 dependencies:
   - python=3.13.2
-  - flask=3.1.2
-  - sqlalchemy=2.0.44
-  - biopython=1.86
-  - requests
-  - pandas
   - pip
   - pip:
-      - pytest==8.4.2
-      - python-dotenv
-      - pytest-cov
-      - -e .   # install your package in editable mode
+    - .   # install package located in current directory
