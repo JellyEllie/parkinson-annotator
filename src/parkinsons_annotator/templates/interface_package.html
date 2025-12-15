@@ -134,8 +134,11 @@
       document.getElementById('loading').style.display = 'none';
       document.getElementById('upload-btn').disabled = false;
 
-      alert(res.ok ? 'File uploaded successfully!' : 'Upload failed.');
-    });
+      // alert(res.ok ? 'File uploaded successfully!' : 'Upload failed.');
+
+      const message = await res.text();   // <-- read the server message
+        alert(message);                     // <-- show it directly
+});
 
     // Handle search
 
@@ -214,45 +217,45 @@ category.addEventListener("change", function () {
 
       const results = data.results;
       if (results && results.length > 0) {
+
+
+  // Determine table columns based on what Flask returned
+  const columns = data.column_order || Object.keys(results[0]);
+
   // Build a table dynamically
-const table = document.createElement("table");
-table.style.margin = "20px auto";
-table.style.borderCollapse = "collapse";
-table.style.fontFamily = "Georgia, serif";
-table.style.fontSize = "18px";
+    const table = document.createElement("table");
+    table.style.margin = "20px auto";
+    table.style.borderCollapse = "collapse";
+    table.style.fontFamily = "Georgia, serif";
+    table.style.fontSize = "18px";
 
-const header = document.createElement("tr");
+    // Create header
+    const header = document.createElement("tr");
+    (columns).forEach(col => {
+      const th = document.createElement("th");
+      th.textContent = col.replace("_", " ").toUpperCase();
+      th.style.padding = "10px 15px";
+      th.style.backgroundColor = "#e0e0e0";
+      th.style.border = "1px solid black";
+      header.appendChild(th);
+    });
+    table.appendChild(header);
 
-// Determine table columns based on fields returned
-const columns = Object.keys(results[0]);
+    // Create rows
+    results.forEach(row => {
+      const tr = document.createElement("tr");
+      columns.forEach(col => {
+        const td = document.createElement("td");
+        td.textContent = row[col] ?? "";
+        td.style.padding = "8px 12px";
+        td.style.border = "1px solid black";
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    });
 
-columns.forEach(col => {
-  const th = document.createElement("th");
-  th.textContent = col.replace("_", " ").toUpperCase();
-  th.style.padding = "10px 15px";
-  th.style.backgroundColor = "#e0e0e0";
-  th.style.border = "1px solid black";
-  header.appendChild(th);
-});
-
-table.appendChild(header);
-
-// Fill table rows
-results.forEach(row => {
-  const tr = document.createElement("tr");
-
-  columns.forEach(col => {
-    const td = document.createElement("td");
-    td.textContent = row[col];
-    td.style.padding = "8px 12px";
-    td.style.border = "1px solid black";
-    tr.appendChild(td);
-  });
-
-  table.appendChild(tr);
-});
-
-resultsList.appendChild(table);
+    // Add table to page
+    resultsList.appendChild(table);
 
 } else {
         resultsList.innerHTML = "<li>No matches found</li>";

@@ -7,7 +7,6 @@ The visuals and interactive elements of the interface are stored in a html file.
 """
 
 import os
-import signal
 from flask import Blueprint, render_template, request, jsonify, current_app
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
@@ -43,6 +42,14 @@ def search():
     search_type = data.get('category', '').lower().strip()
     search_cat = data.get('searchCat', '').lower().strip()
 
+    #Specify column orders to display in Flask for each search category
+    column_orders = {
+        "patient_name": ["hgvs", "gene_symbol", "classification"],
+        "classification": ["hgvs"],
+        "gene_symbol": ["hgvs", "classification", "name"],
+        "variant": "special",  # handled separately
+    }
+
     logger.info(f"User searched for: {search_value}, category: {search_type}")
 
     # Call the database search function
@@ -62,7 +69,7 @@ def search():
         variant_object = results[0][0]  # get first ORM object in list, contains variant info
         patient_list = [row[1] for row in results]  # get list of patient names from all rows
 
-        # Create an dictionary for the variant with variant info fields
+        # Create a dictionary for the variant with variant info fields
         variant_dict = {
             "HGVS notation": variant_object.hgvs,
             "Genomic notation": variant_object.vcf_form,
@@ -78,13 +85,18 @@ def search():
         }
 
         return jsonify({
+            "column_order": list(variant_dict.keys()), # Table column order set to the same as variant_dict order
             "variant": variant_dict,
             "patients": patient_list
         }), 200
 
     # Other search types:
     else:
-        return jsonify({"results": results}), 200
+        column_order = column_orders.get(search_type)
+        return jsonify({
+            "column_order": column_order,
+            "results": results
+        }), 200
 
 @route_blueprint.route('/upload', methods=['POST'])
 def upload_file():
@@ -120,10 +132,10 @@ def upload_file():
         for patient_name, df in dataframes.items():
             # Ensure patient does not already exist in DB with same variants
             result = compare_uploaded_vs_existing(patient_name, df, session)
-
             if result["exists"] and result["identical"]:
                 logger.info(f"Upload for '{patient_name}' skipped — identical variants.")
-                return f"Patient '{patient_name}' already exists with identical variants. Ignoring upload request"
+                return (f"Patient '{patient_name}' already exists in upload folder with identical variants. "
+                        f"Upload rejected."), 409
 
             # Get notation/HGVS/ClinVar annotation then insert into DB
             df = (df
