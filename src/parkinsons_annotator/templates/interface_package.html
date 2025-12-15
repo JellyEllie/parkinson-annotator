@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<head>
   <meta charset="UTF-8">
   <title>Parkinsons Annotator</title>
 
@@ -69,8 +68,8 @@
     top: 15px;
     right: 20px;
   }
+
   </style>
-</head>
 
 <body>
   <h2>Welcome To the Dataset</h2>
@@ -96,7 +95,7 @@
           <option value="Likely Benign">Likely Benign</option>
           <option value="Uncertain Significance">Uncertain Significance</option>
           <option value="Conflicting classifications of pathogenicity">Conflicting</option>
-          <option value="not provided">Not Classified</option>
+          <option value="not provided">Not Provided</option>
           <option value="Not found in Clinvar">Not Found in Clinvar</option>
       </select>
 
@@ -108,7 +107,10 @@
   <div id="loading">Loading...</div>
 </form>
 
-  <div id="results"></div>
+<div id="results"></div>
+<div id="patient_list"></div>
+<div id="variant_dict"></div>
+
   <p>Variant Search - Input: vcf or hgvf format. Ouput: all patients with that variant and Clinvar information</p>
   <p>Gene Symbol Search - Input: gene symbol Ouput: all patients and their vairants found in that gene, plus classification and link to Clinvar</p>
   <p>Patient Search - Input: patient name Output: all variants for that patient, their classifications and the genes they are in</p>
@@ -146,41 +148,55 @@
     const searchBox = document.getElementById("search-box");
     const category = document.getElementById("category");
     const searchCat = document.getElementById("classification-dropdown")
-    const resultsList = document.getElementById("results");
 
-// Toggle search input depending on category
-category.addEventListener("change", function () {
-  if (category.value === "classification") {
-    searchBox.style.display = "none";
-    searchBox.required = false;
+    // Toggle search input depending on category
+    category.addEventListener("change", function () {
+        if (category.value === "classification") {
+            searchBox.style.display = "none";
+            searchBox.required = false;
 
-    document.getElementById("classification-dropdown").style.display = "inline-block";
-    document.getElementById("classification-dropdown").required = true;
+            document.getElementById("classification-dropdown").style.display = "inline-block";
+            document.getElementById("classification-dropdown").required = true;
 
-  } else {
-    searchBox.style.display = "inline-block";
-    searchBox.required = true;
+        } else {
+            searchBox.style.display = "inline-block";
+            searchBox.required = true;
 
-    document.getElementById("classification-dropdown").style.display = "none";
-    document.getElementById("classification-dropdown").required = false;
-  }
-});
+            document.getElementById("classification-dropdown").style.display = "none";
+            document.getElementById("classification-dropdown").required = false;
+        }
+    });
 
     form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+        e.preventDefault();
 
-      const query = searchBox.value.trim();
-      const selectedCategory = category.value;
-      const selectedSearchCat = searchCat.value;
+        const selectedCategory = category.value;
+        const query = searchBox.value.trim();
+        const selectedSearchCat = searchCat.value;
 
-      const response = await fetch("/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, searchCat: selectedSearchCat, category: selectedCategory }),
-      });
+        // Always get the containers fresh
+        const resultsList = document.getElementById("results");
+        const variantDict = document.getElementById("variant_dict");
+        const patientList = document.getElementById("patient_list");
 
-      const data = await response.json();
-      console.log("Received from Flask:", data);
+        // Clear old outputs
+        resultsList.innerHTML = "";
+        variantDict.innerHTML = "";
+        patientList.innerHTML = "";
+
+        const response = await fetch("/search", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                query,
+                searchCat: selectedSearchCat,
+                category: selectedCategory
+            }),
+        });
+
+        const data = await response.json();
+
+        console.log("JSON received:", data);
 
         let resultSentence = "";
 
@@ -193,7 +209,7 @@ category.addEventListener("change", function () {
         } else if (selectedCategory === "classification") {
             if (selectedSearchCat === "Not found in Clinvar") {
                 resultSentence = 'Patient variants which were not identified in ClinVar:';
-            }else {
+            } else {
                 resultSentence = `Patient variants with ClinVar classification: <strong>${selectedSearchCat}</strong>:`;
             }
         } else if (selectedCategory === "patient_name") {
@@ -206,61 +222,143 @@ category.addEventListener("change", function () {
         }
 
         resultsList.innerHTML = `<p style="text-align:center; font-family: Georgia, serif; font-size: 22px;">
-          ${resultSentence}
-        </p>`;
+${resultSentence}
+</p>`;
 
-
+        // Handle errors
         if (data.message) {
-        resultsList.innerHTML = `<li>${data.message}</li>`;
-        return;
-      }
+            resultsList.innerHTML = data.message;
+            return;
+        }
+
+        // SPECIAL CASE: VARIANT SEARCH
+        if (selectedCategory === "variant") {
+            const variantData = data.variant;
+            const patients = data.patients;
+
+            // Patient list
+            const ul = document.createElement("ul");
+            ul.style.listStyleType = "none";
+            ul.style.padding = "0";
+            ul.style.margin = "0 auto";
+
+            const container = document.createElement("div");
+            container.style.textAlign = "center";
+            container.style.marginTop = "20px";
+            container.style.fontFamily = "Georgia, serif";
+            container.style.fontSize = "22px";     // bigger text
+            container.style.fontWeight = "bold";
+
+            patients.forEach(p => {
+                const li = document.createElement("li");
+                li.textContent = p;
+                li.style.margin = "5px 0";
+                ul.appendChild(li);
+            });
+
+            container.appendChild(ul);
+            patientList.appendChild(container);
+
+            // ADD HEADER BETWEEN PATIENT LIST AND TABLE
+            const header = document.createElement("h3");
+            header.textContent = "Variant Information";
+            header.style.textAlign = "center";
+            header.style.fontFamily = "Georgia, serif";
+            header.style.fontSize = "26px";
+            header.style.marginTop = "25px";
+            header.style.marginBottom = "10px";
+
+            variantDict.appendChild(header);
+
+            // Build variant info table
+            const table = document.createElement("table");
+            table.style.margin = "20px auto";
+            table.style.borderCollapse = "collapse";
+
+            for (const [key, value] of Object.entries(variantData)) {
+                const row = document.createElement("tr");
+
+                const th = document.createElement("th");
+                th.textContent = key;
+                th.style.border = "1px solid black";
+                th.style.padding = "6px 10px";
+
+                const td = document.createElement("td");
+                td.innerHTML = value;    // allows clickable links
+                td.style.border = "1px solid black";
+                td.style.padding = "6px 10px";
+
+                row.appendChild(th);
+                row.appendChild(td);
+                table.appendChild(row);
+            }
+
+            variantDict.appendChild(table);
+
+            return;  // stop - don't trigger normal results handler
+        }
 
       const results = data.results;
-      if (results && results.length > 0) {
 
+        if (!results || results.length === 0) {
+            resultsList.innerHTML = "No matches found";
+            return;
+        }
+      
+        // Determine table columns based on what Flask returned
+        const columns = data.column_order || Object.keys(results[0]);
 
-  // Determine table columns based on what Flask returned
-  const columns = data.column_order || Object.keys(results[0]);
+        // Build a table dynamically
 
-  // Build a table dynamically
-    const table = document.createElement("table");
-    table.style.margin = "20px auto";
-    table.style.borderCollapse = "collapse";
-    table.style.fontFamily = "Georgia, serif";
-    table.style.fontSize = "18px";
+        const table = document.createElement("table");
+        table.style.margin = "20px auto";
+        table.style.borderCollapse = "collapse";
+        table.style.fontFamily = "Georgia, serif";
+        table.style.fontSize = "18px";
 
-    // Create header
-    const header = document.createElement("tr");
-    (columns).forEach(col => {
-      const th = document.createElement("th");
-      th.textContent = col.replace("_", " ").toUpperCase();
-      th.style.padding = "10px 15px";
-      th.style.backgroundColor = "#e0e0e0";
-      th.style.border = "1px solid black";
-      header.appendChild(th);
-    });
-    table.appendChild(header);
+        const header = document.createElement("tr");
 
-    // Create rows
-    results.forEach(row => {
-      const tr = document.createElement("tr");
-      columns.forEach(col => {
-        const td = document.createElement("td");
-        td.textContent = row[col] ?? "";
-        td.style.padding = "8px 12px";
-        td.style.border = "1px solid black";
-        tr.appendChild(td);
-      });
-      table.appendChild(tr);
-    });
+        columns.forEach(col => {
+            const th = document.createElement("th");
+            th.textContent = col.replace("_", " ").toUpperCase();
+            th.style.padding = "10px 15px";
+            th.style.backgroundColor = "#e0e0e0";
+            th.style.border = "1px solid black";
+            header.appendChild(th);
+        });
 
-    // Add table to page
-    resultsList.appendChild(table);
+        table.appendChild(header);
 
-} else {
-        resultsList.innerHTML = "<li>No matches found</li>";
-      }
+        // Fill table rows
+        results.forEach(row => {
+            const tr = document.createElement("tr");
+
+            columns.forEach(col => {
+                const td = document.createElement("td");
+                const value = row[col];
+
+                if (typeof value === "string") {
+                    let cleaned = value.replace(/[\[\]']/g, "").trim();
+
+                    if (cleaned.includes("http")) {
+                        td.innerHTML = `<a href="${cleaned}" target="_blank">${cleaned}</a>`;
+                    } else {
+                        td.textContent = cleaned;
+                    }
+                } else {
+                    td.textContent = value;
+                }
+
+                td.style.padding = "8px 12px";
+                td.style.border = "1px solid black";
+                tr.appendChild(td);
+            });
+
+            table.appendChild(tr);
+        });
+
+        resultsList.appendChild(table);
+
     });
   </script>
-</body>
 {% endblock %}
