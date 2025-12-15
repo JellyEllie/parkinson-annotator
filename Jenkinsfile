@@ -1,31 +1,29 @@
 // Jenkinsfile
 // Language: Groovy (Declarative Pipeline)
-//
-// CI pipeline using Jenkins, for the Parkinsons Annotator project.
-// Adapted from a sample Jenkinsfile by Peter J. Freeman (University of Manchester) available at:
+// This file defines a CI pipeline using Jenkins, for the Parkinson's Annotator project.
+// This pipeline checks the repository, sets up a Conda environment, installs the package, and runs tests using pytest.
+// Adapted from a sample Jenkinsfile, available at:
 // https://github.com/Peter-J-Freeman/SeqKitSTP2025/blob/add_jenkins/Jenkinsfile
-
-// This pipeline checks out the repo, sets up a Conda environment, installs the package, and runs tests using pytest.
 
 pipeline {
     agent any
 
     environment {
-        CONDA_PREFIX = '/Users/naimaabdi/opt/miniconda3' // Adjust if your Jenkins Conda is elsewhere
-        CONDA_ENV_NAME = 'parkinsons-env'
-        PIP_DISABLE_PIP_VERSION_CHECK = '1'
-        PYTHONUNBUFFERED = '1'
+        CONDA_PREFIX = '/Users/naimaabdi/opt/miniconda3'  // Path to Conda installation
+        CONDA_ENV_NAME = 'parkinsons-env'  // Name of the Conda environment to create
+        PIP_DISABLE_PIP_VERSION_CHECK = '1'  // Disable pip version check warnings
+        PYTHONUNBUFFERED = '1'  // Ensure real-time, unbuffered output from Python 
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm // Get the source code from the Git repository
+                checkout scm  // Get the source code from the Git repository
             }
         }
         stage('Setup Conda Environment') {
             steps {
-                // Remove any existing environment and create a new one from environment.yml
+                // Remove any existing environment with the same name, and create a new one from environment.yml
                 sh '''
                 . ${CONDA_PREFIX}/etc/profile.d/conda.sh
                 conda env remove -n ${CONDA_ENV_NAME} || true
@@ -35,11 +33,10 @@ pipeline {
         }
         stage('Install Package') {
             steps {
-                // Activate environment and install current project in editable mode
+                // Activate environment (install is handled by environment.yml)
                 sh '''
                 . ${CONDA_PREFIX}/etc/profile.d/conda.sh
                 conda activate ${CONDA_ENV_NAME}
-                pip install -e .
                 '''
             }
         }
@@ -54,10 +51,10 @@ pipeline {
             }
         }
     }
-
+    
     post {
         always {
-            echo 'CI pipeline finished.'
+            echo 'CI pipeline finished.'  // Displays this message whether the pipeline succeeds or fails
         }
     }
 }
