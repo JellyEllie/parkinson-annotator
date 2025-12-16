@@ -1,0 +1,39 @@
+# OS/IDE files
+.DS_Store
+.idea/
+.vscode/
+
+# Python cache and build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+.build/
+dist/
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local env & credentials
+.env
+.env.*
+!.env.example   # keep example template
+
+# Local runtime data (logs/uploads)
+src/logs/
+src/instance/uploads
+
+# Documentation
+docs/
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml

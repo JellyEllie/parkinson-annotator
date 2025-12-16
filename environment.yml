@@ -4,3 +4,5 @@ channels:
 dependencies:
   - python=3.13.2
   - pip
+  - pip:
+    - .   # install package located in current directory
