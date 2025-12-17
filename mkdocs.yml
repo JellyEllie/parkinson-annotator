@@ -1,0 +1,15 @@
+site_name: Parkinson’s Annotator Documents
+
+theme:
+  name: material
+
+plugins:
+  - search
+  - mkdocstrings
+
+nav:
+  - Home: index.md
+  - Installation: INSTALLATION.md
+  - User Manual: USER_MANUAL.md
+  - Technical Manual: TECHNICAL_MANUAL.md
+  - Docker: DOCKER.md
