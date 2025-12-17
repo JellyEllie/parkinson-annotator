@@ -57,4 +57,18 @@ parkinson-annotator/
 - **tests/**: Unit tests (e.g. test_clinvar_fetch.py,test_data_checks.py, test_data_extraction.py, test_database_search.py, test_db.py, test_main.py, test_routes.py, test_variantvalidator_fetch.py).
 - **uploads/**: Directory for user-uploaded files.
 
+## Configuration
+
+The application configuration is managed through environment variables. To initialise these settings, copy the provided `.env.example` file and rename it to `.env`, then populate it with the required values:
+
+```sh
+cp .env.example .env
+```
+
+The primary configuration options include:
+
+- `DB_NAME`: Specifies the name of the SQLite database file (default: parkinsons_data.db)
+- `ENTREZ_EMAIL`: Specified the email address required for access to the NCBI Entrez API
+
+Additional configuration options can be set in the `.env` file.
 
