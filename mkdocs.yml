@@ -9,7 +9,7 @@ plugins:
 
 nav:
   - Home: index.md
-  - Installation: INSTALLATION.md
+  - Installation Manual: INSTALLATION.md
   - User Manual: USER_MANUAL.md
   - Technical Manual: TECHNICAL_MANUAL.md
   - Docker: DOCKER.md

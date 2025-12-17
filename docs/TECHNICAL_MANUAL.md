@@ -2,4 +2,59 @@
 
 ## Project Overview
 
-Parkinson’s Annotator is a Python-based application designed to assist Clinical Scientists in annotating genetic variants associated with Parkinson’s disease. The project provides a web interface for uploading, processing, and querying genetic variant data, integrating external resources such as VariantValidator and ClinVar. It uses Flask for the web backend, SQLAlchemy for database management, and various bioinformatics tools for data extraction and validation.
+Parkinson’s Annotator is a Python-based software application developed to support Clinical Scientists in the annotation of genetic variants associated with Parkinson’s disease. The system allows users to upload, process and query variant data through a web-based interface.
+
+The application integrates external variant resources (e.g. VariantValidator and ClinVar) to retrieve clinically relevant variant information. It is implemented as a Flask web application, with SQLAlchemy used for database management, and bioinformatic tools and resources for data extraction (e.g. NCBI Entrez), supported by custom utility modules (e.g. clinvar_fetch.py, variantvalidator_fetch.py).
+
+## Installation
+
+The instructions for setting up the development environment, installing dependencies, and configuring the project can be found in [INSTALLATION.md](./INSTALLATION.md).
+
+## Project Structure
+
+This project is organised as follows:
+
+```
+parkinson-annotator/
+├── docs/  # Project documentation 
+│   ├── DOCKER.md
+│   ├── INSTALLATION.md
+│   ├── TECHNICAL_MANUAL.md
+│   ├── USER_MANUAL.md
+│   └── index.md
+├── src/
+│   ├── logs/
+│   │   └── parkinsons_annotator.log  # Not tracked by git           
+│   └── parkinsons_annotator/
+│       ├── modules/
+│       │   ├── data_extraction.py
+│       │   ├── database_search.py
+│       │   ├── db.py
+│       │   ├── models.py
+│       │   └── routes.py
+│       ├── templates/
+│       │   ├── base.html
+│       │   ├── info.html
+│       │   └── interface_package.html
+│       ├──  utils/
+│       │   ├── clinvar_fetch.py
+│       │   ├──  data_checks.py
+│       │   └── variantvalidator_fetch.py
+│       ├── logger.py
+│       └── main.py
+├── tests/
+├──uploads/
+├── Dockerfile  # Instructions for building a Docker image of the application
+├── Jenkinsfile  # Defines CI pipeline 
+├── README.md  
+├── environment.yml  # Conda environment specification for dependencies
+├── jenkins_pipeline_console_log.txt  # CI build log
+├── mkdocs.yml                        # MkDocs documentation configuration file
+├── pyproject.toml                    # Python project metadata and dependencies.
+└── running_main.pdf                  # Demonstration output / assignment evidence
+```
+
+- **tests/**: Unit tests (e.g. test_clinvar_fetch.py,test_data_checks.py, test_data_extraction.py, test_database_search.py, test_db.py, test_main.py, test_routes.py, test_variantvalidator_fetch.py).
+- **uploads/**: Directory for user-uploaded files.
+
+
