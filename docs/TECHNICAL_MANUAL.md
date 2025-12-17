@@ -91,7 +91,7 @@ The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:50
 
 For Docker-based deployment, see [DOCKER.md](./DOCKER.md).
 
-## Testing (add instruction for checking coverage reports in Codecov?)
+## Testing
 
 Automated tests are located in the `tests/` directory, and use the `pytest` framework.
 
@@ -118,6 +118,26 @@ pytest --cov=parkinsons_annotator
 ```
 Test coverage reports are displayed in the terminal. 
 Add new tests in the `tests/` directory.
+
+## Continuous Integration (CI)
+
+Automated testing and build verification is managed via Jenkins.  
+The continuous integration (CI) workflow is defined within the `Jenkinsfile`, which includes the following stages:
+- Retrieving the source code from the repository
+- Setting up the Conda environment
+- Installing required project dependencies
+- Executing the automated test suite with coverage reporting
+
+Any changes to the CI workflow should be implemented within the `Jenkinsfile` and validated before merging.
+
+## Documentation
+
+Project documentation is generated using [MkDocs](https://www.mkdocs.org/) to build user-friendly documentation.
+
+
+
+
+
 
 
 
