@@ -57,7 +57,7 @@ parkinson-annotator/
 - **tests/**: Unit tests (e.g. test_clinvar_fetch.py,test_data_checks.py, test_data_extraction.py, test_database_search.py, test_db.py, test_main.py, test_routes.py, test_variantvalidator_fetch.py).
 - **uploads/**: Directory for user-uploaded files.
 
-## Configuration
+## Configuration (move to Installation.md?)
 
 The application configuration is managed through environment variables. To initialise these settings, copy the provided `.env.example` file and rename it to `.env`, then populate it with the required values:
 
@@ -71,4 +71,27 @@ The primary configuration options include:
 - `ENTREZ_EMAIL`: Specified the email address required for access to the NCBI Entrez API
 
 Additional configuration options can be set in the `.env` file.
+
+## Running the Application (move to Installation.md?)
+
+To set-up and run the application locally:
+
+```sh
+# Create the Conda environment
+conda env create -f environment.yml
+
+# Activate the environment 
+conda activate parkinsons-env
+
+# Start the Flask application from the project root
+parkinsons-annotator
+```
+
+The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:5000).
+
+For Docker-based deployment, see [DOCKER.md](./DOCKER.md).
+
+
+
+
 
