@@ -43,18 +43,18 @@ parkinson-annotator/
 │       ├── logger.py
 │       └── main.py
 ├── tests/
-├──uploads/
-├── Dockerfile  # Instructions for building a Docker image of the application
-├── Jenkinsfile  # Defines CI pipeline 
+├── uploads/
+├── Dockerfile                        # Instructions for building a Docker image of the application
+├── Jenkinsfile                       # Defines CI pipeline 
 ├── README.md  
-├── environment.yml  # Conda environment specification for dependencies
+├── environment.yml                   # Conda environment specification for dependencies
 ├── jenkins_pipeline_console_log.txt  # CI build log
 ├── mkdocs.yml                        # MkDocs documentation configuration file
 ├── pyproject.toml                    # Python project metadata and dependencies.
 └── running_main.pdf                  # Demonstration output / assignment evidence
 ```
 
-- **tests/**: Unit tests (e.g. test_clinvar_fetch.py,test_data_checks.py, test_data_extraction.py, test_database_search.py, test_db.py, test_main.py, test_routes.py, test_variantvalidator_fetch.py).
+- **tests/**: Unit tests (e.g. test_clinvar_fetch.py, test_data_checks.py, test_data_extraction.py, test_database_search.py, test_db.py, test_main.py, test_routes.py, test_variantvalidator_fetch.py).
 - **uploads/**: Directory for user-uploaded files.
 
 ## Configuration (move to Installation.md?)
@@ -90,6 +90,36 @@ parkinsons-annotator
 The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 For Docker-based deployment, see [DOCKER.md](./DOCKER.md).
+
+## Testing (add instruction for checking coverage reports in Codecov?)
+
+Automated tests are located in the `tests/` directory, and use the `pytest` framework.
+
+> **Note:** The testing and coverage dependencies (`pytest`, `pytest-cov`) are not installed by default with `conda env create -f environment.yml`. Developers must install these optional dependencies separately:
+>
+> ```
+> pip install -e '.[dev]'
+> ```
+>
+> This will install all packages listed under `[project.optional-dependencies].dev` in the `pyproject.toml`.
+
+To run all tests with coverage:
+
+```sh
+# Activate your Conda environment
+conda activate parkinsons-env
+
+# Install the testing and coverage dependencies (pytest, pytest-cov)
+pip install -e '.[dev]'
+
+# Navigate to the tests/ directory and run the tests with the coverage report 
+cd tests
+pytest --cov=parkinsons_annotator
+```
+Test coverage reports are displayed in the terminal. 
+Add new tests in the `tests/` directory.
+
+
 
 
 
