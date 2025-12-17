@@ -9,6 +9,5 @@ This site contains the project documentation for the Parkinson’s Annotator pro
 3. [User Manual](USER_MANUAL.md)
 4. [Technical Manual](TECHNICAL_MANUAL.md)
 5. [Docker Deployment](DOCKER.md)
-6. [API & Code Reference](TECHNICAL_MANUAL.md#documentation)
 
 Use the navigation menu to explore the available documentation.
