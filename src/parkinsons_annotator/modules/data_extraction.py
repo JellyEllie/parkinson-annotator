@@ -75,6 +75,7 @@ def load_raw_data(path):
             dataframes[raw_file.stem] = df # Store DataFrame in dictionary with file base (stem) name as key
             logger.info(f"Loaded {raw_file.name}") # Log loading
 
+
 def load_single_file(file_path):
     """
         Load one CSV or VCF file into the global dataframes dict.
@@ -105,10 +106,12 @@ def load_single_file(file_path):
 
     logger.info(f"Loaded single file: {raw_file.name}")
 
+
 def fill_variant_notation(df: pd.DataFrame) -> pd.DataFrame:
     """Fill the 'vcf_form' column using chromosome:position:ref:alt."""
     df['vcf_form'] = df.apply(lambda r: f"{r.chromosome}:{r.position}:{r.ref}:{r.alt}", axis=1)
     return df
+
 
 def enrich_hgvs(df, session, throttle: float = 0.3):
     """
@@ -145,6 +148,7 @@ def enrich_hgvs(df, session, throttle: float = 0.3):
         if throttle > 0:
             time.sleep(throttle)
     return df
+
 
 def enrich_clinvar(df, session, throttle: float = 0.3):
     """
@@ -213,6 +217,7 @@ def enrich_clinvar(df, session, throttle: float = 0.3):
 
     # Return enriched DataFrame
     return df
+
 
 def insert_dataframe_to_db(name, df, session):
     """
@@ -283,6 +288,7 @@ def insert_dataframe_to_db(name, df, session):
             session.add(Connector(patient_name=name, variant_vcf_form=row['vcf_form']))
 
     logger.info(f"Prepared {len(df)} variants for patient '{name}' to be committed.")
+
 
 def load_and_insert_data():
     """
