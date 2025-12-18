@@ -65,15 +65,15 @@ def load_raw_data(path):
     Returns:
     None: DataFrames are stored in global 'dataframes' dict.
     """
-    for raw_file in Path(path).glob("*"): # Recursively find all files in 'data' directory
-        if raw_file.suffix in data_params: # Check if file extension exists in data_params
-            df = pd.read_csv(raw_file, **data_params[raw_file.suffix]) # Load file into df with appropriate parameters
+    for raw_file in Path(path).glob("*"):  # Recursively find all files in 'data' directory
+        if raw_file.suffix in data_params:  # Check if file extension exists in data_params
+            df = pd.read_csv(raw_file, **data_params[raw_file.suffix])  # Load file into df with appropriate parameters
             # Ensure all columns exist
             for col in data_columns:
                 if col not in df.columns:
-                    df[col] = None # Add missing columns as None if not contained in file
-            dataframes[raw_file.stem] = df # Store DataFrame in dictionary with file base (stem) name as key
-            logger.info(f"Loaded {raw_file.name}") # Log loading
+                    df[col] = None  # Add missing columns as None if not contained in file
+            dataframes[raw_file.stem] = df  # Store DataFrame in dictionary with file base (stem) name as key
+            logger.info(f"Loaded {raw_file.name}")  # Log loading
 
 
 def load_single_file(file_path):
@@ -134,7 +134,7 @@ def enrich_hgvs(df, session, throttle: float = 0.3):
             # Fill in HGVS from database
             logger.info("Skipping VV API call.")
             df.at[idx, 'hgvs'] = existing_variant['hgvs']
-            continue # Skip API call
+            continue  # Skip API call
         # Otherwise, fetch HGVS from VariantValidator API
         logger.info("Proceeding with VariantValidator API call")
         try:
@@ -177,7 +177,7 @@ def enrich_clinvar(df, session, throttle: float = 0.3):
             for col in CLINVAR_FIELDS.values():
                 df.at[idx, col] = existing_variant.get(col)
             logger.info(f"ClinVar data loaded from DB for {vcf_form}")
-            continue # Skip API call
+            continue  # Skip API call
 
         if not hgvs:
             logger.warning(f"Skipping ClinVar API: Missing HGVS for {vcf_form}")
