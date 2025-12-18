@@ -10,6 +10,7 @@ services:
     ports:
       - "8000:5000"
     environment:
+      # Tells Flask app that it is running in a container
       IN_DOCKER: "true"
     volumes:
       # Persist database, uploads, logs so nothing is lost when container is removed
