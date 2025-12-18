@@ -84,6 +84,8 @@ def main():
     # Open browser after 1 second if running locally
     if os.getenv("IN_DOCKER") != "true":
         threading.Timer(1, open_browser).start()
+    else:
+        logger.info("App available at http://localhost:8000")
 
     # Start the Flask app
     host = "0.0.0.0" if os.getenv("IN_DOCKER") == "true" else "127.0.0.1"
