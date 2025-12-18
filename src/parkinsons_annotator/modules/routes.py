@@ -31,13 +31,12 @@ from parkinsons_annotator.utils.data_checks import compare_uploaded_vs_existing
 
 load_dotenv()  # Load environment variables from .env file
 
-route_blueprint = Blueprint('routes', __name__)
+route_blueprint = Blueprint("routes", __name__)
 
 
 @route_blueprint.route('/', methods=['GET'])
 def index():
-    """This function opens the html file which contains the interface informtion"""
-    # return render_template("interface_package.html")
+    """Render the main interface HTML page."""
     return render_template("interface_package.html")
 
 
