@@ -6,17 +6,14 @@ Parkinson’s Annotator is a Python-based software application developed to supp
 
 The application integrates external variant resources (e.g. VariantValidator and ClinVar) to retrieve clinically relevant variant information. It is implemented as a Flask web application, with SQLAlchemy used for database management, and bioinformatic tools and resources for data extraction (e.g. NCBI Entrez), supported by custom utility modules (e.g. clinvar_fetch.py, variantvalidator_fetch.py).
 
-## Installation
-
-The instructions for setting up the development environment, installing dependencies, and configuring the project can be found in [INSTALLATION.md](./INSTALLATION.md).
 
 ## Project Structure
 
-This project is organised as follows:
+The Parkinson's Annotator project follows a modular structure, and the main directories and files are organised as follows:
 
 ```
 parkinson-annotator/
-├── docs/  # Project documentation 
+├── docs/   
 │   ├── DOCKER.md
 │   ├── INSTALLATION.md
 │   ├── TECHNICAL_MANUAL.md
@@ -24,7 +21,7 @@ parkinson-annotator/
 │   └── index.md
 ├── src/
 │   ├── logs/
-│   │   └── parkinsons_annotator.log  # Not tracked by git           
+│   │   └── parkinsons_annotator.log             
 │   └── parkinsons_annotator/
 │       ├── modules/
 │       │   ├── data_extraction.py
@@ -38,41 +35,75 @@ parkinson-annotator/
 │       │   └── interface_package.html
 │       ├──  utils/
 │       │   ├── clinvar_fetch.py
-│       │   ├──  data_checks.py
+│       │   ├── data_checks.py
 │       │   └── variantvalidator_fetch.py
 │       ├── logger.py
 │       └── main.py
 ├── tests/
 ├── uploads/
-├── Dockerfile                        # Instructions for building a Docker image of the application
-├── Jenkinsfile                       # Defines CI pipeline 
+├── Dockerfile                        
+├── Jenkinsfile                       
 ├── README.md  
-├── environment.yml                   # Conda environment specification for dependencies
-├── jenkins_pipeline_console_log.txt  # CI build log
-├── mkdocs.yml                        # MkDocs documentation configuration file
-├── pyproject.toml                    # Python project metadata and dependencies.
-└── running_main.pdf                  # Demonstration output / assignment evidence
+├── environment.yml                   
+├── jenkins_pipeline_console_log.txt  
+├── mkdocs.yml                        
+├── pyproject.toml                    
+└── running_main.pdf                  
 ```
 
-- **tests/**: Unit tests (e.g. test_clinvar_fetch.py, test_data_checks.py, test_data_extraction.py, test_database_search.py, test_db.py, test_main.py, test_routes.py, test_variantvalidator_fetch.py).
-- **uploads/**: Directory for user-uploaded files.
+
+
+| Directory/File                      | Description                                                  |
+|-------------------------------------|--------------------------------------------------------------|
+| `docs/`                             | Project documentation (e.g. installation, user, technical, Docker)  |
+| `src/logs/`                         | Log directory created automatically by the logging system (not tracked by Git) |
+| `parkinsons_annotator.log`          | Rotating log file (not tracked by Git)                       |
+| `src/parkinsons_annotator/`         | Main application source code                                 |
+| `modules/`                          | Core application logic (e.g. database, routes, data extraction)     |
+| `templates/`                        | HTML templates used by the Flask web interface               |
+| `utils/`                            | Helper functions for external API access and validation      |
+| `logger.py`                         | Logging configuration                                        |
+| `main.py`                           | Application entry point                                      |
+| `tests/`                            | Automated unit tests                                         |
+| `uploads/`                          | Directory for user-uploaded files                            |
+| `Dockerfile`                        | Docker build instructions                                    |
+| `Jenkinsfile`                       | Defines Jenkins CI pipeline                                  |
+| `environment.yml`                   | Conda environment specification                              |
+| `jenkins_pipeline_console_log.txt`  | Saved Jenkins build output                                   |
+| `mkdocs.yml`                        | MkDocs site configuration                                    |
+| `pyproject.toml`                    | Python project dependencies                                  |
+| `running_main.pdf `                 | ?needed                                                      |
+
+
+## Installation
+
+The instructions for setting up the development environment, installing dependencies, and configuring the project can be found in [INSTALLATION.md](./INSTALLATION.md).
+
 
 ## Configuration (move to Installation.md?)
 
-The application configuration is managed through environment variables. To initialise these settings, copy the provided `.env.example` file and rename it to `.env`, then populate it with the required values:
+After installing Parkinson's Annotator, the application must be configured using environment variables defined in a `.env` file located in the project root. This approach allows sensitive or environment-specific values to be managed separately from the source code.
 
+To initialise the configuration, copy the provided `.env.example` file and rename it to `.env`:
 ```sh
 cp .env.example .env
 ```
 
-The primary configuration options include:
+Next, update the `.env` file with the key configuration options outlined below:
 
-- `DB_NAME`: Specifies the name of the SQLite database file (default: parkinsons_data.db)
-- `ENTREZ_EMAIL`: Specified the email address required for access to the NCBI Entrez API
+| Variable         | Description                                         | Default                   |
+|------------------|-----------------------------------------------------|---------------------------|
+| `DB_NAME`        | Name of the SQLite database file                    | parkinsons_data.db        |
+| `ENTREZ_EMAIL`   | Email address for NCBI Entrez API access (required) | your@email.com            |
 
-Additional configuration options can be set in the `.env` file.
 
-## Running the Application (move to Installation.md?)
+> **Note:**
+>
+> - The `ENTREZ_EMAIL` variable is required by NCBI to identify users of the Entrez API.
+> - Any changes to database configuration or API credentials should be applied to the `.env` file before running the application.
+
+
+## Running the Application (move to USER_MANUAL.md?)
 
 To set-up and run the application locally:
 
@@ -91,9 +122,34 @@ The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:50
 
 For Docker-based deployment, see [DOCKER.md](./DOCKER.md).
 
+For instructions on how to use the application, see [USER_MANUAL.md](./USER_MANUAL.md).
+
+
+## Logging
+
+The Parkinson's Annotator application includes a logging system to support debugging and error reporting during development and execution. Logging is configured in the `logger.py` file, and the standard Python logging levels are used (e.g. `DEBUG`, `INFO`, `WARNING`, `ERROR`).
+
+The application writes log messages to 2 destinations:
+
+1. **Console output:**
+    
+    - Displays log messages during runtime  
+    - Configured at the `DEBUG` level for detailed information
+
+2. **Log file:**
+    - Stored in the `logs/` directory
+    - File name: `parkinsons_annotator.log`
+    - Configured at the `WARNING` level, with the following behaviour:
+        - Maximum log file size: **500 KB**
+        - Number of backup files retained: **2**
+        - When the maximum size is reached, older logs are rotated automatically, to ensure logging does not consume excessive disk space.
+
+Logging behaviour can be adjusted by editing the configuration in `logger.py`.
+
+
 ## Testing
 
-Automated tests are located in the `tests/` directory, and use the `pytest` framework.
+Automated tests use the `pytest` framework, and are located in the `tests/` directory.
 
 > **Note:** The testing and coverage dependencies (`pytest`, `pytest-cov`) are not installed by default with `conda env create -f environment.yml`. Developers must install these optional dependencies separately:
 >
@@ -116,19 +172,22 @@ pip install -e '.[dev]'
 cd tests
 pytest --cov=parkinsons_annotator
 ```
-Test coverage reports are displayed in the terminal. 
-Add new tests in the `tests/` directory.
+Test coverage reports are displayed in the terminal.  
+New tests can be added to the `tests/` directory.
+
 
 ## Continuous Integration (CI)
 
-Automated testing and build verification is managed via Jenkins.  
+Automated build abd testing verification is managed via [Jenkins](https://www.jenkins.io/).  
 The continuous integration (CI) workflow is defined within the `Jenkinsfile`, which includes the following stages:
+
 - Retrieving the source code from the repository
 - Setting up the Conda environment
 - Installing required project dependencies
 - Executing the automated test suite with coverage reporting
 
-Any changes to the CI workflow should be implemented within the `Jenkinsfile` and validated before merging.
+Any changes to the CI workflow should be implemented within the `Jenkinsfile`, and validated before merging.
+
 
 ## Documentation
 
