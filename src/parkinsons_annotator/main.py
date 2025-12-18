@@ -1,12 +1,25 @@
+"""
+Application entry point for the Parkinsons Annotator Flask app.
+
+Initializes the Flask application, database, routes, and optionally
+loads initial data before starting the development server.
+"""
+
 import os
-from pathlib import Path
 import threading
 import webbrowser
+from pathlib import Path
+
 from dotenv import load_dotenv
 from flask import Flask
 
 from parkinsons_annotator.logger import logger
-from parkinsons_annotator.modules.db import close_db_session, create_db_engine, create_tables, has_full_data
+from parkinsons_annotator.modules.db import (
+    close_db_session,
+    create_db_engine,
+    create_tables,
+    has_full_data
+)
 from parkinsons_annotator.modules.routes import route_blueprint
 from parkinsons_annotator.modules.data_extraction import load_and_insert_data
 
@@ -17,7 +30,7 @@ DB_NAME = os.getenv("DB_NAME", "parkinsons_data.db")
 
 # Opens the URL when program is run
 def open_browser():
-    """The specified URL (whiich is the default created by the command to create the interface)"""
+    """Open the local Flask application in a web browser on port 5000."""
     webbrowser.open_new("http://127.0.0.1:5000/")
 
 def create_app():
@@ -70,8 +83,8 @@ def main():
         # If database does not exist, create database and tables
         if not db_path.exists():
             logger.info(f"Database '{DB_NAME}' not found. Creating new database and tables.")
-            create_db_engine()          # Create the database engine and session
-            create_tables()             # Create tables in the database
+            create_db_engine()  # Create the database engine and session
+            create_tables()  # Create tables in the database
 
         # Load initial data if a table is empty
         if not has_full_data():
@@ -87,7 +100,12 @@ def main():
 
     # Start the Flask app
     host = "0.0.0.0" if os.getenv("IN_DOCKER") == "true" else "127.0.0.1"
-    app.run(host=host, port=5000, debug=True, use_reloader=False) # Use_reloader prevents two interfaces from opening
+    app.run(
+        host=host,
+        port=5000,
+        debug=True,
+        use_reloader=False  # Use_reloader prevents two interfaces from opening
+    )
 
 
 if __name__ == "__main__":
