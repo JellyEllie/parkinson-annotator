@@ -64,6 +64,21 @@ container is running via the web interface.)
 When running in Docker, the application does not auto-open the browser. Open the browser manually and access the 
 application at http://localhost:8000/.
 
+### Running the application again
+After the first build using `docker compose up --build` and stopping the container with `docker compose down`, the 
+Docker image parkinsons-annotator will remain.  
+To start the application again using the existing image:
+```bash
+docker compose up
+```
+
+## Stopping the container
+In a separate terminal to the running container, stop the container using:
+```bash
+docker compose down
+```
+
+
 ## Persistent Data
 The following directories are mounted as Docker volumes:  
 
@@ -74,12 +89,6 @@ The following directories are mounted as Docker volumes:
 
 This ensures that data is persisted across container restarts, and that logs are accessible after the container is 
 stopped.
-
-## Stopping the container
-To stop the container:
-```bash
-docker compose down
-```
 
 ## Rebuilding the image
 To fully rebuild the image:
