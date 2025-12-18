@@ -7,22 +7,32 @@ The visuals and interactive elements of the interface are stored in a html file.
 """
 
 import os
-from flask import Blueprint, render_template, request, jsonify, current_app
-from dotenv import load_dotenv
-load_dotenv()  # Load environment variables from .env file
 
-from parkinsons_annotator.modules.database_search import database_list, SearchFieldEmptyError, NoMatchingRecordsError
-from parkinsons_annotator.modules.data_extraction import (dataframes,
-                                                          load_single_file,
-                                                          fill_variant_notation,
-                                                          enrich_hgvs,
-                                                          enrich_clinvar,
-                                                          insert_dataframe_to_db)
+from dotenv import load_dotenv
+from flask import Blueprint, render_template, request, jsonify, current_app
+
+from parkinsons_annotator.modules.database_search import (
+    database_list,
+    SearchFieldEmptyError,
+    NoMatchingRecordsError
+)
+from parkinsons_annotator.modules.data_extraction import (
+    dataframes,
+    load_single_file,
+    fill_variant_notation,
+    enrich_hgvs,
+    enrich_clinvar,
+    insert_dataframe_to_db
+)
 from parkinsons_annotator.modules.db import get_db_session, close_db_session
 from parkinsons_annotator.logger import logger
 from parkinsons_annotator.utils.data_checks import compare_uploaded_vs_existing
 
+
+load_dotenv()  # Load environment variables from .env file
+
 route_blueprint = Blueprint('routes', __name__)
+
 
 @route_blueprint.route('/', methods=['GET'])
 def index():
@@ -30,9 +40,11 @@ def index():
     # return render_template("interface_package.html")
     return render_template("interface_package.html")
 
+
 @route_blueprint.route('/about', methods=['GET'])
 def about():
     return render_template("info.html")
+
 
 @route_blueprint.route('/search', methods=['POST'])
 def search():
@@ -97,6 +109,7 @@ def search():
             "column_order": column_order,
             "results": results
         }), 200
+
 
 @route_blueprint.route('/upload', methods=['POST'])
 def upload_file():
