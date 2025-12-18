@@ -78,14 +78,14 @@ def load_raw_data(path):
 
 def load_single_file(file_path):
     """
-        Load one CSV or VCF file into the global dataframes dict.
-        Used in upload route to avoid reloading all existing files in upload directory when uploading a new file.
+    Load one CSV or VCF file into the global dataframes dict.
+    Used in upload route to avoid reloading all existing files in upload directory when uploading a new file.
 
-        Parameters:
-        file_path (str): Path to file to load. Must be a CSV or VCF file.
+    Parameters:
+    file_path (str): Path to file to load. Must be a CSV or VCF file.
 
-        Returns:
-        None: DataFrames are stored in global 'dataframes' dict.
+    Returns:
+    None: DataFrames are stored in global 'dataframes' dict.
     """
 
     raw_file = Path(file_path)
