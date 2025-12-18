@@ -18,8 +18,11 @@ from sqlalchemy import select
 # Custom exceptions
 class SearchFieldEmptyError(Exception):
     pass
+
+
 class NoMatchingRecordsError(Exception):
     pass
+
 
 # Search function
 def database_list(search_type=None, search_value=None, search_cat=None):
