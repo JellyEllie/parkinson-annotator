@@ -60,7 +60,7 @@ def database_list(search_type=None, search_value=None, search_cat=None):
         search_value = search_value.strip().upper()
 
         # Search in HGVS format:
-        if search_value.startswith(("NM", "nNC")):
+        if search_value.startswith(("NM", "NC")):
             logger.info(f"Searching variant by HGVS: {search_value}")
             filter_column = Variant.hgvs
 
@@ -87,7 +87,8 @@ def database_list(search_type=None, search_value=None, search_cat=None):
             raise NoMatchingRecordsError(f"No patients found with variant '{search_value}'.")
 
         # Returns list of tuples [(Variant Object, patient_name1), (Variant Object, patient_name2), ...]
-        # Variant search returns an ORM object which is not compatible with .mappings() so is handled in search route
+        # Variant search returns an ORM object which is not compatible with .mappings()
+        # and so is handled in search route
         return query_results
 
     # --- Search by gene symbol ---
