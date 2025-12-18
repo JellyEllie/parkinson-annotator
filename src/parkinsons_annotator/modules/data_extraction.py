@@ -7,10 +7,12 @@ parses them into DataFrames, and inserts the data into the parkinsons_data.db
 SQLite database with proper patient–variant relationships.
 
 """
-import pandas as pd
-from pathlib import Path
-from dotenv import load_dotenv
 import time
+from pathlib import Path
+
+import pandas as pd
+from dotenv import load_dotenv
+
 
 from flask import current_app
 from parkinsons_annotator.logger import logger
