@@ -1,0 +1,18 @@
+services:
+  parkinsons-annotator:
+    # name for container app will run in
+    container_name: parkinsons-annotator
+    # image to use for container
+    image: parkinsons-annotator:latest
+    # uses image built from Dockefile in current directory
+    build: .
+    # local port 8000 mounted to container port 5000
+    ports:
+      - "8000:5000"
+    environment:
+      IN_DOCKER: "true"
+    volumes:
+      # Persist database, uploads, logs so nothing is lost when container is removed
+      - ./src/instance:/app/instance
+      - ./src/logs:/app/logs
+    restart: unless-stopped
