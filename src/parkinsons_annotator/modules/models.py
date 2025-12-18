@@ -9,6 +9,7 @@ from sqlalchemy.orm import declarative_base
 # Create base class for declarative mapping
 Base = declarative_base()
 
+
 class Genes(Base):
     """ORM mapping for the 'genes' table."""
     __tablename__ = 'genes'
@@ -25,7 +26,7 @@ class Variant(Base):
     """ORM mapping for the 'variants' table."""
     __tablename__ = 'variants'
 
-    vcf_form = Column(VARCHAR(30), primary_key=True) # Use genomic notation as primary key
+    vcf_form = Column(VARCHAR(30), primary_key=True)  # Use genomic notation as primary key
     hgvs = Column(VARCHAR(50))
     clinvar_id = Column(VARCHAR(20))
     gene_symbol = Column(VARCHAR(10), ForeignKey("genes.gene_symbol"))
@@ -62,7 +63,7 @@ class Connector(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     patient_name = Column(VARCHAR(15), ForeignKey("patients.name"), nullable=False)
-    variant_vcf_form = Column(VARCHAR(50), ForeignKey("variants.vcf_form"), nullable=False)
+    variant_vcf_form = Column(VARCHAR(30), ForeignKey("variants.vcf_form"), nullable=False)
 
     def __repr__(self):
         return (
