@@ -333,4 +333,3 @@ def load_and_insert_data():
     finally:
         # Close session
         session.close()
-    logger.info(f"Finished processing {len(dataframes)} patient files.")
