@@ -1,6 +1,6 @@
-# Running Parkinsons Annotator with Docker
+# Running Parkinson's Annotator with Docker
 
-This document explains how to run the **Parkinsons Annotator** application using Docker and Docker Compose.
+This document explains how to run the **Parkinson's Annotator** application using Docker and Docker Compose.
 
 The Docker setup runs the Flask app in a container, with the runtime data (database, uploads, logs) written to an 
 instance directory inside the container. This directory is mounted as a volume to the host machine to ensure data is 

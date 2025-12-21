@@ -1,4 +1,4 @@
-# Installation
+# Installing Parkinson's Annotator
 
 ## Introduction
 
