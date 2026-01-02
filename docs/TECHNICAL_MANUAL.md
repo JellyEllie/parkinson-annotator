@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Parkinson’s Annotator is a Python-based software application developed to support Clinical Scientists in the annotation of genetic variants associated with Parkinson’s disease. The system allows users to upload and query variant data through a web-based interface.
+Parkinson’s Annotator is a Python-based software application, developed to support Clinical Scientists annotating genetic variants associated with Parkinson’s disease. The system allows users to upload and query variant data through a web-based interface.
 
 The application is implemented as a Flask web application, with SQLAlchemy used for database management. It also integrates external variant resources (e.g. VariantValidator, ClinVar), bioinformatic tools for data extraction (e.g. NCBI Entrez), and is supported by custom utility modules (e.g. clinvar_fetch.py, variantvalidator_fetch.py).
 
@@ -57,7 +57,7 @@ parkinson-annotator/
 | `src/logs/`                         | Log directory created automatically by the logging system (not tracked by Git) |
 | `parkinsons_annotator.log`          | Rotating log file (not tracked by Git)                       |
 | `src/parkinsons_annotator/`         | Main application source code                                 |
-| `modules/`                          | Core application logic (e.g. database, routes, data extraction)     |
+| `modules/`                          | Core application modules (e.g. database, routes, data extraction)     |
 | `templates/`                        | HTML templates used by the Flask web interface               |
 | `utils/`                            | Helper functions for external API access and validation      |
 | `logger.py`                         | Logging configuration                                        |
@@ -72,7 +72,7 @@ parkinson-annotator/
 | `compose.yml`                       | Docker compose configuration for containerisation            |
 | `environment.yml`                   | Conda environment specification                              |
 | `jenkins_pipeline_console_log.txt`  | Saved Jenkins build output                                   |
-| `pyproject.toml`                    | Python project dependencies                                  |
+| `pyproject.toml`                    | Python project dependencies and build configuration          |
 
 
 ## Key Dependencies
@@ -94,7 +94,7 @@ See `pyproject.toml` and `environment.yml` for the complete and up-to-date list.
 
 ## Installation
 
-The instructions for setting up the Conda environment, installing dependencies, and configuring the project can be found in [INSTALLATION.md](./INSTALLATION.md).
+The instructions for installing this applicaton can be found in [INSTALLATION.md](./INSTALLATION.md).
 
 
 ## Configuration 
@@ -163,10 +163,10 @@ Automated tests are located in the `tests/` directory, and use the [pytest](http
 
 > **Note:** 
 >
-The testing and coverage dependencies (`pytest`, `pytest-cov`) are not installed by default with:  
-`conda env create -f environment.yml`.
+>The testing and coverage dependencies (`pytest`, `pytest-cov`) are not installed by default with:  
+>`conda env create -f environment.yml`.
 >  
-Developers must install these optional dependencies separately:
+>Developers must install these optional dependencies separately:
 >
 > ```
 > pip install -e '.[dev]'
@@ -177,7 +177,6 @@ Developers must install these optional dependencies separately:
 To run all tests with coverage, after activating your Conda environment and installing the testing and coverage dependencies, run the following command from the `tests/` directory:
 
 ```sh
-# Navigate to the tests/ directory and run the tests with the coverage report 
 cd tests  
 
 pytest --cov=parkinsons_annotator
