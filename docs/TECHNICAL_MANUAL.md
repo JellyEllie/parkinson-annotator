@@ -108,10 +108,10 @@ cp .env.example .env
 
 Next, update the `.env` file with the key configuration options outlined below:
 
-| Variable         | Description                                         | Default                   |
-|------------------|-----------------------------------------------------|---------------------------|
-| `DB_NAME`        | Name of the SQLite database file                    | parkinsons_data.db        |
-| `ENTREZ_EMAIL`   | Email address for NCBI Entrez API access (required) | your@email.com            |
+| Variable         | Description                                         | Default                    |
+|------------------|-----------------------------------------------------|--------------------------- |
+| `DB_NAME`        | Name of the SQLite database file                    | "parkinsons_data.db"       |
+| `ENTREZ_EMAIL`   | Email address for NCBI Entrez API access (required) | "your@email.com"           |
 
 
 > **Note:**
