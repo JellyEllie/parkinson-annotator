@@ -2,14 +2,14 @@
 
 ## Project Overview
 
-Parkinson’s Annotator is a Python-based software application developed to support Clinical Scientists in the annotation of genetic variants associated with Parkinson’s disease. The system allows users to upload, process and query variant data through a web-based interface.
+Parkinson’s Annotator is a Python-based software application developed to support Clinical Scientists in the annotation of genetic variants associated with Parkinson’s disease. The system allows users to upload and query variant data through a web-based interface.
 
-The application integrates external variant resources (e.g. VariantValidator and ClinVar) to retrieve clinically relevant variant information. It is implemented as a Flask web application, with SQLAlchemy used for database management, and bioinformatic tools and resources for data extraction (e.g. NCBI Entrez), supported by custom utility modules (e.g. clinvar_fetch.py, variantvalidator_fetch.py).
+The application is implemented as a Flask web application, with SQLAlchemy used for database management. It also integrates external variant resources (e.g. VariantValidator, ClinVar), bioinformatic tools for data extraction (e.g. NCBI Entrez), and is supported by custom utility modules (e.g. clinvar_fetch.py, variantvalidator_fetch.py).
 
 
 ## Project Structure
 
-The Parkinson's Annotator project follows a modular structure, and the main directories and files are organised as follows:
+The Parkinson's Annotator project follows a modular structure. The main directories and files are organised as follows:
 
 ```
 parkinson-annotator/
@@ -17,8 +17,7 @@ parkinson-annotator/
 │   ├── DOCKER.md
 │   ├── INSTALLATION.md
 │   ├── TECHNICAL_MANUAL.md
-│   ├── USER_MANUAL.md
-│   └── index.md
+│   └── USER_MANUAL.md 
 ├── src/
 │   ├── logs/
 │   │   └── parkinsons_annotator.log             
@@ -41,17 +40,16 @@ parkinson-annotator/
 │       └── main.py
 ├── tests/
 ├── uploads/
+├── .dockerignore
+├── .gitignore
 ├── Dockerfile                        
 ├── Jenkinsfile                       
-├── README.md  
+├── README.md 
+├── compose.yml
 ├── environment.yml                   
-├── jenkins_pipeline_console_log.txt  
-├── mkdocs.yml                        
-├── pyproject.toml                    
-└── running_main.pdf                  
+├── jenkins_pipeline_console_log.txt                        
+└── pyproject.toml                                
 ```
-
-
 
 | Directory/File                      | Description                                                  |
 |-------------------------------------|--------------------------------------------------------------|
@@ -64,25 +62,44 @@ parkinson-annotator/
 | `utils/`                            | Helper functions for external API access and validation      |
 | `logger.py`                         | Logging configuration                                        |
 | `main.py`                           | Application entry point                                      |
-| `tests/`                            | Automated unit tests                                         |
+| `tests/`                            | Automated tests                                              |
 | `uploads/`                          | Directory for user-uploaded files                            |
+| `.dockerignore`                     | Specifies files/directories to be excluded from Docker build context  |
+| `.gitignore`                        | Specifies files/directories to be excluded from version control (Git) |
 | `Dockerfile`                        | Docker build instructions                                    |
 | `Jenkinsfile`                       | Defines Jenkins CI pipeline                                  |
+| `README.md`                         | Project overview, usage instructions, and key information    |
+| `compose.yml`                       | Docker compose configuration for containerisation            |
 | `environment.yml`                   | Conda environment specification                              |
 | `jenkins_pipeline_console_log.txt`  | Saved Jenkins build output                                   |
-| `mkdocs.yml`                        | MkDocs site configuration                                    |
 | `pyproject.toml`                    | Python project dependencies                                  |
-| `running_main.pdf `                 | ?needed                                                      |
+
+
+## Key Dependencies
+
+The key dependencies required for Parkinson’s Annotator are:
+
+| Package            | Version    | Purpose                        |
+|--------------------|------------|--------------------------------|
+| Flask              | 3.1.2      | Web application framework      |
+| SQLAlchemy         | 2.0.44     | Database ORM                   |
+| pandas             | 2.3.3      | Data manipulation              |
+| requests           | 2.32.5     | HTTP requests                  |
+| python-dotenv      | 1.2.1      | Environment variable loading   |
+| pytest             | 8.4.2      | Testing framework (dev only)   |
+| pytest-cov         | 7.0.0      | Test coverage (dev only)       |
+
+See `pyproject.toml` and `environment.yml` for the complete and up-to-date list.
 
 
 ## Installation
 
-The instructions for setting up the development environment, installing dependencies, and configuring the project can be found in [INSTALLATION.md](./INSTALLATION.md).
+The instructions for setting up the Conda environment, installing dependencies, and configuring the project can be found in [INSTALLATION.md](./INSTALLATION.md).
 
 
-## Configuration (move to Installation.md?)
+## Configuration 
 
-After installing Parkinson's Annotator, the application must be configured using environment variables defined in a `.env` file located in the project root. This approach allows sensitive or environment-specific values to be managed separately from the source code.
+After installing Parkinson's Annotator, the application must be configured using environment variables defined in a `.env` file, located in the project root directory. This approach allows sensitive or environment-specific values to be managed separately from the source code.
 
 To initialise the configuration, copy the provided `.env.example` file and rename it to `.env`:
 ```sh
@@ -103,18 +120,11 @@ Next, update the `.env` file with the key configuration options outlined below:
 > - Any changes to database configuration or API credentials should be applied to the `.env` file before running the application.
 
 
-## Running the Application (move to USER_MANUAL.md?)
+## Running the Application 
 
-To set-up and run the application locally:
+After creating and activating the Conda environment, installing the dependencies, and configuring the environment variables (as outlined in [INSTALLATION.md](./INSTALLATION.md)), run the application using the following command in the project root directory: 
 
 ```sh
-# Create the Conda environment
-conda env create -f environment.yml
-
-# Activate the environment 
-conda activate parkinsons-env
-
-# Start the Flask application from the project root
 parkinsons-annotator
 ```
 
@@ -149,9 +159,14 @@ Logging behaviour can be adjusted by editing the configuration in `logger.py`.
 
 ## Testing
 
-Automated tests use the `pytest` framework, and are located in the `tests/` directory.
+Automated tests are located in the `tests/` directory, and use the [pytest](https://docs.pytest.org/en/stable/) framework.
 
-> **Note:** The testing and coverage dependencies (`pytest`, `pytest-cov`) are not installed by default with `conda env create -f environment.yml`. Developers must install these optional dependencies separately:
+> **Note:** 
+>
+The testing and coverage dependencies (`pytest`, `pytest-cov`) are not installed by default with:  
+`conda env create -f environment.yml`.
+>  
+Developers must install these optional dependencies separately:
 >
 > ```
 > pip install -e '.[dev]'
@@ -159,26 +174,22 @@ Automated tests use the `pytest` framework, and are located in the `tests/` dire
 >
 > This will install all packages listed under `[project.optional-dependencies].dev` in the `pyproject.toml`.
 
-To run all tests with coverage:
+To run all tests with coverage, after activating your Conda environment and installing the testing and coverage dependencies, run the following command from the `tests/` directory:
 
 ```sh
-# Activate your Conda environment
-conda activate parkinsons-env
-
-# Install the testing and coverage dependencies (pytest, pytest-cov)
-pip install -e '.[dev]'
-
 # Navigate to the tests/ directory and run the tests with the coverage report 
-cd tests
+cd tests  
+
 pytest --cov=parkinsons_annotator
 ```
 Test coverage reports are displayed in the terminal.  
-New tests can be added to the `tests/` directory.
+
+Any new tests should be added to the `tests/` directory as individual Python files, named according to the pattern `test_<module>.py`. Tests should be written using the [pytest](https://docs.pytest.org/en/stable/) framework, with clear, well-described test functions for the appropriate module or feature.
 
 
 ## Continuous Integration (CI)
 
-Automated build abd testing verification is managed via [Jenkins](https://www.jenkins.io/).  
+Automated build and testing verification is managed via [Jenkins](https://www.jenkins.io/).  
 The continuous integration (CI) workflow is defined within the `Jenkinsfile`, which includes the following stages:
 
 - Retrieving the source code from the repository
@@ -187,13 +198,6 @@ The continuous integration (CI) workflow is defined within the `Jenkinsfile`, wh
 - Executing the automated test suite with coverage reporting
 
 Any changes to the CI workflow should be implemented within the `Jenkinsfile`, and validated before merging.
-
-
-## Documentation
-
-Project documentation is generated using [MkDocs](https://www.mkdocs.org/) to build user-friendly documentation.
-
-
 
 
 
