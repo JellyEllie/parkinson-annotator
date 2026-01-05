@@ -128,7 +128,7 @@ After creating and activating the Conda environment, installing the dependencies
 parkinsons-annotator
 ```
 
-The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:5000).
+The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:5000) when running from source installation.
 
 For Docker-based deployment, see [DOCKER.md](./DOCKER.md).
 
