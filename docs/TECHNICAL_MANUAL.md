@@ -89,7 +89,7 @@ The key dependencies required for Parkinson’s Annotator are:
 | pytest             | 8.4.2      | Testing framework (dev only)   |
 | pytest-cov         | 7.0.0      | Test coverage (dev only)       |
 
-See `pyproject.toml` and `environment.yml` for the complete and up-to-date list.
+See `pyproject.toml` for the complete and up-to-date list of runtime and development dependencies, and `environment.yml` for creating the base Python environment.
 
 
 ## Installation
