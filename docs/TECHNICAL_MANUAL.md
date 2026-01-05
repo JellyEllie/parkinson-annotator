@@ -81,11 +81,13 @@ The key dependencies required for Parkinson’s Annotator are:
 
 | Package            | Version    | Purpose                        |
 |--------------------|------------|--------------------------------|
+| Python             | 3.13+      | Programming language           |
 | Flask              | 3.1.2      | Web application framework      |
 | SQLAlchemy         | 2.0.44     | Database ORM                   |
 | pandas             | 2.3.3      | Data manipulation              |
 | requests           | 2.32.5     | HTTP requests                  |
 | python-dotenv      | 1.2.1      | Environment variable loading   |
+| biopython          | 1.86       | NCBI Entrez API access         |
 | pytest             | 8.4.2      | Testing framework (dev only)   |
 | pytest-cov         | 7.0.0      | Test coverage (dev only)       |
 
