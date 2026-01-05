@@ -62,7 +62,7 @@ pip install .
 This installs all runtime dependencies defined in the `pyproject.toml` file. For development, install the 
 development dependencies (pytest and pytest-cov) with:  
 ```bash
-pip install .[dev]
+pip install '.[dev]'
 ```
 
 
