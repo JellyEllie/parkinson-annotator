@@ -59,7 +59,7 @@ Install the application and its dependencies via pip:
 ```bash
 pip install .
 ```
-This installs all runtime dependencies defined in the `pyroject.toml` file. For development, install the 
+This installs all runtime dependencies defined in the `pyproject.toml` file. For development, install the 
 development dependencies (pytest and pytest-cov) with:  
 ```bash
 pip install .[dev]
@@ -76,12 +76,12 @@ Rename the `.env.example` to `.env` so it is visible to the application:
 `cp .env.example .env`
 #### 4.3 Substep 3 - Add your email address to the `.env` file
 Enter your own email address under the `ENTREZ_EMAIL=` variable:  
-`ENTREZ_EMAIL= caitlin@example.com`
+`ENTREZ_EMAIL="caitlin@example.com"`
 
 ### Step 5 - Run the application
 Run the application by entering the following in your terminal while in the project root directory:  
 ```bash
-parkinsons_annotator
+parkinsons-annotator
 ```
 This will:
 

@@ -54,7 +54,7 @@ This will:
 - Build the Docker image
 - Start the Flask app inside a container
 - Create the database if it does not exist
-- Load any intial data from CSVs/VCFs found in src/instance/uploads/  
+- Load any initial data from CSVs/VCFs found in src/instance/uploads/  
   (Usually applies if the database has been built and files uploaded previously.  
 New files can be uploaded once the 
 container is running via the web interface.)
