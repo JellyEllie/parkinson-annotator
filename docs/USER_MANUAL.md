@@ -3,7 +3,7 @@
 ## Starting Up
 When the program starts, it should open to the search page, if it doesn't there
 is a button in the top left-hand corner
-![search button](docs/manual_images/SearchButton.png) 
+![search button](manual_images/SearchButton.png) 
 which directs to the search page.
 
 ## Uploading    Data
