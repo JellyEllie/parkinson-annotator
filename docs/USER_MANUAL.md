@@ -22,12 +22,12 @@ The upload function has built in checks, to ensure that if the same patient
 data is uploaded twice, then the data won't be duplicated. If this happens a
 pop-up will appear explaining this:
 
-![failed upload](docs/manual_images/PatientAlreadyExists.png)
+![failed upload](manual_images/PatientAlreadyExists.png)
 
 If the patient data being uploaded is no in the database, then once it has
 been uploaded a pop-up will appear explaining this:
 
-![successful upload](docs/manual_images/UploadSuccessful.png)
+![successful upload](manual_images/UploadSuccessful.png)
 
 ## Searching the Dataset
 
@@ -74,7 +74,7 @@ classification given
 + cDNA change
 
 Example:<br>
-![variant search example](docs/manual_images/VariantSearch.png)
+![variant search example](manual_images/VariantSearch.png)
 
 ### Gene Symbol
 **Input:** gene symbol, searching the gene name or other variation won't yield
@@ -85,7 +85,7 @@ found in gene *searchtext*). Below will be a table which includes all patients
 and their variants (in HGVS format) found in that gene, plus its classification.
 
 Example:<br>
-![gene symbol search example](docs/manual_images/GeneSearch.png)
+![gene symbol search example](manual_images/GeneSearch.png)
 
 ### Patient Name
 **Input:** the name of the patient as it is in the uploaded datafile. To see
@@ -100,7 +100,7 @@ all patients', with all variants in the database being listed vin the resulting
 table.
 
 Example:<br>
-![patient name search example](docs/manual_images/PatientSearch.png)
+![patient name search example](manual_images/PatientSearch.png)
 
 ### Classification
 **Input:** Select a classification from list in drop-down menu.
@@ -112,8 +112,8 @@ identified in ClinVar:'. Below will show a single column table showing all
 variants in the database with that classification in HGVS format.
 
 Examples:<br>
-![successful classification search example](docs/manual_images/PathogenicSearch.png)
-![unsuccessful classification search example](docs/manual_images/NotInClinvar.png)
+![successful classification search example](manual_images/PathogenicSearch.png)
+![unsuccessful classification search example](manual_images/NotInClinvar.png)
 
 ## Troubleshooting
 The most likely issue to occur is the a search returning nothing when it is
