@@ -13,7 +13,7 @@ not lost when the container is stopped or rebuilt.
 Both Docker and Docker Compose are included in the official [Docker Desktop](https://docs.docker.com/desktop/) 
 installation.  
 
-Verify installation using `docker --version` and `docker-compose --version`.
+Verify installation using `docker --version` and `docker compose version`.
 
 ## Repository setup
 Clone the parkinson-annotator repository:
