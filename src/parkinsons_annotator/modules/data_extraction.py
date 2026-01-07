@@ -7,10 +7,12 @@ parses them into DataFrames, and inserts the data into the parkinsons_data.db
 SQLite database with proper patient–variant relationships.
 
 """
-import pandas as pd
-from pathlib import Path
-from dotenv import load_dotenv
 import time
+from pathlib import Path
+
+import pandas as pd
+from dotenv import load_dotenv
+
 
 from flask import current_app
 from parkinsons_annotator.logger import logger
@@ -63,26 +65,27 @@ def load_raw_data(path):
     Returns:
     None: DataFrames are stored in global 'dataframes' dict.
     """
-    for raw_file in Path(path).glob("*"): # Recursively find all files in 'data' directory
-        if raw_file.suffix in data_params: # Check if file extension exists in data_params
-            df = pd.read_csv(raw_file, **data_params[raw_file.suffix]) # Load file into df with appropriate parameters
+    for raw_file in Path(path).glob("*"):  # Recursively find all files in 'data' directory
+        if raw_file.suffix in data_params:  # Check if file extension exists in data_params
+            df = pd.read_csv(raw_file, **data_params[raw_file.suffix])  # Load file into df with appropriate parameters
             # Ensure all columns exist
             for col in data_columns:
                 if col not in df.columns:
-                    df[col] = None # Add missing columns as None if not contained in file
-            dataframes[raw_file.stem] = df # Store DataFrame in dictionary with file base (stem) name as key
-            logger.info(f"Loaded {raw_file.name}") # Log loading
+                    df[col] = None  # Add missing columns as None if not contained in file
+            dataframes[raw_file.stem] = df  # Store DataFrame in dictionary with file base (stem) name as key
+            logger.info(f"Loaded {raw_file.name}")  # Log loading
+
 
 def load_single_file(file_path):
     """
-        Load one CSV or VCF file into the global dataframes dict.
-        Used in upload route to avoid reloading all existing files in upload directory when uploading a new file.
+    Load one CSV or VCF file into the global dataframes dict.
+    Used in upload route to avoid reloading all existing files in upload directory when uploading a new file.
 
-        Parameters:
-        file_path (str): Path to file to load. Must be a CSV or VCF file.
+    Parameters:
+    file_path (str): Path to file to load. Must be a CSV or VCF file.
 
-        Returns:
-        None: DataFrames are stored in global 'dataframes' dict.
+    Returns:
+    None: DataFrames are stored in global 'dataframes' dict.
     """
 
     raw_file = Path(file_path)
@@ -103,10 +106,12 @@ def load_single_file(file_path):
 
     logger.info(f"Loaded single file: {raw_file.name}")
 
+
 def fill_variant_notation(df: pd.DataFrame) -> pd.DataFrame:
     """Fill the 'vcf_form' column using chromosome:position:ref:alt."""
     df['vcf_form'] = df.apply(lambda r: f"{r.chromosome}:{r.position}:{r.ref}:{r.alt}", axis=1)
     return df
+
 
 def enrich_hgvs(df, session, throttle: float = 0.3):
     """
@@ -129,7 +134,7 @@ def enrich_hgvs(df, session, throttle: float = 0.3):
             # Fill in HGVS from database
             logger.info("Skipping VV API call.")
             df.at[idx, 'hgvs'] = existing_variant['hgvs']
-            continue # Skip API call
+            continue  # Skip API call
         # Otherwise, fetch HGVS from VariantValidator API
         logger.info("Proceeding with VariantValidator API call")
         try:
@@ -143,6 +148,7 @@ def enrich_hgvs(df, session, throttle: float = 0.3):
         if throttle > 0:
             time.sleep(throttle)
     return df
+
 
 def enrich_clinvar(df, session, throttle: float = 0.3):
     """
@@ -171,7 +177,7 @@ def enrich_clinvar(df, session, throttle: float = 0.3):
             for col in CLINVAR_FIELDS.values():
                 df.at[idx, col] = existing_variant.get(col)
             logger.info(f"ClinVar data loaded from DB for {vcf_form}")
-            continue # Skip API call
+            continue  # Skip API call
 
         if not hgvs:
             logger.warning(f"Skipping ClinVar API: Missing HGVS for {vcf_form}")
@@ -211,6 +217,7 @@ def enrich_clinvar(df, session, throttle: float = 0.3):
 
     # Return enriched DataFrame
     return df
+
 
 def insert_dataframe_to_db(name, df, session):
     """
@@ -282,6 +289,7 @@ def insert_dataframe_to_db(name, df, session):
 
     logger.info(f"Prepared {len(df)} variants for patient '{name}' to be committed.")
 
+
 def load_and_insert_data():
     """
     Top-level function to load, enrich, and insert all patient data.
@@ -325,4 +333,3 @@ def load_and_insert_data():
     finally:
         # Close session
         session.close()
-    logger.info(f"Finished processing {len(dataframes)} patient files.")

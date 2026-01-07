@@ -4,6 +4,10 @@ Tests for the fetch_variant_validator() function.
 References:
 Testing APIs with PyTest
 (https://codilime.com/blog/testing-apis-with-pytest-mocks-in-python/)
+
+Credit: 
+Initial tests were written manually. To improve test coverage, additional tests were generated with 
+GitHub Copilot and then reviewed.
 """
 
 from unittest.mock import patch

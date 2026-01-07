@@ -1,37 +1,35 @@
 Branch indexing
-10:53:27 Connecting to https://api.github.com with no credentials, anonymous access
-10:53:27 Jenkins-Imposed API Limiter: Current quota for Github API usage has 49 remaining (1 over budget). Next quota of 60 in 54 min. Sleeping for 4 min 27 sec.
-10:53:27 Jenkins is attempting to evenly distribute GitHub API requests. To configure a different rate limiting strategy, such as having Jenkins restrict GitHub API requests only when near or above the GitHub rate limit, go to "GitHub API usage" under "Configure System" in the Jenkins settings.
-10:56:29 Jenkins-Imposed API Limiter: Still sleeping, now only 1 min 24 sec remaining.
-10:57:55 Jenkins-Imposed API Limiter: Current quota for Github API usage has 46 remaining (1 over budget). Next quota of 60 in 49 min. Sleeping for 4 min 36 sec.
-10:57:55 Jenkins is attempting to evenly distribute GitHub API requests. To configure a different rate limiting strategy, such as having Jenkins restrict GitHub API requests only when near or above the GitHub rate limit, go to "GitHub API usage" under "Configure System" in the Jenkins settings.
-11:00:57 Jenkins-Imposed API Limiter: Still sleeping, now only 1 min 34 sec remaining.
-Obtained Jenkinsfile from 29b98ef119b940939d6e2206a239c96af44a1417
+14:52:18 Connecting to https://api.github.com with no credentials, anonymous access
+14:52:18 Jenkins-Imposed API Limiter: Current quota for Github API usage has 52 remaining (1 over budget). Next quota of 60 in 59 min. Sleeping for 5 min 24 sec.
+14:52:18 Jenkins is attempting to evenly distribute GitHub API requests. To configure a different rate limiting strategy, such as having Jenkins restrict GitHub API requests only when near or above the GitHub rate limit, go to "GitHub API usage" under "Configure System" in the Jenkins settings.
+14:55:19 Jenkins-Imposed API Limiter: Still sleeping, now only 2 min 22 sec remaining.
+14:57:43 Jenkins-Imposed API Limiter: Current quota for Github API usage has 49 remaining (1 over budget). Next quota of 60 in 54 min. Sleeping for 4 min 28 sec.
+14:57:43 Jenkins is attempting to evenly distribute GitHub API requests. To configure a different rate limiting strategy, such as having Jenkins restrict GitHub API requests only when near or above the GitHub rate limit, go to "GitHub API usage" under "Configure System" in the Jenkins settings.
+15:00:45 Jenkins-Imposed API Limiter: Still sleeping, now only 1 min 25 sec remaining.
+Obtained Jenkinsfile from 4e8646b4e0f9047b9e7dde42e3acdd14ef1cdb94
 [Pipeline] Start of Pipeline
 [Pipeline] node
-Running on Jenkins in /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins
+Running on Jenkins
+ in /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4
 [Pipeline] {
 [Pipeline] stage
 [Pipeline] { (Declarative: Checkout SCM)
 [Pipeline] checkout
 The recommended git tool is: NONE
 No credentials specified
-Cloning the remote Git repository
-Cloning with configured refspecs honoured and without tags
-Cloning repository https://github.com/JellyEllie/parkinson-annotator.git
- > git init /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins # timeout=10
+ > git rev-parse --resolve-git-dir /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/JellyEllie/parkinson-annotator.git # timeout=10
+Fetching without tags
 Fetching upstream changes from https://github.com/JellyEllie/parkinson-annotator.git
  > git --version # timeout=10
  > git --version # 'git version 2.39.5 (Apple Git-154)'
- > git fetch --no-tags --force --progress -- https://github.com/JellyEllie/parkinson-annotator.git +refs/heads/s3_jenkins:refs/remotes/origin/s3_jenkins # timeout=10
- > git config remote.origin.url https://github.com/JellyEllie/parkinson-annotator.git # timeout=10
- > git config --add remote.origin.fetch +refs/heads/s3_jenkins:refs/remotes/origin/s3_jenkins # timeout=10
-Avoid second fetch
-Checking out Revision 29b98ef119b940939d6e2206a239c96af44a1417 (s3_jenkins)
+ > git fetch --no-tags --force --progress -- https://github.com/JellyEllie/parkinson-annotator.git +refs/heads/sprint4:refs/remotes/origin/sprint4 # timeout=10
+Checking out Revision 4e8646b4e0f9047b9e7dde42e3acdd14ef1cdb94 (sprint4)
  > git config core.sparsecheckout # timeout=10
- > git checkout -f 29b98ef119b940939d6e2206a239c96af44a1417 # timeout=10
-Commit message: "Added more comments, and removed the command to install pip packages in editable mode as this is already covered by environment.yml (see https://github.com/JellyEllie/parkinson-annotator/issues/68)"
-First time build. Skipping changelog.
+ > git checkout -f 4e8646b4e0f9047b9e7dde42e3acdd14ef1cdb94 # timeout=10
+Commit message: "Merge pull request #111 from JellyEllie/s4_route_fix"
+ > git rev-list --no-walk 9424b2f8233cd2cddda2102f5bcaeb6f89eafefb # timeout=10
 [Pipeline] }
 [Pipeline] // stage
 [Pipeline] withEnv
@@ -43,18 +41,18 @@ First time build. Skipping changelog.
 [Pipeline] checkout
 The recommended git tool is: NONE
 No credentials specified
- > git rev-parse --resolve-git-dir /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/.git # timeout=10
+ > git rev-parse --resolve-git-dir /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/.git # timeout=10
 Fetching changes from the remote Git repository
  > git config remote.origin.url https://github.com/JellyEllie/parkinson-annotator.git # timeout=10
 Fetching without tags
 Fetching upstream changes from https://github.com/JellyEllie/parkinson-annotator.git
  > git --version # timeout=10
  > git --version # 'git version 2.39.5 (Apple Git-154)'
- > git fetch --no-tags --force --progress -- https://github.com/JellyEllie/parkinson-annotator.git +refs/heads/s3_jenkins:refs/remotes/origin/s3_jenkins # timeout=10
-Checking out Revision 29b98ef119b940939d6e2206a239c96af44a1417 (s3_jenkins)
+ > git fetch --no-tags --force --progress -- https://github.com/JellyEllie/parkinson-annotator.git +refs/heads/sprint4:refs/remotes/origin/sprint4 # timeout=10
+Checking out Revision 4e8646b4e0f9047b9e7dde42e3acdd14ef1cdb94 (sprint4)
  > git config core.sparsecheckout # timeout=10
- > git checkout -f 29b98ef119b940939d6e2206a239c96af44a1417 # timeout=10
-Commit message: "Added more comments, and removed the command to install pip packages in editable mode as this is already covered by environment.yml (see https://github.com/JellyEllie/parkinson-annotator/issues/68)"
+ > git checkout -f 4e8646b4e0f9047b9e7dde42e3acdd14ef1cdb94 # timeout=10
+Commit message: "Merge pull request #111 from JellyEllie/s4_route_fix"
 [Pipeline] }
 [Pipeline] // stage
 [Pipeline] stage
@@ -98,64 +96,22 @@ Remove all packages in environment /Users/naimaabdi/opt/miniconda3/envs/parkinso
 
 The following packages will be REMOVED:
 
-  _openmp_mutex-4.5-7_kmp_llvm
-  backports.zstd-1.2.0-py313hf42fe89_0
-  biopython-1.86-py313h6535dbc_0
-  blinker-1.9.0-pyhff2d567_0
-  brotli-python-1.2.0-py313hde1f3bb_1
   bzip2-1.0.8-hd037594_8
-  ca-certificates-2025.11.12-hbd8a1cb_0
-  certifi-2025.11.12-pyhd8ed1ab_0
-  charset-normalizer-3.4.4-pyhd8ed1ab_0
-  click-8.3.1-pyh8f84b5b_1
-  flask-3.1.2-pyhd8ed1ab_0
-  greenlet-3.3.0-py313h0e822ff_0
-  h2-4.3.0-pyhcf101f3_0
-  hpack-4.1.0-pyhd8ed1ab_0
-  hyperframe-6.1.0-pyhd8ed1ab_0
-  idna-3.11-pyhd8ed1ab_0
-  importlib-metadata-8.7.0-pyhe01879c_1
-  itsdangerous-2.2.0-pyhd8ed1ab_1
-  jinja2-3.1.6-pyhcf101f3_1
-  libblas-3.11.0-4_h51639a9_openblas
-  libcblas-3.11.0-4_hb0561ab_openblas
-  libcxx-21.1.7-hf598326_0
+  ca-certificates-2026.1.4-hbd8a1cb_0
   libexpat-2.7.3-haf25636_0
   libffi-3.5.2-he5f378a_0
-  libgcc-15.2.0-hcbb3090_16
-  libgfortran-15.2.0-h07b0088_16
-  libgfortran5-15.2.0-hdae7583_16
-  liblapack-3.11.0-4_hd9741b5_openblas
   liblzma-5.8.1-h39f12f2_2
   libmpdec-4.0.0-h5505292_0
-  libopenblas-0.3.30-openmp_ha158390_3
-  libsqlite-3.51.1-h9a5124b_0
+  libsqlite-3.51.1-h1b79a29_1
   libzlib-1.3.1-h8359307_2
-  llvm-openmp-21.1.7-h4a912ad_0
-  markupsafe-3.0.3-py313h7d74516_0
   ncurses-6.5-h5e97a16_3
-  numpy-2.3.5-py313h9771d21_0
   openssl-3.6.0-h5503f6c_0
-  pandas-2.3.3-py313h7d16b84_2
   pip-25.3-pyh145f28c_0
-  pysocks-1.7.1-pyha55dd90_7
   python-3.13.2-h81fe080_101_cp313
-  python-dateutil-2.9.0.post0-pyhe01879c_2
-  python-tzdata-2025.2-pyhd8ed1ab_0
   python_abi-3.13-8_cp313
-  pytz-2025.2-pyhd8ed1ab_0
-  readline-8.2-h1d1bf99_2
-  requests-2.32.5-pyhd8ed1ab_0
-  six-1.17.0-pyhe01879c_1
-  sqlalchemy-2.0.44-py313h6535dbc_0
+  readline-8.3-h46df422_0
   tk-8.6.13-h892fb3f_3
-  typing-extensions-4.15.0-h396c80c_0
-  typing_extensions-4.15.0-pyhcf101f3_0
-  tzdata-2025b-h8577fbf_1
-  urllib3-2.6.1-pyhd8ed1ab_0
-  werkzeug-3.1.4-pyhcf101f3_0
-  zipp-3.23.0-pyhcf101f3_1
-  zstd-1.5.7-hbf9d68e_6
+  tzdata-2025c-hc9c84f9_1
 
 
 Proceed ([y]/n)? 
@@ -163,7 +119,7 @@ Proceed ([y]/n)?
 Downloading and Extracting Packages: ...working... done
 Preparing transaction: - done
 Verifying transaction: | done
-Executing transaction: - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / done
+Executing transaction: - \ | / - \ | / - \ | / - done
 Everything found within the environment (/Users/naimaabdi/opt/miniconda3/envs/parkinsons-env), including any conda environment configurations and any non-conda files, will be deleted. Do you wish to continue?
  (y/[n])? 
 
@@ -177,14 +133,13 @@ CondaSystemExit: Exiting.
 + /Users/naimaabdi/opt/miniconda3/bin/conda env create -f environment.yml
 CI detected...
 2 channel Terms of Service accepted
-Retrieving notices: - \ | done
 Channels:
  - conda-forge
  - bioconda
  - defaults
 Platform: osx-arm64
-Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | done
-Solving environment: - done
+Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / done
+Solving environment: \ done
 
 
 ==> WARNING: A newer version of conda exists. <==
@@ -197,83 +152,48 @@ Please update conda by running
 
 
 
-Downloading and Extracting Packages: ...working...
-python-tzdata-2025.3 | 140 KB    |            |   0% 
-
-tzdata-2025c         | 116 KB    |            |   0% [A
-
-
-urllib3-2.6.2        | 100 KB    |            |   0% [A[A
-python-tzdata-2025.3 | 140 KB    | ########## | 100% 
-python-tzdata-2025.3 | 140 KB    | ########## | 100% 
-
-tzdata-2025c         | 116 KB    | ##7        |  27% [A
-
-
-urllib3-2.6.2        | 100 KB    | #5         |  16% [A[A
-
-tzdata-2025c         | 116 KB    | ########## | 100% [A
-
-
-urllib3-2.6.2        | 100 KB    | ########## | 100% [A[A
-
-
-urllib3-2.6.2        | 100 KB    | ########## | 100% [A[A
-
-tzdata-2025c         | 116 KB    | ########## | 100% [A
-
-tzdata-2025c         | 116 KB    | ########## | 100% [A
-python-tzdata-2025.3 | 140 KB    | ########## | 100% 
-                                                     
-
-                                                     [A
-
-
-                                                     [A[A done
-Preparing transaction: | done
-Verifying transaction: - \ | / - \ | / - \ | / - \ | / - \ | done
-Executing transaction: - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / done
-Installing pip dependencies: \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | Ran pip subprocess with arguments:
-['/Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/bin/python', '-m', 'pip', 'install', '-U', '-r', '/Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt', '--exists-action=b']
+Downloading and Extracting Packages: ...working... done
+Preparing transaction: / done
+Verifying transaction: \ | / - \ | / - \ | / - \ | / - \ | done
+Executing transaction: - \ | / - \ | / - \ | / - \ | / - \ | done
+Installing pip dependencies: - \ | / - \ | / - \ | / - \ | / - Ran pip subprocess with arguments:
+['/Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/bin/python', '-m', 'pip', 'install', '-U', '-r', '/Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt', '--exists-action=b']
 Pip subprocess output:
-Obtaining file:///Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins (from -r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4))
+Processing /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4
   Installing build dependencies: started
   Installing build dependencies: finished with status 'done'
-  Checking if build backend supports build_editable: started
-  Checking if build backend supports build_editable: finished with status 'done'
-  Getting requirements to build editable: started
-  Getting requirements to build editable: finished with status 'done'
-  Preparing editable metadata (pyproject.toml): started
-  Preparing editable metadata (pyproject.toml): finished with status 'done'
-Requirement already satisfied: pytest==8.4.2 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from -r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 1)) (8.4.2)
-Requirement already satisfied: python-dotenv in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from -r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 2)) (1.2.1)
-Requirement already satisfied: pytest-cov in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from -r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 3)) (7.0.0)
-Requirement already satisfied: flask in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (3.1.2)
-Requirement already satisfied: sqlalchemy in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (2.0.44)
-Requirement already satisfied: biopython in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (1.86)
-Requirement already satisfied: requests in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (2.32.5)
-Requirement already satisfied: iniconfig>=1 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from pytest==8.4.2->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 1)) (2.3.0)
-Requirement already satisfied: packaging>=20 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from pytest==8.4.2->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 1)) (25.0)
-Requirement already satisfied: pluggy<2,>=1.5 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from pytest==8.4.2->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 1)) (1.6.0)
-Requirement already satisfied: pygments>=2.7.2 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from pytest==8.4.2->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 1)) (2.19.2)
-Requirement already satisfied: coverage>=7.10.6 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from coverage[toml]>=7.10.6->pytest-cov->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 3)) (7.11.3)
-Requirement already satisfied: numpy in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from biopython->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (2.3.4)
-Requirement already satisfied: blinker>=1.9.0 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (1.9.0)
-Requirement already satisfied: click>=8.1.3 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (8.3.1)
-Requirement already satisfied: itsdangerous>=2.2.0 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (2.2.0)
-Requirement already satisfied: jinja2>=3.1.2 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (3.1.6)
-Requirement already satisfied: markupsafe>=2.1.1 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (3.0.3)
-Requirement already satisfied: werkzeug>=3.1.0 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (3.1.4)
-Requirement already satisfied: charset_normalizer<4,>=2 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from requests->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (3.4.4)
-Requirement already satisfied: idna<4,>=2.5 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from requests->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (3.11)
-Requirement already satisfied: urllib3<3,>=1.21.1 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from requests->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (2.5.0)
-Requirement already satisfied: certifi>=2017.4.17 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from requests->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (2025.10.5)
-Requirement already satisfied: typing-extensions>=4.6.0 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from sqlalchemy->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins/condaenv.e0moebgg.requirements.txt (line 4)) (4.15.0)
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: flask==3.1.2 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (3.1.2)
+Requirement already satisfied: sqlalchemy==2.0.44 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (2.0.44)
+Requirement already satisfied: biopython==1.86 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (1.86)
+Requirement already satisfied: pandas==2.3.3 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (2.3.3)
+Requirement already satisfied: requests==2.32.5 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (2.32.5)
+Requirement already satisfied: python-dotenv==1.2.1 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (1.2.1)
+Requirement already satisfied: markdown==3.10 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (3.10)
+Requirement already satisfied: numpy in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from biopython==1.86->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (2.4.0)
+Requirement already satisfied: blinker>=1.9.0 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask==3.1.2->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (1.9.0)
+Requirement already satisfied: click>=8.1.3 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask==3.1.2->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (8.3.1)
+Requirement already satisfied: itsdangerous>=2.2.0 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask==3.1.2->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (2.2.0)
+Requirement already satisfied: jinja2>=3.1.2 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask==3.1.2->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (3.1.6)
+Requirement already satisfied: markupsafe>=2.1.1 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask==3.1.2->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (3.0.3)
+Requirement already satisfied: werkzeug>=3.1.0 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from flask==3.1.2->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (3.1.4)
+Requirement already satisfied: python-dateutil>=2.8.2 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from pandas==2.3.3->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from pandas==2.3.3->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (2025.2)
+Requirement already satisfied: tzdata>=2022.7 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from pandas==2.3.3->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (2025.3)
+Requirement already satisfied: charset_normalizer<4,>=2 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from requests==2.32.5->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (3.4.4)
+Requirement already satisfied: idna<4,>=2.5 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from requests==2.32.5->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (3.11)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from requests==2.32.5->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (2.6.2)
+Requirement already satisfied: certifi>=2017.4.17 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from requests==2.32.5->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (2026.1.4)
+Requirement already satisfied: typing-extensions>=4.6.0 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from sqlalchemy==2.0.44->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (4.15.0)
+Requirement already satisfied: six>=1.5 in /Users/naimaabdi/opt/miniconda3/envs/parkinsons-env/lib/python3.13/site-packages (from python-dateutil>=2.8.2->pandas==2.3.3->parkinsons-annotator==0.1.0->-r /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4/condaenv.soaywiu8.requirements.txt (line 1)) (1.17.0)
 Building wheels for collected packages: parkinsons-annotator
-  Building editable for parkinsons-annotator (pyproject.toml): started
-  Building editable for parkinsons-annotator (pyproject.toml): finished with status 'done'
-  Created wheel for parkinsons-annotator: filename=parkinsons_annotator-0.1.0-0.editable-py3-none-any.whl size=2313 sha256=edb162a7fffba0f0f970d9c4b1ab1fa59347b3690ce17107d84f0697ccfcf3a5
-  Stored in directory: /private/var/folders/fs/g4xj6bl103bdjzp1xl2qs9200000gn/T/pip-ephem-wheel-cache-3cq4z2jw/wheels/c3/f3/f9/c6972af6a8312e879f8f92a9a7a0ef0c6d92df00f304a863c8
+  Building wheel for parkinsons-annotator (pyproject.toml): started
+  Building wheel for parkinsons-annotator (pyproject.toml): finished with status 'done'
+  Created wheel for parkinsons-annotator: filename=parkinsons_annotator-0.1.0-py3-none-any.whl size=30271 sha256=4d1782da12f7e8b380e13f479248f2e74e73f9698fc396dec605ff059ed1da32
+  Stored in directory: /Users/naimaabdi/Library/Caches/pip/wheels/05/1f/8c/187e8be3a6e682ad43b9cfcaaa8bffff1a257f44e8dc113c47
 Successfully built parkinsons-annotator
 Installing collected packages: parkinsons-annotator
   Attempting uninstall: parkinsons-annotator
@@ -445,12 +365,18 @@ export CONDA_PYTHON_EXE='\''/Users/naimaabdi/opt/miniconda3/bin/python'\'''
 + pytest --cov=parkinsons_annotator tests/
 ============================= test session starts ==============================
 platform darwin -- Python 3.13.2, pytest-8.4.2, pluggy-1.6.0
-rootdir: /Users/naimaabdi/.jenkins/workspace/arkinson-annotator-CI_s3_jenkins
+rootdir: /Users/naimaabdi/.jenkins/workspace/parkinson-annotator-CI_sprint4
 configfile: pyproject.toml
 plugins: cov-7.0.0
-collected 19 items
+collected 64 items
 
-tests/test_clinvar_fetch.py ..........                                   [ 52%]
+tests/test_clinvar_fetch.py ..........                                   [ 15%]
+tests/test_data_checks.py .......                                        [ 26%]
+tests/test_data_extraction.py .........                                  [ 40%]
+tests/test_database_search.py ......                                     [ 50%]
+tests/test_db.py .........                                               [ 64%]
+tests/test_main.py .....                                                 [ 71%]
+tests/test_routes.py .........                                           [ 85%]
 tests/test_variantvalidator_fetch.py .........                           [100%]
 
 =============================== warnings summary ===============================
@@ -476,22 +402,21 @@ _______________ coverage: platform darwin, python 3.13.2-final-0 _______________
 Name                                                       Stmts   Miss  Cover
 ------------------------------------------------------------------------------
 src/parkinsons_annotator/__init__.py                           0      0   100%
-src/parkinsons_annotator/logger.py                            19      0   100%
-src/parkinsons_annotator/main.py                              45     45     0%
+src/parkinsons_annotator/logger.py                            20      0   100%
+src/parkinsons_annotator/main.py                              52      3    94%
 src/parkinsons_annotator/modules/__init__.py                   0      0   100%
-src/parkinsons_annotator/modules/data_extraction.py          140    140     0%
-src/parkinsons_annotator/modules/database_creation.py         11     11     0%
-src/parkinsons_annotator/modules/database_search.py           54     54     0%
-src/parkinsons_annotator/modules/db.py                        62     62     0%
-src/parkinsons_annotator/modules/models.py                    36     36     0%
-src/parkinsons_annotator/modules/routes.py                    72     72     0%
+src/parkinsons_annotator/modules/data_extraction.py          139     24    83%
+src/parkinsons_annotator/modules/database_search.py           54      1    98%
+src/parkinsons_annotator/modules/db.py                        62      3    95%
+src/parkinsons_annotator/modules/models.py                    36      4    89%
+src/parkinsons_annotator/modules/routes.py                    74     14    81%
 src/parkinsons_annotator/utils/__init__.py                     0      0   100%
 src/parkinsons_annotator/utils/clinvar_fetch.py              116     16    86%
-src/parkinsons_annotator/utils/data_checks.py                 29     29     0%
+src/parkinsons_annotator/utils/data_checks.py                 29      0   100%
 src/parkinsons_annotator/utils/variantvalidator_fetch.py      88     13    85%
 ------------------------------------------------------------------------------
-TOTAL                                                        672    478    29%
-======================= 19 passed, 2 warnings in 31.87s ========================
+TOTAL                                                        670     78    88%
+======================= 64 passed, 2 warnings in 32.56s ========================
 [Pipeline] }
 [Pipeline] // stage
 [Pipeline] stage

@@ -23,7 +23,7 @@ htmlcov/
 .env.*
 !.env.example   # keep example template
 
-# Local runtime data (logs/uploads)
+# Local runtime data (logs/uploads) - Docker uses /app/instance/ instead
 src/logs/
 src/instance/uploads
 
@@ -35,5 +35,4 @@ docs/
 .gitignore
 
 # Docker
-Dockerfile
-docker-compose.yml
+compose.yml

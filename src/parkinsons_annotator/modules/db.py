@@ -1,3 +1,15 @@
+"""
+Database session and engine management for the Parkinson’s Annotator application.
+
+Uses a global SQLAlchemy engine and scoped_session to avoid repeated engine creation.
+
+Contains the following functions:
+    create_db_engine() - Creates a SQLAlchemy engine connected to the SQLite database.
+    create_tables() - Creates all tables in the database
+    get_db_session() - Returns a SQLAlchemy session
+    close_db_session() - Closes the SQLAlchemy session.
+"""
+
 from pathlib import Path
 from flask import g, current_app, has_app_context, has_request_context
 from sqlalchemy import create_engine, event
@@ -16,14 +28,14 @@ def create_db_engine():
     """
     global engine, Session
 
-    #Determine database name
+    # Determine database name
     if has_app_context():
         db_name = current_app.config["DB_NAME"]
     else:
         # Fallback for scripts: use the SAME instance folder as the Flask app
         base_dir = Path(__file__).resolve().parent.parent  # parkinsons_annotator/
         instance_dir = base_dir / "instance"  # path to instance directory
-        instance_dir.mkdir(parents=True, exist_ok=True)  # Create /instance if it doesn't exist'
+        instance_dir.mkdir(parents=True, exist_ok=True)  # Create /instance if it doesn't exist
         db_name = instance_dir / "parkinsons_data.db"  # Set database path
 
     db_path = Path(db_name).resolve()
@@ -52,7 +64,7 @@ def create_tables():
 
 def get_db_session():
     """
-    Get a SQLAlchemy session tied to Flask's g context.
+    Get a SQLAlchemy session.
     - Uses Flask's g context if in request.
     - Otherwise returns a normal session for CLI scripts.
     """
@@ -76,6 +88,9 @@ def close_db_session(e=None):
     Close the SQLAlchemy session.
     - In Flask request: pop from g.
     - In scripts: must be closed manually.
+
+    The optional 'e' argument is accepted for compatibility with
+    Flask teardown callbacks.
     """
 
     if has_request_context():
