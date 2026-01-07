@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.egg-info
+logs/
+instance/
+*.csv
+*.vcf
+# PyCharm project files
+.idea/
+*.iml
