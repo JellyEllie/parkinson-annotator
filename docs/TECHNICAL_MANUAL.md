@@ -41,6 +41,7 @@ parkinson-annotator/
 ├── tests/
 ├── uploads/
 ├── .dockerignore
+├── .env.example
 ├── .gitignore
 ├── Dockerfile                        
 ├── Jenkinsfile                       
@@ -65,6 +66,7 @@ parkinson-annotator/
 | `tests/`                            | Automated tests                                              |
 | `uploads/`                          | Directory for user-uploaded files                            |
 | `.dockerignore`                     | Specifies files/directories to be excluded from Docker build context  |
+| `.env.example`                      | Template file showing required environment variables         |
 | `.gitignore`                        | Specifies files/directories to be excluded from version control (Git) |
 | `Dockerfile`                        | Docker build instructions                                    |
 | `Jenkinsfile`                       | Defines Jenkins CI pipeline                                  |
@@ -88,6 +90,7 @@ The key dependencies required for Parkinson’s Annotator are:
 | requests           | 2.32.5     | HTTP requests                  |
 | python-dotenv      | 1.2.1      | Environment variable loading   |
 | biopython          | 1.86       | NCBI Entrez API access         |
+| markdown           | 3.10       | Converts markdown text to HTML |
 | pytest             | 8.4.2      | Testing framework (dev only)   |
 | pytest-cov         | 7.0.0      | Test coverage (dev only)       |
 
