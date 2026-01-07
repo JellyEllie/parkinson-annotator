@@ -1,4 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Information Here</h1>
+<meta charset="UTF-8">
+    <title>User Manual</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            max-width: 900px;
+            margin: 40px auto;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            text-align: center;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 12px;
+            overflow-x: auto;
+        }
+    </style>
+   {{ content | safe }}
 {% endblock %}
