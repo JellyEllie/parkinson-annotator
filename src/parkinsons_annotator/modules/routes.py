@@ -39,14 +39,10 @@ def index():
     """Render the main interface HTML page."""
     return render_template("interface_package.html")
 
-@route_blueprint.route('/docs/<USER_MANUAL>')
-def docs(USER_MANUAL):
-    path = f"docs/{USER_MANUAL}.md"
 
-    with open(path, "r", encoding="utf-8") as f:
-        html = markdown.markdown(f.read(), extensions=["fenced_code", "tables"])
-
-    return render_template("info.html", content=html)
+@route_blueprint.route('/about',methods=['GET'])
+def about():
+    return render_template("info.html")
 
 
 @route_blueprint.route('/search', methods=['POST'])
