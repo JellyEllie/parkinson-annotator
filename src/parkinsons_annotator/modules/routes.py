@@ -44,7 +44,6 @@ def index():
 def about():
     return render_template("info.html")
 
-
 @route_blueprint.route('/search', methods=['POST'])
 def search():
     """Handle search queries from the interface."""
