@@ -37,18 +37,21 @@ These directories will be mounted into the Docker container and used for:
 
 ## Set environment variables
 Modify the .env file to set the environment variables:
-- Rename .env.example to .env
+- Rename .env.example to .env  
+    `cp .env.example .env`
+- Open the file (note that files beginning with `.` are hidden by default on most systems)
 - Enter your own email under ENTREZ_EMAIL for NCBI Entrez API access
     ```
   ENTREZ_EMAIL=name@example.com
   ```
+- Save the file before contiuing with installation
 
 ## Build and run the Docker image
 
 ### Build using Docker Compose
 From the repository root directory:
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 This will:
 - Build the Docker image
@@ -73,7 +76,8 @@ docker compose up
 ```
 
 ## Stopping the container
-In a separate terminal to the running container, stop the container using:
+In a separate terminal to the running container, navigate to the directory the container is running in, and stop the 
+container using:
 ```bash
 docker compose down
 ```
