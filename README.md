@@ -16,7 +16,7 @@ The results include relevant annotations and ClinVar information, to assist anal
 - Dockerised deployment for reproducible, platform-independent execution
 - Search variants by:
    - HGVS transcript notation
-   - Genomic notation
+   - VCF-style genomic notation
    - Gene symbol
    - ClinVar pathogenicity classification
    - Patient name
