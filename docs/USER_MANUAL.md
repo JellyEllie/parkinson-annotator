@@ -130,7 +130,6 @@ folder where the uploaded files are stored:
 
 - If the program is run using docker, then the uploaded files are stored in:<br>
 `./src/instance/uploads/`
-- 
 - If the program is run without using docker, then the files are stored in :<br>
 `./src/parkinsons_annotator/instance/uploads`
 
