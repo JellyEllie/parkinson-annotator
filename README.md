@@ -1,15 +1,9 @@
-# $\color{rgba(255,0,0, 0.4)}\Huge{\textsf{Parkinson Annotator}}$
-# Parkinson Annotator
+# Parkinson's Annotator
 
 ### Description:  
-The Parkinson Annotator project is a web-based application designed to help researchers and clinicians **upload, explore, and query** patient genomic data. This tool allows users to upload VCF and CSV files containing patient variant data and provides an **interactive interface** for searching by patient, variant, gene or pathogenicity. The results include relevant annotations and ClinVar information, making it easier for researchers and clinicians to analyse large scale patient genomic data.
+The Parkinson's Annotator project is a web-based application designed to help researchers and clinicians **upload, explore, and query** patient genomic data. This tool allows users to upload VCF and CSV files containing patient variant data and provides an **interactive interface** for searching by patient name, variant notation, gene symbol or Clinvar pathogenicity classification. The results include relevant annotations and ClinVar information, making it easier for researchers and clinicians to analyse large scale patient genomic data.
 
-### Milestones:(DISCUSS:to rid of? add screenshot image of web interface here instead) 
-- Extract data from various input files
-- Create backend database and load data 
-- Incorporate Variant Validator and Clinvar API 
-- Create frontend search function for querying data
-
+![application web interface](.../.../WebInterface.png)
 
 ### ✨ Features
 - Upload patient data in VCF and CSV formats.
@@ -29,9 +23,8 @@ The Parkinson Annotator project is a web-based application designed to help rese
 ---
 
 ## 📑 Table of Contents
-
-#### :o: &nbsp;&nbsp;&nbsp; [**Installation and usage**](#-installation-and-usage)
-#### :o: &nbsp;&nbsp;&nbsp; [**Tools and dependencies**](#%EF%B8%8F-tools-and-dependencies)
+#### :o: &nbsp;&nbsp;&nbsp; [**Dependencies**](-Dependencies)
+#### :o: &nbsp;&nbsp;&nbsp; [**Installation and usage**](#-installation-and-usage-instructions)
 #### :o: &nbsp;&nbsp;&nbsp; [**Pipeline**](#-pipeline-architecture)
 #### :o: &nbsp;&nbsp;&nbsp; [**File Structure**](#-file-structure)
 #### :o: &nbsp;&nbsp;&nbsp; [**Data**](#-data)
@@ -40,15 +33,32 @@ The Parkinson Annotator project is a web-based application designed to help rese
 
 ---
 
+### 📌 Dependencies 
+
+Before using Parkinson's Annotator, ensure you have either:
+
+Option 1: Docker (recommended for full reproducibility)
+- `Docker` (or Docker Desktop)
+
+Option 2: Conda + pip
+- `Conda` (e.g. Miniconda, Mambaforge)
+- `Python 3.13+`
+- `pip`
+  
+The provided environment.yml file creates a reproducible Conda environment and installs the package from source.
+Runtime dependencies are managed via `pip` and defined in `pyproject.toml`
+
+
 ## 📚 Installation and usage instructions
 
-This project is designed to run in a **Conda environment** on **Linux Ubuntu (insert version) LTS (Jammy Jellyfish)** and is also **containerised using Docker** for easier deployment.
+This project is designed to run in a **Conda environment** on **Linux Ubuntu 22.04.5 LTS (Jammy Jellyfish)** and is also **containerised using Docker** for easier deployment.
 
 ### 1. Clone the repository
    ```
    git clone https://github.com/JellyEllie/parkinson-annotator.git
    cd parkinson-annotator
    ```
+
 ### 2. Installing the application:  
 
 **Option 1: Local installation (source)**
@@ -64,10 +74,16 @@ Instructions for building and running the application using Docker are provided 
 Instructions on starting the application are provided in the [installation manual]((INSTALLATION.md)) and [Docker manual]((DOCKER.md)). 
 Detailed intructions on how to run and use the application are provided in the [user manual](USER_MANUAL.md).
 
-## 🛠️ Tools and dependencies
+
+
+## 💡 Pipeline architecture
+
+![](docs/media/pipline.drawio.png)
+
+## 🛠️ Tools
 
 - **Flask:**  
-Flask is a lightweight Python web framework used to build the interactive web interface of the Parkinsons Data Annotator. It handles routing, data uploads, and rendering HTML templates. The documentation can be found [here](https://flask.palletsprojects.com/en/stable/).
+Flask is a lightweight Python web framework used to build the interactive web interface of the Parkinson's Annotator. It handles routing, data uploads, and rendering HTML templates. The documentation can be found [here](https://flask.palletsprojects.com/en/stable/).
 
 - **SQLite:**  
 SQLite is a lightweight, file-based relational database used to store patient and variant data. It allows for simple and faster querying and data storage without the need for a separate database server. The documentation can be found [here](https://sqlite.org/docs.html).
@@ -82,9 +98,6 @@ Variant Validator is an API used to validate and standardise genomic variant not
 Docker is used to containerise the application, ensuring consistent deployment and development environments. It allows the app to run without manual setup of Python packages or system dependencies. The documentation can be found [here](https://docs.docker.com).
 
 
-## 💡 Pipeline architecture
-
-[!image](pipeline.svg)
 
 ## 📂 File structure
 
@@ -92,7 +105,7 @@ TODO: To insert layout with short file descriptions - this aids users in underst
 
 ## 🧬 Data
 
-The Parkinson Annotator processes patient-specific genomic variant data.
+The Parkinson's Annotator processes patient-specific genomic variant data.
 Supported formats: VCF, CSV
 Input assumption: Each file representing a single patient (e.g., `patient1.vcf`, `patient2.csv`). 
 
@@ -112,3 +125,9 @@ This project includes supporting documentation for developers who wish to unders
 
 ## 📜 License
 This project is licensed under the [MIT License](LICENSE).
+
+<div align="right">
+
+[Back to top](#parkinsons-annotator)
+
+</div> 
