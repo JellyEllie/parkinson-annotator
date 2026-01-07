@@ -15,7 +15,7 @@ The results include relevant annotations and ClinVar information, to assist anal
 - Provides a lightweight Flask-based web application
 - Dockerised deployment for reproducible, platform-independent execution
 - Search variants by:
-   - HGVS symbol
+   - HGVS transcript notation
    - Genomic notation
    - Gene symbol
    - ClinVar pathogenicity classification
